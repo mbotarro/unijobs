@@ -2,24 +2,17 @@
 
 ## Índice
 
-[1. Perguntas Gerais](#1.\ Perguntas\ Gerais)
+1. [Perguntas Gerais](#p1)
+2. [Usuários e Cadastro](#p2)
+3. [Serviços](#p3)
+4. [Preço](#p4)
+5. [Contato](#p5)
+6. [Avaliação](#p6)
+7. [Requisitos Não Funcionais](#p7)
+8. [Outras perguntas](#p8)
 
-[2. Usuários e Cadastro](#2.\ Usuários\ e\ Cadastro)
-
-[3. Serviços](#3.\ Serviços)
-
-[4. Preço](#4.\ Preço)
-
-[5. Contato](#5.\ Contato)
-
-[6. Avaliação](#6.\ Avaliação)
-
-[7. Requisitos Não Funcionais](#7.\ Requisitos\ Não\ Funcionais)
-
-[8. Outras perguntas](#8.\ Outras\ perguntas)
-
-
-## 1. Perguntas Gerais
+<a id=p1></a>
+## 1. Perguntas Gerais 
 
 - Como surgiu a ideia do UniJobs?
 
@@ -33,6 +26,7 @@
 
 - Barreira ética do aplicativo? Podemos oferecer qualquer tipo de serviço? Exemplo: pagar outra pessoa para fazer um trabalho de faculdade.
 
+<a id=p2></a>
 ## 2. Usuários e Cadastro
 
 - Qual o público em específico? Só universitários podem oferecer trabalho e qualquer pessoa pode contratar serviço?
@@ -55,6 +49,7 @@
 
 - Podemos começar só com a USP?
 
+<a id=p3></a>
 ## 3. Serviços
 
 - Quais exemplos de serviço você imagina que podem ser oferecidos na plataforma?
@@ -108,6 +103,7 @@
 
 - UI diferente para tipo de usuário? Tela Inicial diferente para cada usuário já que a informação importante para cada um é diferente.
 
+<a id=p4></a>
 ## 4. Preço
 
 - Todo serviço deve ser pago? O preço deve ser sempre informado ou pode ser combinado depois entre duas partes? (Exemplo: faixa de preço vs preço exato)
@@ -116,6 +112,7 @@
 
 - Há uma cobrança de taxa sobre transações no app? Retorno por porcentagem do valor pago?
 
+<a id=p5></a>
 ## 5. Contato
 
 - Devemos apenas oferecer informação de contato ou gerenciar próprio contato (oferecer possibilidade de chat entre partes envolvidas)?
@@ -126,6 +123,7 @@
 
 - Há um limite de tempo para o oferecedor aceitar o interesse?
 
+<a id=p6></a>
 ## 6. Avaliação
 
 - Há alguma forma de avaliação? Em ambos em sentidos (de quem oferece e de quem demanda)?
@@ -152,6 +150,7 @@
 
 - Usuário pode dar reply em um feedback?
 
+<a id=p7></a>
 ## 7. Requisitos Não Funcionais
 
 - Qual o formato da solução (app ou site web)?
@@ -174,6 +173,7 @@
 
 - Devemos adicionar algum tipo de monitoramento?
 
+<a id=p8></a>
 ## 8. Outras Perguntas
 
 - Você tem outras soluções que resolvem problemas parecidos que possuem funcionalidades que você considera primordial para o UniJobs? Se sim, dê exemplos.
