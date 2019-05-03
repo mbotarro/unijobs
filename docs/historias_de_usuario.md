@@ -60,13 +60,17 @@ Como usuário, quero ter a opção de desativar as notificações push para não
 
 ## 5. Histórico
 
-Como usuário, quero ter acesso a todas minhas solicitações criadas para poder consultá-las, modificá-las ou deletá-las.
+Como usuário, quero ter acesso a todas minhas solicitações criadas para poder consultá-las.
+
+Como usuário, quero ter acesso a todas minhas solicitações criadas para poder modificá-las ou deletá-las.
 
 Como usuário, quero ter acesso a todas minhas solicitações criadas para poder ocultar aquelas de meu interesse para que não sejam mais mostradas na plataforma durante um intervalo de tempo.
 
 Como usuário, quero ter acesso à minhas solicitações criadas para poder consultar todas ofertas que foram linkadas a elas.
 
-Como universitário, quero ter acesso a todas minhas ofertas criadas para poder consultá-las, modificá-las ou deletá-las.
+Como universitário, quero ter acesso a todas minhas ofertas criadas para poder consultá-las.
+
+Como universitário, quero ter acesso a todas minhas ofertas criadas para poder modificá-las ou deletá-las.
 
 Como universitário, quero ter acesso a todas minhas ofertas criadas para poder ocultar aquelas de meu interesse para que não sejam mais mostradas na plataforma durante um intervalo de tempo.
 
