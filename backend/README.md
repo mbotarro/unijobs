@@ -17,7 +17,6 @@ To shut down all docker containers, use
 make stop
 ```
 
-
 # Database
 
 To create the database:
