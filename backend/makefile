@@ -6,3 +6,10 @@ start:
 
 stop:
 	docker-compose --project-name unijobs down
+
+create_db:
+	createdb -h localhost -p 5432 unijobs -U postgres
+	go run migrations/main.go init
+
+migration:
+	go run migrations/main.go
