@@ -5,6 +5,6 @@ CREATE TABLE IF NOT EXISTS userdata(
 	address       text,
 	telephone     text UNIQUE,
 	userid        serial,
-	universitario boolean,
+	universitario boolean DEFAULT FALSE,
 	CONSTRAINT pk_user PRIMARY KEY (userid)
 );
