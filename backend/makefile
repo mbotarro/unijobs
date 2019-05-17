@@ -13,3 +13,6 @@ create_db:
 
 migration:
 	go run migrations/main.go
+
+make run:
+	go run main.go

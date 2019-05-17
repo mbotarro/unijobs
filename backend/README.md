@@ -37,3 +37,11 @@ To run the unit tests, use
 make test
 ```
 
+# Server
+
+First, set up your local environment with the steps above, then run
+
+```
+make run
+```
+
