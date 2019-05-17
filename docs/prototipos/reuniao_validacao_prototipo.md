@@ -6,7 +6,8 @@
 
 ## Resoluções da Reunião
 Todas as telas não comentadas no feedback foram aceitas sem comentários adicionais. <br>
-A definição da UI final será definida durante o processo de desenvolvimento.
+A definição da UI final será definida durante o processo de desenvolvimento. <br>
+Foram recomendados testes de usuário contínuos para garantir a simplicidade de uso da UI.
 
 ## Feedback do Protótipo
 - Busca
@@ -15,6 +16,8 @@ A definição da UI final será definida durante o processo de desenvolvimento.
     - Teste de UI para definir se aparecem apenas quando ele clicar para digitar ou aparecem sempre (mas ocupando menos espaço que no protótipo)
   - Categorias
     - Teste de UI para definir se deve-se usar uma dropdownlist ou uma lista de retângulos deslizando horizontalmente.
+  - Layout
+    - Separar o símbolo de menu da barra de busca, se os testes provarem não intuitivo
 
 - Criação de oferta à partir de solicitação
   - Oferta disponível a todos, com notificação para o detentor da solicitação usada para criar a oferta
