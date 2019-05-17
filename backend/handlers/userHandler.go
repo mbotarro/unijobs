@@ -3,30 +3,32 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 )
 
 type user struct {
-	username      string
-	password      string
-	email         string
-	address       string
-	telephone     string
-	userid        int
-	universitario bool
+	Username      string
+	Password      string
+	Email         string
+	Address       string
+	Telephone     string
+	Userid        int
+	Universitario bool
 }
 
 func createUserHandler(w http.ResponseWriter, r *http.Request) {
-	r.ParseMultipartForm(32 << 20)
-	decoder := json.NewDecoder(r.Body)
-
-	var userdata user
-	err := decoder.Decode(&userdata)
+	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		panic(err)
 	}
-	log.Println(userdata.username)
 
-	fmt.Fprintf(w, "You've requested the user: %s\n", userdata.username)
+	log.Println(string(body))
+	var userdata user
+	err = json.Unmarshal(body, &userdata)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Fprintf(w, "You've requested the user: %s\n", userdata.Username)
 }
