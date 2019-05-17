@@ -6,17 +6,9 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-)
 
-type user struct {
-	Username      string
-	Password      string
-	Email         string
-	Address       string
-	Telephone     string
-	Userid        int
-	Universitario bool
-}
+	"github.com/mbotarro/unijobs/backend/models"
+)
 
 type UserAuthentication struct {
 	Name     string
@@ -46,7 +38,7 @@ func createUserHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Println(string(body))
-	var userdata user
+	var userdata models.User
 	err = json.Unmarshal(body, &userdata)
 	if err != nil {
 		panic(err)
