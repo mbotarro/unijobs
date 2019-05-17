@@ -1,4 +1,4 @@
-CREATE TABLE interest (
+CREATE TABLE IF NOT EXISTS interest (
 	id          serial,
 	name        text NOT NULL,
 	description text,
