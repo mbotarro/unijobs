@@ -18,6 +18,27 @@ type user struct {
 	Universitario bool
 }
 
+type UserAuthentication struct {
+	Name     string
+	Password string
+}
+
+func (router *Router) authenticateUser(w http.ResponseWriter, r *http.Request) {
+	// body, err := ioutil.ReadAll(r.Body)
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	// log.Println(string(body))
+	// var UserAuthentication ua
+	// err = json.Unmarshal(body, &ua)
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	fmt.Fprintf(w, "%t\n", router.userController.AuthenticateUser())
+}
+
 func createUserHandler(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
