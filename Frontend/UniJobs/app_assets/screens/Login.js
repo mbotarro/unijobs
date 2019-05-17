@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     },
     
     input: {
-        borderColor: '#65737E',
+        borderColor: '#50514F',
         borderRadius: 25,
         borderWidth: 1,
         padding: 7,
@@ -127,13 +127,13 @@ const styles = StyleSheet.create({
         width: 290,
         
         fontSize: 20,
-        color: '#65737E',
+        color: '#50514F',
         textAlign: 'center',
     },
 
     text: {
         fontSize: 20,
-        color: '#65737E',
+        color: '#50514F',
         textAlign: 'center',
         alignSelf: 'center'
     },
@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
 
     extLoginText: {
         fontSize: 20,
-        color: '#65737E',
+        color: '#50514F',
         marginLeft: 34,
         textAlign: 'center',
         alignSelf: 'center'
