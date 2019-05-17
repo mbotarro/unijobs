@@ -6,16 +6,29 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+
+	"github.com/mbotarro/unijobs/backend/models"
 )
 
-type user struct {
-	Username      string
-	Password      string
-	Email         string
-	Address       string
-	Telephone     string
-	Userid        int
-	Universitario bool
+type UserAuthentication struct {
+	Name     string
+	Password string
+}
+
+func (router *Router) authenticateUser(w http.ResponseWriter, r *http.Request) {
+	// body, err := ioutil.ReadAll(r.Body)
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	// log.Println(string(body))
+	// var UserAuthentication ua
+	// err = json.Unmarshal(body, &ua)
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	fmt.Fprintf(w, "%t\n", router.userController.AuthenticateUser())
 }
 
 func createUserHandler(w http.ResponseWriter, r *http.Request) {
@@ -25,7 +38,7 @@ func createUserHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Println(string(body))
-	var userdata user
+	var userdata models.User
 	err = json.Unmarshal(body, &userdata)
 	if err != nil {
 		panic(err)
