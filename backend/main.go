@@ -1,13 +1,23 @@
 package main
 
 import (
-	"fmt"
-	"github.com/mbotarro/unijobs/backend/usecases"
+	"log"
+	"net/http"
+	"time"
+
+	"github.com/mbotarro/unijobs/backend/handlers"
 )
 
-func main(){
+func main() {
+	r := handlers.NewRouter()
 
-	uc := usecases.NewUserController()
-	fmt.Println(uc.AuthenticateUser())
+	srv := &http.Server{
+		Handler: r,
+		Addr:    "0.0.0.0:8080",
+		// Server Timeouts!
+		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
+	}
 
+	log.Fatal(srv.ListenAndServe())
 }

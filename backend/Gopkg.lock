@@ -28,6 +28,14 @@
   version = "v8.0.4"
 
 [[projects]]
+  digest = "1:3af6be4fee7c08f81f13d36f04ffb63ad4b6b5aaba12cce96095c7c2863d4912"
+  name = "github.com/gorilla/mux"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "ed099d42384823742bba0bf9a72b53b55c9e2e38"
+  version = "v1.7.2"
+
+[[projects]]
   branch = "master"
   digest = "1:fd97437fbb6b7dce04132cf06775bd258cce305c44add58eb55ca86c6c325160"
   name = "github.com/jinzhu/inflection"
@@ -57,6 +65,7 @@
   input-imports = [
     "github.com/go-pg/migrations",
     "github.com/go-pg/pg",
+    "github.com/gorilla/mux",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
