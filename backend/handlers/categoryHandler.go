@@ -6,13 +6,9 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-)
 
-type category struct {
-	ID         int
-	Name       string
-	Decription string
-}
+	"github.com/mbotarro/unijobs/backend/models"
+)
 
 func createCategoryHandler(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
@@ -21,7 +17,7 @@ func createCategoryHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Println(string(body))
-	var categorydata category
+	var categorydata models.Category
 	err = json.Unmarshal(body, &categorydata)
 	if err != nil {
 		panic(err)

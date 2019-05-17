@@ -6,16 +6,9 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-)
 
-type interest struct {
-	ID          int
-	Name        string
-	Description string
-	Price       int
-	Userid      int
-	Categoryid  int
-}
+	"github.com/mbotarro/unijobs/backend/models"
+)
 
 func createInterestHandler(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
@@ -24,7 +17,7 @@ func createInterestHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Println(string(body))
-	var interestdata interest
+	var interestdata models.Interest
 	err = json.Unmarshal(body, &interestdata)
 	if err != nil {
 		panic(err)

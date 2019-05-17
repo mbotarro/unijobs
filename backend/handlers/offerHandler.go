@@ -6,16 +6,9 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-)
 
-type offer struct {
-	ID         int
-	Name       string
-	Decription string
-	Price      int
-	Userid     int
-	Categoryid int
-}
+	"github.com/mbotarro/unijobs/backend/models"
+)
 
 func createOfferHandler(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
@@ -24,7 +17,7 @@ func createOfferHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Println(string(body))
-	var offerdata offer
+	var offerdata models.Offer
 	err = json.Unmarshal(body, &offerdata)
 	if err != nil {
 		panic(err)
