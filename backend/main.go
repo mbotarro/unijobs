@@ -5,11 +5,23 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 	"github.com/mbotarro/unijobs/backend/handlers"
+	"github.com/mbotarro/unijobs/backend/usecases"
 )
 
 func main() {
-	r := handlers.NewRouter()
+
+	// Should import a driver to interact with the db: _ "github.com/lib/pq"
+	db, err := sqlx.Connect("postgres", "user=postgres dbname=unijobs sslmode=disable")
+	if err != nil {
+		log.Panicf("Can't connect to the db")
+	}
+
+	ctrl := usecases.NewController(db)
+
+	r := handlers.NewRouter(ctrl)
 
 	srv := &http.Server{
 		Handler: r,
