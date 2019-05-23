@@ -47,9 +47,10 @@ const styles = StyleSheet.create({
   },
   
   buttonStyle: {
-		padding:            10,
+        paddingVertical:    5,
+        paddingHorizontal:  20,
 		backgroundColor:    UniColors.main,
-		borderRadius:       7
+        borderRadius:       20,
   }
 });
 
