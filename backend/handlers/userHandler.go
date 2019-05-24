@@ -7,28 +7,59 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/mbotarro/unijobs/backend/errors"
 	"github.com/mbotarro/unijobs/backend/models"
+	"github.com/mbotarro/unijobs/backend/tools"
+	"github.com/mbotarro/unijobs/backend/usecases"
 )
 
-type UserAuthentication struct {
-	Name     string
-	Password string
+// UserHandler handle all Users API
+type UserHandler struct {
+	userController *usecases.UserController
 }
 
-func (router *Router) authenticateUser(w http.ResponseWriter, r *http.Request) {
-	// body, err := ioutil.ReadAll(r.Body)
-	// if err != nil {
-	// 	panic(err)
-	// }
+// UserAuthentication has all the information that the frontend sends to authenticate an user
+type UserAuthentication struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
 
-	// log.Println(string(body))
-	// var UserAuthentication ua
-	// err = json.Unmarshal(body, &ua)
-	// if err != nil {
-	// 	panic(err)
-	// }
+// UserAuthenticationResponse contains the authentication response sent to the frontend
+type UserAuthenticationResponse struct {
+	Email string `json:"email"`
+	Valid bool   `json:"valid"`
+}
 
-	fmt.Fprintf(w, "%t\n", router.userController.AuthenticateUser())
+// NewUserHandler returns a new UserHandler
+func NewUserHandler(userCtrl *usecases.UserController) *UserHandler {
+	return &UserHandler{
+		userController: userCtrl,
+	}
+}
+
+func (handler *UserHandler) authenticateUser(w http.ResponseWriter, r *http.Request) {
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, fmt.Errorf("%s:%s", errors.ReadRequestBodyError, err.Error()).Error(), http.StatusBadRequest)
+	}
+
+	var ua UserAuthentication
+	err = json.Unmarshal(body, &ua)
+	if err != nil {
+		http.Error(w, fmt.Errorf("%s:%s", errors.JSONUnmarshalError, err.Error()).Error(), http.StatusInternalServerError)
+	}
+
+	valid, err := handler.userController.AuthenticateUser(ua.Email, ua.Password)
+	if err != nil {
+		http.Error(w, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error()).Error(), http.StatusInternalServerError)
+	}
+
+	res := UserAuthenticationResponse{
+		Email: ua.Email,
+		Valid: valid,
+	}
+
+	tools.WriteStructOnHTTPResponse(res, w)
 }
 
 func createUserHandler(w http.ResponseWriter, r *http.Request) {

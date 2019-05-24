@@ -31,10 +31,24 @@ make migration
 
 # Unit Tests
 
-To run the unit tests, use
+Before running the tests, you should create a database for test purposes and run the migration on it.
 
+You can do so by usingd the commands
+```
+make create_test_db
+make migration_test
+```
+
+You only need the create the test database and run the migration once.
+
+Then, to run the unit tests, use
 ```
 make test
+```
+
+To show the test coverage in a HTML file, use:
+```
+make test_html
 ```
 
 # Server

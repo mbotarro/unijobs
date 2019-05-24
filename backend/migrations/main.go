@@ -25,12 +25,21 @@ Usage:
 `
 
 func main() {
+	// Custom defined flags
+	var dbFlag, hostFlag, portFlag string
+	flag.StringVar(&dbFlag, "db", "unijobs", "db to connect")
+	flag.StringVar(&hostFlag, "host", "localhost", "db host")
+	flag.StringVar(&portFlag, "port", "5432", "db port")
+
 	flag.Usage = usage
 	flag.Parse()
 
+	fmt.Println("DB: ", dbFlag)
+
 	db := pg.Connect(&pg.Options{
 		User:     "postgres",
-		Database: "unijobs",
+		Database: dbFlag,
+		Addr:     fmt.Sprintf("%s:%s", hostFlag, portFlag),
 	})
 
 	oldVersion, newVersion, err := migrations.Run(db, flag.Args()...)
