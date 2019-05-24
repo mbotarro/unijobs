@@ -6,7 +6,6 @@ const textInput = {
     borderColor: UniColors.dark,
     borderRadius: 25,
     borderWidth: 1,
-    padding: 7,
 
     height: 50,
     width: 290,
