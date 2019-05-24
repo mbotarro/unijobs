@@ -12,20 +12,20 @@ import UniText from '../constants/UniText'
 // basta enviar buttonStyle como props!
 
 class Button extends Component {
-	render() {
+    render() {
         const { text, onPress, buttonStyle, textStyle } = this.props;
-        
-		return (
+
+        return (
             <TouchableOpacity
-                style   = {[styles.buttonStyle, buttonStyle]}
-			    onPress = {() => onPress()}
-		    >
+                style={[styles.buttonStyle, buttonStyle]}
+                onPress={() => onPress()}
+            >
                 <Text style={[styles.textStyle, textStyle]}>
                     {text}
                 </Text>
-		    </TouchableOpacity>
-		);
-	}
+            </TouchableOpacity>
+        );
+    }
 }
 
 
@@ -33,25 +33,25 @@ class Button extends Component {
 Button.propTypes = {
     text: PropTypes.string.isRequired,
     onPress: PropTypes.func.isRequired,
-	
-	buttonStyle: ViewPropTypes.style,
-	textStyle: Text.propTypes.style,
+
+    buttonStyle: ViewPropTypes.style,
+    textStyle: Text.propTypes.style,
 };
 
 
 const styles = StyleSheet.create({
-  textStyle: {
-        fontSize:   UniText.normal,
-		color:      UniColors.white,
-		textAlign:  'center'
-  },
-  
-  buttonStyle: {
-        paddingVertical:    5,
-        paddingHorizontal:  20,
-		backgroundColor:    UniColors.main,
-        borderRadius:       20,
-  }
+    textStyle: {
+        fontSize: UniText.normal,
+        color: UniColors.white,
+        textAlign: 'center'
+    },
+
+    buttonStyle: {
+        paddingVertical: 5,
+        paddingHorizontal: 20,
+        backgroundColor: UniColors.main,
+        borderRadius: 20,
+    }
 });
 
 
