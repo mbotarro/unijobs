@@ -31,7 +31,7 @@ run:
 build:
 	go build main.go
 
-test:
+test: migration_test
 	go test ./... -cover
 
 test_html:
