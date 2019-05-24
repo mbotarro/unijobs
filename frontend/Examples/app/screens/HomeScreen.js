@@ -9,6 +9,7 @@ import UniStyles from '../constants/UniStyles'
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
     title: 'Welcome',
+    header: null,
   };
   
   render() {
