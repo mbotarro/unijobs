@@ -37,6 +37,11 @@ To run the unit tests, use
 make test
 ```
 
+To show the test coverage in a HTML file, use:
+```
+make test_html
+```
+
 # Server
 
 First, set up your local environment with the steps above, then run

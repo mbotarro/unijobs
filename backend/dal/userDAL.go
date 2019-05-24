@@ -2,6 +2,7 @@ package dal
 
 import (
 	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 )
 
 // UserDAL interacts with the DB to perform User related queries
