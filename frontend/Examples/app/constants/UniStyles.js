@@ -1,7 +1,9 @@
 "use strict";
 
+import UniColors from './UniColors'
+
 const textInput = {
-        borderColor: '#50514F',
+        borderColor: UniColors.dark,
         borderRadius: 25,
         borderWidth: 1,
         padding: 7,
@@ -10,9 +12,14 @@ const textInput = {
         width: 290,
         
         fontSize: 20,
-        color: '#50514F',
+        color: UniColors.dark,
         textAlign: 'center',
 };
+
+const text = {
+    fontSize: 20,
+    color: UniColors.dark
+}
 
 module.exports = {
     textInput
