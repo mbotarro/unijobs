@@ -21,7 +21,7 @@ build:
 	go build main.go
 
 test:
-	go test ./...
+	go test ./... -cover
 
 test_html:
 	go test ./... -coverprofile=cover.out && go tool cover -html=cover.out

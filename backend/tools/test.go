@@ -7,8 +7,9 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func ConnectToDB() *sqlx.DB {
-	db, err := sqlx.Connect("postgres", "user=postgres dbname=unijobs sslmode=disable")
+// GetTestDB returns a connection to a DB used for test
+func GetTestDB() *sqlx.DB {
+	db, err := sqlx.Connect("postgres", "user=postgres dbname=unijobs sslmode=disable host=localhost port=5432")
 	if err != nil {
 		log.Panicf("Can't connect to the db")
 	}
@@ -18,6 +19,10 @@ func ConnectToDB() *sqlx.DB {
 	return db
 }
 
-func CleanDB() {
-	// TODO: clear all DB tables
+// CleanDB delete all rows from all DB tables
+func CleanDB(db *sqlx.DB) {
+	db.Exec("DELETE FROM userdata")
+	db.Exec("DELETE FROM offer")
+	db.Exec("DELETE FROM interest")
+	db.Exec("DELETE FROM category")
 }

@@ -14,8 +14,8 @@ func getUserDAL(db *sqlx.DB) *dal.UserDAL {
 	return dal.NewUserDAL(db)
 }
 func TestAuthenticateUser(t *testing.T) {
-	db := tools.ConnectToDB()
-	defer tools.CleanDB()
+	db := tools.GetTestDB()
+	defer tools.CleanDB(db)
 
 	userDAL := getUserDAL(db)
 
