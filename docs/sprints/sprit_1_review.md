@@ -16,7 +16,7 @@
 - Tem-se um servidor local com uma API para verificar se um usuário está inserido no banco de dados, utilizada para login
 	
 
-# O que deu funcionou
+# O que deu certo
 
 ## Front-end
 - Membros do front fizeram tutorial e estão mais familiarizados com React
@@ -36,7 +36,6 @@
 - Pessoas com Windows tiveram dificuldade de rodar Docker para lançar o servidor localmente
 
 # Sugestões de Melhoria
-
 
 ## Front-end
 - Deve-se fazer o desenho das telas antes de começar implementação
