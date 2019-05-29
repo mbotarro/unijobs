@@ -7,6 +7,8 @@ import { AsyncStorage } from 'react-native';
 import UniStyles from '../constants/UniStyles'
 import UniData from '../constants/UniData'
 
+import SearchBar from '../components/SearchBar'
+
 export default class HomeScreen extends React.Component {
     static navigationOptions = { header: null };
 
@@ -30,11 +32,7 @@ export default class HomeScreen extends React.Component {
 
     render() {
         return (
-            <View style={styles.container}>
-                <Text style={UniStyles.text}>
-                    Welcome to UniJobs! {'\n' + this.state.username + '\n' + this.state.password}
-                </Text>
-            </View>
+            <SearchBar />
         );
     }
 }

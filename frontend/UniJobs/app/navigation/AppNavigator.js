@@ -4,11 +4,11 @@ import LoginScreen from "../screens/LoginScreen";
 import HomeScreen from "../screens/HomeScreen"
 
 const AppNavigator = createStackNavigator({
-    Login: {
-        screen: LoginScreen,
-    },
     Home: {
         screen: HomeScreen,
+    },
+    Login: {
+        screen: LoginScreen,
     }
 });
 
