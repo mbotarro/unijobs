@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import {Plataform, Image, View, TextInput, Alert, TouchableOpacity, Button, StyleSheet, Text, Picker} from 'react-native';
+import {ScrollView} from 'react-native';
+import { SafeAreaView } from 'react-navigation';
  
 
 export default class SearchBar extends Component {
@@ -63,6 +65,16 @@ export default class SearchBar extends Component {
                         <Picker.Item label="Teste" value='teste' />
                     </Picker>
                 </View>
+                <ScrollView>
+                    <Text style={{fontSize: 10}} > 
+                        aisdjfdjoiasjdfoiasjdfoajsdofijasoidfjaoisdfjoaisjdfoiasjdfoiasjdfoiajsdfoijasdfoijasoidfjaoisdfjoiasdjf
+                        laksdnfloasfdlkasjdfjadfjasdfijasoidfaisudfjoaisdjfpoijwer9wehrughwejrigweourghwieurghwieurghwieurhgwer
+                        eroijweurgnioweruhgeirgiwuegiuowergiuwergwierugwieorghweoirgjwpoerijgweopirjgwoierjgpoiwerjgoipwerjgpoiwerjg
+                        ergnwerigjwopeirjgoipwerjgopiwejrgoiwejrnguwenrgpuwenrgpoiwenrgpoweinrgpowierngoiperngwergklkfnd,xnb
+                        lergpiowrjtpwioerutgfbju3o457298345ijglnfuwjgiwemoviwjregpoiwejrigojweriogwejrgmdfmupsjeiwu5t-w980348u9tgjsifjg
+                        dfgoshgiowerjtwioert9034jtgfgnwprogieoirmwioeprgjjwoierjgfmnbn,mvcxnbjnsgoiserhgpo8tweurt9piojrgpshb0wutm9vwr0iw9
+                    </Text>
+                </ScrollView>
             </View>
         );
     }

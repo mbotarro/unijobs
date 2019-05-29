@@ -10,7 +10,9 @@ import UniData from '../constants/UniData'
 import SearchBar from '../components/SearchBar'
 
 export default class HomeScreen extends React.Component {
-    static navigationOptions = { header: null };
+    static navigationOptions = {
+        tabBarLabel: 'Feed'
+    }
 
     state = {
         username: '',
