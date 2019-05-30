@@ -32,7 +32,7 @@ build:
 	go build main.go
 
 test: migration_test
-	go test ./... -cover
+	go test ./... -cover | tee ../docs/testes/relatorio_testes_back.txt
 
 test_html:
-	go test ./... -coverprofile=cover.out && go tool cover -html=cover.out
+	go test ./... -coverprofile=cover.out && go tool cover -html=cover.out -o ../docs/testes/relatorio_testes_back_completo.html
