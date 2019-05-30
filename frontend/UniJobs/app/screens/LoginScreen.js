@@ -38,8 +38,9 @@ export default class LoginScreen extends React.Component {
             (email, valid) => {
                 alert(email + ' ' + valid);
                 if (valid) {
-                    navigate('Home');
-                    AsyncStorage.setItem(UniData.username, email);
+                    AsyncStorage.setItem(UniData.username, email).then(() => 
+                    navigate('Home')
+                    ).catch();
                 }
             }
         );
