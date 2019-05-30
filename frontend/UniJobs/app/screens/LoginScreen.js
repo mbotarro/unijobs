@@ -1,9 +1,9 @@
-"use strict";
+"use strict"
 
-import React from 'react';
-import { StyleSheet, Text, TextInput, View, Image, TouchableHighlight } from 'react-native';
+import React from 'react'
+import { StyleSheet, Text, TextInput, View, Image, TouchableHighlight } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage } from 'react-native'
 
 import Button from '../components/Button'
 import UniStyles from '../constants/UniStyles'
@@ -12,7 +12,7 @@ import UniData from '../constants/UniData'
 
 
 export default class LoginScreen extends React.Component {
-    static navigationOptions = { header: null };
+    static navigationOptions = { header: null }
 
     state = {
         username : '',
@@ -37,21 +37,20 @@ export default class LoginScreen extends React.Component {
         AsyncStorage.setItem(UniData.username, this.state.username.toLowerCase());
         AsyncStorage.setItem(UniData.password, this.state.password.toLowerCase());
 
-        navigate('Home');
-    };
+        navigate('TabStack');
+    }
 
     onFacebookLogin(navigate) {
         alert("TODO : Facebook Login");
-    };
+    }
 
     onTwitterLogin(navigate) {
-        alert("TODO : Twitter Login");
-    };
+        alert("TODO : Twitter Login  heeeeysdasd");
+    }
 
     onRegister(navigate) {
         alert("TODO : Registration Form");
-    };
-
+    }
 
 
     /* components render */
@@ -63,7 +62,7 @@ export default class LoginScreen extends React.Component {
             <View style={styles.topBar}>
                 <Text style={styles.logoText}> UniJOBS </Text>
             </View>
-        );
+        )
 
         // Traditional Login components
         const EmailField = () => (
@@ -74,7 +73,7 @@ export default class LoginScreen extends React.Component {
                 autoCorrect={false}
                 onChangeText={(email) => this.state.username = email}
             />
-        );
+        )
 
         const PasswordField = () => (
             <TextInput
@@ -84,7 +83,7 @@ export default class LoginScreen extends React.Component {
                 autoCorrect={false}
                 onChangeText={(password) => this.state.password = password}
             />
-        );
+        )
 
         const LoginButton = () => (
             <Button
@@ -92,7 +91,7 @@ export default class LoginScreen extends React.Component {
                 buttonStyle={{ paddingHorizontal: 77 }}
                 onPress={() => this.onLogin(navigate)}
             />
-        );
+        )
 
         // Social Media Login components
         const SocialMediaIcon = (name) => {
@@ -100,7 +99,7 @@ export default class LoginScreen extends React.Component {
                 case 'facebook': return require('../assets/icons/facebook.png');
                 case 'twitter': return require('../assets/icons/twitter.png');
             }
-        };
+        }
 
         const SocialMediaCallback = (name) => {
             switch (name) {
@@ -125,7 +124,7 @@ export default class LoginScreen extends React.Component {
                     </View>
                 </TouchableHighlight>
             )
-        };
+        }
 
         // Registration components
         const RegistrationButton = () => (
@@ -134,7 +133,7 @@ export default class LoginScreen extends React.Component {
                 buttonStyle={[{ marginTop: 15, marginBottom: 15 }, { paddingHorizontal: 18 }]}
                 onPress={() => this.onRegister(navigate)}
             />
-        );
+        )
 
         // FINAL RENDER
         return (
@@ -169,7 +168,7 @@ export default class LoginScreen extends React.Component {
                     </View>
                 </View>
             </KeyboardAwareScrollView>
-        );
+        )
     }
 }
 
@@ -200,4 +199,4 @@ const styles = StyleSheet.create({
         width: 50,
         height: 50
     },
-});
+})
