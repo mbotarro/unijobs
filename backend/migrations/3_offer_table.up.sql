@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS offer (
 	id         serial,
 	name       text NOT NULL,
-	decription text, 
+	description text, 
 	price       integer,
 	userid      integer ,
 	categoryid  integer,
