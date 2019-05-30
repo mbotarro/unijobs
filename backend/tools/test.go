@@ -19,8 +19,8 @@ func GetTestDB() *sqlx.DB {
 
 // CleanDB delete all rows from all DB tables
 func CleanDB(db *sqlx.DB) {
-	db.MustExec("DELETE FROM userdata")
-	db.MustExec("DELETE FROM offer")
 	db.MustExec("DELETE FROM interest")
+	db.MustExec("DELETE FROM offer")
 	db.MustExec("DELETE FROM category")
+	db.MustExec("DELETE FROM userdata")
 }
