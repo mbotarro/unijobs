@@ -2,3 +2,9 @@ insert into userdata(username, password, email, telephone, universitario) values
 insert into category(name) values('Aula de Matematica');
 insert into category(name) values('Aula de Ingles');
 -- insert into offer(name, userid, categoryid) values ('Aula basica', 1, 2);
+insert into interest(name, description, price, userid, categoryid ) values ('Aula', 'Calculo I', 20, 1, 1);
+insert into interest(name, description, price, userid, categoryid ) values ('Aula', 'Calculo II', 20, 1, 1);
+insert into interest(name, description, price, userid, categoryid ) values ('Aula', 'Calculo III', 20, 1, 1);
+insert into interest(name, description, price, userid, categoryid ) values ('Aula', 'Calculo IV', 20, 1, 1);
+insert into interest(name, description, price, userid, categoryid ) values ('Aula', 'Phrasal Verbs', 20, 1, 2);
+insert into interest(name, description, price, userid, categoryid ) values ('Aula', 'Present Perfect', 20, 1, 2);
