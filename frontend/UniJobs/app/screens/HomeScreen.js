@@ -12,7 +12,6 @@ export default class HomeScreen extends React.Component {
 
     state = {
         username: '',
-        password: '',
     }
 
     async componentDidMount() {
@@ -20,10 +19,6 @@ export default class HomeScreen extends React.Component {
             const username = await AsyncStorage.getItem(UniData.username);
             if (username !== null)
                 this.setState({ username: username });
-            
-            const password = await AsyncStorage.getItem(UniData.password);
-            if (password !== null) 
-                this.setState({ password: password });
         } catch (error) {
         }
     }
@@ -32,7 +27,7 @@ export default class HomeScreen extends React.Component {
         return (
             <View style={styles.container}>
                 <Text style={UniStyles.text}>
-                    Welcome to UniJobs! {'\n' + this.state.username + '\n' + this.state.password}
+                    Welcome to UniJobs! {'\n' + this.state.username}
                 </Text>
             </View>
         );

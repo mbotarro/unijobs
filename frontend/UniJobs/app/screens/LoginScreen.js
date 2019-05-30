@@ -10,15 +10,17 @@ import UniStyles from '../constants/UniStyles'
 import UniColors from '../constants/UniColors'
 import UniData from '../constants/UniData'
 
+import { tryLogin } from '../actions/LoginActions'
+
 
 export default class LoginScreen extends React.Component {
     static navigationOptions = { header: null };
 
     state = {
-        username : '',
-        password : '',
+        username: '',
+        password: '',
     }
-    
+
     /* components text strings */
     textStrings = {
         username: 'usuário (e-mail)',
@@ -32,12 +34,15 @@ export default class LoginScreen extends React.Component {
 
     /* components callbacks */
     onLogin(navigate) {
-        alert('TODO: Autentication');
-
-        AsyncStorage.setItem(UniData.username, this.state.username.toLowerCase());
-        AsyncStorage.setItem(UniData.password, this.state.password.toLowerCase());
-
-        navigate('Home');
+        tryLogin(this.state.username.toLowerCase(), this.state.password,
+            (email, valid) => {
+                alert(email + ' ' + valid);
+                if (valid) {
+                    navigate('Home');
+                    AsyncStorage.setItem(UniData.username, email);
+                }
+            }
+        );
     };
 
     onFacebookLogin(navigate) {
@@ -114,9 +119,9 @@ export default class LoginScreen extends React.Component {
                 <TouchableHighlight
                     onPress={SocialMediaCallback(name)}
                     underlayColor={UniColors.light}
-                    style={{marginTop: 13}}
-                    >
-                    <View style={{ alignContent: 'center', flexDirection: 'row', alignSelf: 'stretch'}}>
+                    style={{ marginTop: 13 }}
+                >
+                    <View style={{ alignContent: 'center', flexDirection: 'row', alignSelf: 'stretch' }}>
                         <Image
                             style={styles.extLoginIcon}
                             source={SocialMediaIcon(name)}
