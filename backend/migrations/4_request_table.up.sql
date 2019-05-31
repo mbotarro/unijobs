@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS request (
 	id          serial,
 	name        text NOT NULL,
 	description text, 
-	extrainfo	text,
+	extrainfo	text NOT NULL,
 	minprice    integer,
 	maxprice    integer,
 	userid      integer NOT NULL,

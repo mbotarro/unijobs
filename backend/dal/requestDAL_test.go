@@ -1,7 +1,6 @@
 package dal_test
 
 import (
-	"fmt"
 	"testing"
 	"time"
 
@@ -9,52 +8,47 @@ import (
 	"github.com/mbotarro/unijobs/backend/dal"
 	"github.com/mbotarro/unijobs/backend/models"
 	"github.com/mbotarro/unijobs/backend/tools"
+	"gotest.tools/assert"
 )
 
 const (
-	insertRequest = `INSERT INTO request (name, description, minprice, maxprice, userid, categoryid) VALUES ($1, $2, $3, $4, $5, $6)`
+	insertRequest = `INSERT INTO request (name, description, extrainfo, minprice, maxprice, userid, categoryid, timestamp) 
+						VALUES ($1, $2, '', $3, $4, $5, $6, $7)`
+	getRequest = `SELECT * FROM request WHERE (name, description, userid, categoryid) = ($1, $2, $3, $4)`
 )
 
 func getRequestDAL(db *sqlx.DB) *dal.RequestDAL {
 	return dal.NewRequestDAL(db)
 }
 
-func createFakeRequest(db *sqlx.DB, name, description string, minPrice, maxPrice, user, category int) {
-	i := models.Request{
-		Name:        name,
-		Description: description,
-		MinPrice:    minPrice,
-		MaxPrice:    maxPrice,
-		Userid:      user,
-		Categoryid:  category,
-	}
+func createFakeRequest(t *testing.T, db *sqlx.DB, name, description string, user, category int, timestamp time.Time) models.Request {
+	db.MustExec(insertRequest, name, description, 20, 30, user, category, timestamp)
 
-	db.MustExec(insertRequest, i.Name, i.Description, i.MinPrice, i.MaxPrice, i.Userid, i.Categoryid)
+	r := models.Request{}
+	err := db.Get(&r, getRequest, name, description, user, category)
+	assert.Equal(t, nil, err)
+
+	return r
+
 }
-
 func TestGetLastRequests(t *testing.T) {
 	db := tools.GetTestDB()
 	defer tools.CleanDB(db)
 
 	u := createFakeUser(t, db, "user", "user@user.com", "1234")
 	c := createFakeCategory(t, db, "Aula Matemática", "Matemática")
-	fmt.Println("GOT CATEGORY", c)
 
-	i1 := models.Request{
-		Name:        "Aula",
-		Description: "Calculo I",
-		MinPrice:    20,
-		MaxPrice:    30,
-		Userid:      u.Userid,
-		Categoryid:  c.ID,
+	reqs := []models.Request{
+		createFakeRequest(t, db, "Aula Cálculo I", "", u.Userid, c.ID, time.Now()),
+		createFakeRequest(t, db, "Aula Cálculo II", "", u.Userid, c.ID, time.Now()),
+		createFakeRequest(t, db, "Aula Cálculo III", "", u.Userid, c.ID, time.Now()),
 	}
-	createFakeRequest(db, i1.Name, i1.Description, i1.MinPrice, i1.MaxPrice, i1.Userid, i1.Categoryid)
 
 	requestDAL := getRequestDAL(db)
-	ints, _ := requestDAL.GetLastRequests(time.Now())
-	fmt.Println("ints", ints)
+	gotReqs, err := requestDAL.GetLastRequests(time.Now())
+	assert.Equal(t, nil, err)
 
-	//We should not authenticate a non valid user
-	// assert.Equal(t, nil, err)
-	// assert.Equal(t, false, valid)
+	for i, req := range gotReqs {
+		assert.Equal(t, reqs[len(reqs)-i-1], req)
+	}
 }

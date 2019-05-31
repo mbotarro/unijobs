@@ -3,9 +3,9 @@ insert into userdata(username, password, email, telephone, student) values ('use
 insert into category(name) values('Aula de Matematica');
 insert into category(name) values('Aula de Ingles');
 -- insert into offer(name, userid, categoryid) values ('Aula basica', 1, 2);
-insert into request (name, description, minprice, maxprice,  userid, categoryid ) values ('Aula', 'Calculo I', 20, 40, 1, 1);
-insert into request (name, description, minprice, maxprice,  userid, categoryid ) values ('Aula', 'Calculo II', 20, 40, 1, 1);
-insert into request (name, description, minprice, maxprice,  userid, categoryid ) values ('Aula', 'Calculo III', 20, 40, 1, 1);
-insert into request (name, description, minprice, maxprice,  userid, categoryid ) values ('Aula', 'Calculo IV', 20, 40, 1, 1);
-insert into request (name, description, minprice, maxprice,  userid, categoryid ) values ('Aula', 'Phrasal Verbs', 20, 40, 1, 2);
-insert into request (name, description, minprice, maxprice,  userid, categoryid ) values ('Aula', 'Present Perfect', 20, 40, 1, 2);
+insert into request (name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp ) values ('Aula', 'Calculo I', '', 20, 40, 1, 1, current_timestamp);
+insert into request (name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp ) values ('Aula', 'Calculo II', '', 20, 40, 1, 1, current_timestamp);
+insert into request (name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp ) values ('Aula', 'Calculo III', '', 20, 40, 1, 1, current_timestamp);
+insert into request (name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp ) values ('Aula', 'Calculo IV', '', 20, 40, 1, 1, current_timestamp);
+insert into request (name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp ) values ('Aula', 'Phrasal Verbs', '', 20, 40, 1, 2, current_timestamp);
+insert into request (name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp ) values ('Aula', 'Present Perfect', '', 20, 40, 1, 2, current_timestamp);
