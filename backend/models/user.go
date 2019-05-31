@@ -7,5 +7,5 @@ type User struct {
 	Address   string `db:"address"`
 	Telephone string `db:"telephone"`
 	Userid    int    `db:"userid"`
-	Student   bool   `db:"universitario"`
+	Student   bool   `db:"student"`
 }

@@ -22,5 +22,5 @@ func createRequestHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Fprintf(w, "You've requested the interest: %s\n", requestdata.Name)
+	fmt.Fprintf(w, "You've requested the requests: %s\n", requestdata.Name)
 }
