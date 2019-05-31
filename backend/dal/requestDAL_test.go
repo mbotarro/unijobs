@@ -3,6 +3,7 @@ package dal_test
 import (
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/mbotarro/unijobs/backend/dal"
@@ -50,7 +51,7 @@ func TestGetLastRequests(t *testing.T) {
 	createFakeRequest(db, i1.Name, i1.Description, i1.MinPrice, i1.MaxPrice, i1.Userid, i1.Categoryid)
 
 	requestDAL := getRequestDAL(db)
-	ints, _ := requestDAL.GetLastRequests()
+	ints, _ := requestDAL.GetLastRequests(time.Now())
 	fmt.Println("ints", ints)
 
 	//We should not authenticate a non valid user
