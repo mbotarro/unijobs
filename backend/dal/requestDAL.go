@@ -1,7 +1,6 @@
 package dal
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/jmoiron/sqlx"
@@ -20,33 +19,17 @@ func NewRequestDAL(db *sqlx.DB) *RequestDAL {
 	}
 }
 
-// GetLastRequests returns the last 'size' requests inserted in the dabase before the time specified by timestamp
-func (dal *RequestDAL) GetLastRequests(before time.Time) ([]models.Request, error) {
+// GetLastRequests returns the requests inserted in the dabase before the time specified by timestamp
+// The parameter size limits the number of returned requests
+func (dal *RequestDAL) GetLastRequests(before time.Time, size int) ([]models.Request, error) {
 	ints := []models.Request{}
 	err := dal.db.Select(&ints,
 		`SELECT * FROM request WHERE timestamp < $1
-			ORDER BY timestamp DESC`, before)
+			ORDER BY timestamp DESC
+			LIMIT $2`, before, size)
 	if err != nil {
 		return nil, err
 	}
 
-	fmt.Println("GOT REQUESTS: ", ints)
-
 	return ints, nil
 }
-
-// GetRequests get all of the requests of a certain user
-// func (dal *RequestDAL) GetRequests(userid int) ([]*models.Request, error) {
-// 	requests := make([]*models.Request, 0)
-// 	rows, err := dal.db.Query("select * from request where id = $1", userid)
-
-// 	for rows.Next() {
-// 		request := new(models.Request)
-// 		println(request)
-// 		if err := rows.Scan(&request.ID, &request.Name, &request.Description, &request.Price, &request.Userid, request.Categoryid); err != nil {
-// 			panic(err)
-// 		}
-// 		requests = append(requests, request)
-// 	}
-// 	return requests, err
-// }
