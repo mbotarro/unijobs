@@ -6,8 +6,8 @@ import (
 	"gotest.tools/assert"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/mbotarro/unijobs/backend/models"
 	"github.com/mbotarro/unijobs/backend/dal"
+	"github.com/mbotarro/unijobs/backend/models"
 	"github.com/mbotarro/unijobs/backend/tools"
 )
 
@@ -27,7 +27,6 @@ func createFakeCategory(t *testing.T, db *sqlx.DB, name, description string) *mo
 	return &c
 }
 
-
 func getCategoryDAL(db *sqlx.DB) *dal.CategoryDAL {
 	return dal.NewCategoryDAL(db)
 }
@@ -38,7 +37,18 @@ func TestGetAllCategories(t *testing.T) {
 
 	categoryDAL := getCategoryDAL(db)
 
-	categories, err := categoryDAL.GetAllCategories()
+	cats := []*models.Category{
+		createFakeCategory(t, db, "Aula.Matemática", "Aula de Matemática"),
+		createFakeCategory(t, db, "Aula.Português", "Aula de Português"),
+		createFakeCategory(t, db, "Aula.Música", "Aula de Música"),
+	}
 
-	for category
+	categories, err := categoryDAL.GetAllCategories()
+	assert.Equal(t, nil, err)
+
+	for i, cat := range cats {
+		assert.Equal(t, cat.ID, categories[i].ID)
+		assert.Equal(t, cat.Name, categories[i].Name)
+		assert.Equal(t, cat.Description, categories[i].Description)
+	}
 }
