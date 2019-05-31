@@ -2,32 +2,30 @@
 
 import React from 'react';
 import { StyleSheet, Text, TextInput, View, Image } from 'react-native';
-import { AsyncStorage } from 'react-native';
+
 
 import UniStyles from '../constants/UniStyles'
 import UniData from '../constants/UniData'
 
-export default class HomeScreen extends React.Component {
+
+
+export default class TestScreen extends React.Component {
     static navigationOptions = { header: null };
 
     state = {
-        username: '',
+        // use for store data
     }
 
+
     async componentDidMount() {
-        try {
-            const username = await AsyncStorage.getItem(UniData.username);
-            if (username !== null)
-                this.setState({ username: username });
-        } catch (error) {
-        }
+        // use for fetching data to show
     }
 
     render() {
         return (
             <View style={styles.container}>
                 <Text style={UniStyles.text}>
-                    Welcome to UniJobs! {'\n' + this.state.username}
+                    Welcome to UniJobs!
                 </Text>
             </View>
         );
