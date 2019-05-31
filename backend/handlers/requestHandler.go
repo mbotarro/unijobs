@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/mbotarro/unijobs/backend/errors"
@@ -23,7 +24,14 @@ func NewRequestHandler(requestCtrl *usecases.RequestController) *RequestHandler 
 }
 
 func (handler *RequestHandler) getLastRequests(w http.ResponseWriter, r *http.Request) {
-	reqs, err := handler.requestController.GetLastRequests(time.Now(), 30)
+	sizeStr := r.FormValue("size")
+	size, err := strconv.ParseInt(sizeStr, 10, 32)
+	if err != nil {
+		http.Error(w, fmt.Errorf("%s:%s", errors.QueryParameterError, err.Error()).Error(), http.StatusBadRequest)
+		return
+	}
+
+	reqs, err := handler.requestController.GetLastRequests(time.Now(), int(size))
 	if err != nil {
 		http.Error(w, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error()).Error(), http.StatusInternalServerError)
 		return

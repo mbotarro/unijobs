@@ -27,7 +27,10 @@ func NewRouter(ctrl *usecases.Controller) *mux.Router {
 	route.r.HandleFunc("/users/authenticate", userHandler.authenticateUser).Methods("POST")
 
 	// Request APIs
-	route.r.HandleFunc("/requests", requestHandler.getLastRequests).Methods("GET")
+	route.r.Path("/requests").
+		Queries("size", "{size:[0-9]*}").
+		HandlerFunc(requestHandler.getLastRequests).
+		Methods("GET")
 
 	return &route.r
 }
