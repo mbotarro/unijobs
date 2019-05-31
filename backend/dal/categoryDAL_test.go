@@ -7,6 +7,8 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	"github.com/mbotarro/unijobs/backend/models"
+	"github.com/mbotarro/unijobs/backend/dal"
+	"github.com/mbotarro/unijobs/backend/tools"
 )
 
 const (
@@ -23,4 +25,20 @@ func createFakeCategory(t *testing.T, db *sqlx.DB, name, description string) *mo
 	assert.Equal(t, err, nil)
 
 	return &c
+}
+
+
+func getCategoryDAL(db *sqlx.DB) *dal.CategoryDAL {
+	return dal.NewCategoryDAL(db)
+}
+
+func TestGetAllCategories(t *testing.T) {
+	db := tools.GetTestDB()
+	defer tools.CleanDB(db)
+
+	categoryDAL := getCategoryDAL(db)
+
+	categories, err := categoryDAL.GetAllCategories()
+
+	for category
 }
