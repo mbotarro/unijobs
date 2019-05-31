@@ -1,6 +1,6 @@
 package models
 
-type Interest struct {
+type Request struct {
 	ID          int
 	Name        string
 	Description string

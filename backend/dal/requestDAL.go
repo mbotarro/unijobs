@@ -5,31 +5,20 @@ import (
 	"github.com/mbotarro/unijobs/backend/models"
 )
 
-// UserDAL interacts with the DB to perform User related queries
-type UserDAL struct {
+// RequestDAL interacts with the DB to perform User related queries
+type RequestDAL struct {
 	db *sqlx.DB
 }
 
-// NewUserDAL returns a new UserDAL
-func NewUserDAL(db *sqlx.DB) *UserDAL {
-	return &UserDAL{
+// NewRequestDAL returns a new RequestDAL
+func NewRequestDAL(db *sqlx.DB) *RequestDAL {
+	return &RequestDAL{
 		db: db,
 	}
 }
 
-// AuthenticateUser returns if an user is a valid one
-func (dal *UserDAL) AuthenticateUser(email, password string) (bool, error) {
-	var c int
-	err := dal.db.Get(&c, "SELECT COUNT(1) FROM userdata WHERE email = $1 AND password = $2", email, password)
-	if err != nil {
-		return false, err
-	}
-
-	return c == 1, nil
-}
-
 // GetRequests get all of the requests of a certain user
-func (dal *UserDAL) GetRequests(userid int) ([]*models.Request, error) {
+func (dal *RequestDAL) GetRequests(userid int) ([]*models.Request, error) {
 	requests := make([]*models.Request, 0)
 	rows, err := dal.db.Query("select * from request where id = $1", userid)
 

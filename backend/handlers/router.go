@@ -21,7 +21,7 @@ func NewRouter(ctrl *usecases.Controller) *mux.Router {
 	route.r.HandleFunc("/createUser", createUserHandler).Methods("POST")
 	route.r.HandleFunc("/createCategory", createCategoryHandler).Methods("POST")
 	route.r.HandleFunc("/createOffer", createOfferHandler).Methods("POST")
-	route.r.HandleFunc("/createInterest", createInterestHandler).Methods("POST")
+	route.r.HandleFunc("/createRequest", createRequestHandler).Methods("POST")
 
 	// User APIs
 	route.r.HandleFunc("/users/authenticate", userHandler.authenticateUser).Methods("POST")
