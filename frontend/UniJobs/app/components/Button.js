@@ -9,15 +9,15 @@ import UniText from '../constants/UniText'
 export default class Button extends Component {
     render() {
         const { text, onPress, buttonStyle, textStyle } = this.props;
-
         return (
             <TouchableOpacity
                 style={[styles.buttonStyle, buttonStyle]}
                 onPress={() => onPress()}
-            >
+            >    
                 <Text style={[styles.textStyle, textStyle]}>
                     {text}
                 </Text>
+
             </TouchableOpacity>
         );
     }
@@ -27,7 +27,6 @@ export default class Button extends Component {
 Button.propTypes = {
     text: PropTypes.string.isRequired,
     onPress: PropTypes.func.isRequired,
-
     buttonStyle: ViewPropTypes.style,
     textStyle: Text.propTypes.style,
 };

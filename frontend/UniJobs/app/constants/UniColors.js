@@ -1,11 +1,11 @@
 "use strict";
 
 const UNIJOBS_COLORS = {
-    main:       '#008B8B',
+    main:       '#00A5F2',
     dark:       '#50514F',
     dark_grey:  '#65737E',
-    light_grey: '#CBD4C2',
-    light:      '#FFFCFF',
+    light_grey: '#C2D3CD',
+    light:      '#AFBFC0',
 };
 
 const BASIC_COLORS = {

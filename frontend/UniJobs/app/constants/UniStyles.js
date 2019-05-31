@@ -2,7 +2,6 @@
 
 import UniColors from './UniColors'
 import UniText from './UniText'
-import { StyleSheet} from 'react-native'
 
 const textInput = {
     borderColor:    UniColors.dark_grey,
@@ -15,14 +14,12 @@ const textInput = {
     fontSize:   UniText.normal,
     color:      UniColors.dark,
     textAlign:  'center',
-}
+};
 
 const text = {
-    fontSize:   20,
+    fontSize:   15,
     color:      UniColors.dark_grey
 }
-
-
 
 const container = {
     flex: 1,
@@ -32,18 +29,19 @@ const container = {
 }
 
 const useravatar= {
-    width: 130,
-    height: 130,
-    borderRadius: 63,
-    borderWidth: 4,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    borderWidth: 2,
     borderColor: "white",
+    marginTop:10,
     marginBottom:10,
 }
 
 const username={
     fontSize:22,
     color:"#FFFFFF",
-    fontWeight:'600',
+    fontWeight:'100',
 }
 
 module.exports = {
@@ -53,4 +51,3 @@ module.exports = {
     useravatar,
     username,
 }
-

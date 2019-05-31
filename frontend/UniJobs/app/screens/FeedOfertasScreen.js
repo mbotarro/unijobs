@@ -1,12 +1,3 @@
-"use strict"
-
-import React from 'react'
-import { StyleSheet, Text, TextInput, View, Image } from 'react-native'
-import { AsyncStorage } from 'react-native'
-
-import UniStyles from '../constants/UniStyles'
-import UniData from '../constants/UniData'
-
 /*
 //inside render->return
 const MenuButton = () => (
@@ -29,12 +20,20 @@ const MenuButton = () => (
         navigate('DrawerMenu');
     };
 */
+"use strict";
+
+import React from 'react';
+import { StyleSheet, Text, TextInput, View, Image } from 'react-native';
+import { AsyncStorage } from 'react-native';
+
+import UniStyles from '../constants/UniStyles'
+import UniData from '../constants/UniData'
+
 export default class FeedOfertasScreen extends React.Component {
-    static navigationOptions = { header: null }
+    static navigationOptions = { header: null };
 
     state = {
         username: '',
-        password: '',
     }
 
     async componentDidMount() {
@@ -42,26 +41,18 @@ export default class FeedOfertasScreen extends React.Component {
             const username = await AsyncStorage.getItem(UniData.username);
             if (username !== null)
                 this.setState({ username: username });
-            
-            const password = await AsyncStorage.getItem(UniData.password);
-            if (password !== null) 
-                this.setState({ password: password });
         } catch (error) {
         }
     }
 
-
     render() {
-
         return (
             <View style={styles.container}>
                 <Text style={UniStyles.text}>
-                    Welcome to UniJobs! {'\n' + this.state.username + '\n' + this.state.password}
-                    Feed de Ofertas!
+                    Welcome to UniJobs! {'\n' + this.state.username}
                 </Text>
             </View>
         );
-
     }
 }
 
@@ -73,4 +64,4 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         justifyContent: 'center',
     },
-})
+});
