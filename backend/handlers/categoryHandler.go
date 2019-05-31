@@ -1,26 +1,33 @@
 package handlers
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"log"
 	"net/http"
 
-	"github.com/mbotarro/unijobs/backend/models"
+	"github.com/mbotarro/unijobs/backend/errors"
+	"github.com/mbotarro/unijobs/backend/tools"
+	"github.com/mbotarro/unijobs/backend/usecases"
 )
 
-func createCategoryHandler(w http.ResponseWriter, r *http.Request) {
-	body, err := ioutil.ReadAll(r.Body)
+// CategoryHandler handle all Categories API
+type CategoryHandler struct {
+	categoryController *usecases.CategoryController
+}
+
+// NewCategoryHandler returns a new CategoryHandler
+func NewCategoryHandler(categoryCtrl *usecases.CategoryController) *CategoryHandler {
+	return &CategoryHandler{
+		categoryController: categoryCtrl,
+	}
+}
+
+func (handler *CategoryHandler) getAllCategories(w http.ResponseWriter, r *http.Request) {
+	valid, err := handler.categoryController.GetAllCategories()
 	if err != nil {
-		panic(err)
+		http.Error(w, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error()).Error(), http.StatusInternalServerError)
+		return
 	}
 
-	log.Println(string(body))
-	var categorydata models.Category
-	err = json.Unmarshal(body, &categorydata)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Fprintf(w, "You've requested the category: %s\n", categorydata.Name)
+	fmt.Println("CATS", valid)
+	tools.WriteStructOnHTTPResponse(valid[0], w)
 }

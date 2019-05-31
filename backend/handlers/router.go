@@ -17,14 +17,17 @@ func NewRouter(ctrl *usecases.Controller) *mux.Router {
 	}
 
 	userHandler := NewUserHandler(ctrl.User)
+	categoryHandler := NewCategoryHandler(ctrl.Category)
 
 	route.r.HandleFunc("/createUser", createUserHandler).Methods("POST")
-	route.r.HandleFunc("/createCategory", createCategoryHandler).Methods("POST")
 	route.r.HandleFunc("/createOffer", createOfferHandler).Methods("POST")
 	route.r.HandleFunc("/createRequest", createRequestHandler).Methods("POST")
 
 	// User APIs
 	route.r.HandleFunc("/users/authenticate", userHandler.authenticateUser).Methods("POST")
+
+	// Categories API
+	route.r.HandleFunc("/categories", categoryHandler.getAllCategories).Methods("GET")
 
 	return &route.r
 }
