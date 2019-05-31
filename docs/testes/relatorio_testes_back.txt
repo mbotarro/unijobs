@@ -1,5 +1,26 @@
 ?   	github.com/mbotarro/unijobs/backend	[no test files]
-ok  	github.com/mbotarro/unijobs/backend/dal	0.044s	coverage: 84.6% of statements
+--- FAIL: TestGetLastInterests (0.02s)
+panic: pq: insert or update on table "interest" violates foreign key constraint "interest_userid_fkey" [recovered]
+	panic: pq: insert or update on table "interest" violates foreign key constraint "interest_userid_fkey"
+
+goroutine 34 [running]:
+testing.tRunner.func1(0xc000138100)
+	/usr/local/Cellar/go/1.12.5/libexec/src/testing/testing.go:830 +0x392
+panic(0x1425ba0, 0xc000186000)
+	/usr/local/Cellar/go/1.12.5/libexec/src/runtime/panic.go:522 +0x1b5
+github.com/mbotarro/unijobs/backend/vendor/github.com/jmoiron/sqlx.MustExec(...)
+	/Users/moisesbotarro/go/src/github.com/mbotarro/unijobs/backend/vendor/github.com/jmoiron/sqlx/sqlx.go:718
+github.com/mbotarro/unijobs/backend/vendor/github.com/jmoiron/sqlx.(*DB).MustExec(0xc0000ac180, 0x14a52d5, 0x5f, 0xc000168050, 0x5, 0x5, 0xc00009e1b0, 0xc00009e1a0)
+	/Users/moisesbotarro/go/src/github.com/mbotarro/unijobs/backend/vendor/github.com/jmoiron/sqlx/sqlx.go:370 +0xbb
+github.com/mbotarro/unijobs/backend/dal_test.createFakeInterest(0xc0000ac180, 0x148d3a8, 0x4, 0x148edd6, 0x9, 0x14, 0x1, 0x1)
+	/Users/moisesbotarro/go/src/github.com/mbotarro/unijobs/backend/dal/interestDAL_test.go:29 +0x247
+github.com/mbotarro/unijobs/backend/dal_test.TestGetLastInterests(0xc000138100)
+	/Users/moisesbotarro/go/src/github.com/mbotarro/unijobs/backend/dal/interestDAL_test.go:45 +0x13c
+testing.tRunner(0xc000138100, 0x14a9428)
+	/usr/local/Cellar/go/1.12.5/libexec/src/testing/testing.go:865 +0xc0
+created by testing.(*T).Run
+	/usr/local/Cellar/go/1.12.5/libexec/src/testing/testing.go:916 +0x35a
+FAIL	github.com/mbotarro/unijobs/backend/dal	0.031s
 ?   	github.com/mbotarro/unijobs/backend/errors	[no test files]
 ?   	github.com/mbotarro/unijobs/backend/handlers	[no test files]
 ?   	github.com/mbotarro/unijobs/backend/migrations	[no test files]

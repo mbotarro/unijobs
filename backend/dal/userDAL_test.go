@@ -13,13 +13,14 @@ import (
 
 const (
 	insertUser = `INSERT INTO userdata (username, password, email, address, telephone, universitario) VALUES ($1, $2, $3, $4, $5, $6)`
+	getUser    = `SELECT * FROM userdata WHERE email = $1`
 )
 
 func getUserDAL(db *sqlx.DB) *dal.UserDAL {
 	return dal.NewUserDAL(db)
 }
 
-func createFakeUser(db *sqlx.DB, name, email, password string) {
+func createFakeUser(t *testing.T, db *sqlx.DB, name, email, password string) *models.User {
 	u := models.User{
 		Username:      name,
 		Password:      password,
@@ -30,9 +31,14 @@ func createFakeUser(db *sqlx.DB, name, email, password string) {
 	}
 
 	db.MustExec(insertUser, u.Username, u.Password, u.Email, u.Address, u.Telephone, u.Universitario)
+	gotU := models.User{}
+	err := db.Get(&gotU, getUser, u.Email)
+	assert.Equal(t, err, nil)
+
+	return &gotU
 }
 
-func TestAuthenticateValidUser(t *testing.T) {
+func TestAuthenticateInvalidUser(t *testing.T) {
 	db := tools.GetTestDB()
 	defer tools.CleanDB(db)
 
@@ -44,7 +50,7 @@ func TestAuthenticateValidUser(t *testing.T) {
 	assert.Equal(t, false, valid)
 }
 
-func TestAuthenticateInvalidUser(t *testing.T) {
+func TestAuthenticateValidUser(t *testing.T) {
 	db := tools.GetTestDB()
 	defer tools.CleanDB(db)
 
@@ -55,7 +61,8 @@ func TestAuthenticateInvalidUser(t *testing.T) {
 	email := "user@user.com"
 	pass := "1234"
 
-	createFakeUser(db, name, email, pass)
+	createFakeUser(t, db, name, email, pass)
+
 	valid, err := userDAL.AuthenticateUser(email, pass)
 	assert.Equal(t, nil, err)
 	assert.Equal(t, true, valid)
