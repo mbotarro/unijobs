@@ -4,7 +4,10 @@ type Request struct {
 	ID          int
 	Name        string
 	Description string
-	Price       int
+	ExtraInfo   string
+	MaxPrice    int
+	MinPrice    int
 	Userid      int
 	Categoryid  int
+	Timestamp   int64
 }
