@@ -37,7 +37,8 @@ const styles = StyleSheet.create({
     textStyle: {
         fontSize: UniText.normal,
         color: UniColors.white,
-        textAlign: 'center'
+        textAlign: 'center',
+        fontWeight: 'bold',
     },
 
     buttonStyle: {

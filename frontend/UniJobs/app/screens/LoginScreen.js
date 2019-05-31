@@ -84,7 +84,7 @@ export default class LoginScreen extends React.Component {
 
         const PasswordField = () => (
             <TextInput
-                style={[UniStyles.textInput, { marginVertical: 15 }]}
+                style={[UniStyles.textInput, { marginTop: 10 }]}
                 placeholder={this.textStrings.password}
                 secureTextEntry={true}
                 autoCorrect={false}
@@ -95,7 +95,7 @@ export default class LoginScreen extends React.Component {
         const LoginButton = () => (
             <Button
                 text={this.textStrings.login}
-                buttonStyle={{ paddingHorizontal: 77 }}
+                buttonStyle={{ paddingHorizontal: 83, paddingVertical: 10, marginTop: 20 }}
                 onPress={() => this.onLogin(navigate)}
             />
         );
@@ -120,14 +120,13 @@ export default class LoginScreen extends React.Component {
                 <TouchableHighlight
                     onPress={SocialMediaCallback(name)}
                     underlayColor={UniColors.light}
-                    style={{ marginTop: 13 }}
                 >
                     <View style={{ alignContent: 'center', flexDirection: 'row', alignSelf: 'stretch' }}>
                         <Image
                             style={styles.extLoginIcon}
                             source={SocialMediaIcon(name)}
                         />
-                        <Text style={[UniStyles.text, { marginLeft: 34, textAlign: 'center', alignSelf: 'center' }]}> {name} </Text>
+                        <Text style={[UniStyles.text, { marginLeft: 36, textAlign: 'center', alignSelf: 'center' }]}> {name} </Text>
                     </View>
                 </TouchableHighlight>
             )
@@ -137,7 +136,7 @@ export default class LoginScreen extends React.Component {
         const RegistrationButton = () => (
             <Button
                 text={this.textStrings.registration}
-                buttonStyle={[{ marginTop: 15, marginBottom: 15 }, { paddingHorizontal: 18 }]}
+                buttonStyle={[{ marginTop: 8}, { paddingHorizontal: 30, paddingVertical: 10 }]}
                 onPress={() => this.onRegister(navigate)}
             />
         );
@@ -151,23 +150,25 @@ export default class LoginScreen extends React.Component {
             >
                 <Header />
                 <View style={styles.container}>
-                    <View style={{ marginTop: 40 }}>
+                    <View style={{ marginTop: 54 }}>
                         <EmailField />
                         <PasswordField />
                         <LoginButton />
                     </View>
 
-                    <View style={{ marginTop: 40 }}>
+                    <View style={{ marginTop: 35, marginHorizontal: 64 }}>
                         <Text style={[UniStyles.text, { alignSelf: 'center' }]}>
                             {this.textStrings.socialNetworkHeadline}
                         </Text>
 
+                        <View style={{ marginTop: 3 }} />
                         <SocialNetworkLogin name='facebook' />
+                        <View style={{ marginTop: 10 }} />
                         <SocialNetworkLogin name='twitter' />
 
                     </View>
 
-                    <View style={{ marginTop: 40 }}>
+                    <View style={{ marginTop: 29, marginBottom: 52 }}>
                         <Text style={[UniStyles.text, { alignSelf: 'center' }]}>
                             {this.textStrings.registrationHeadline}
                         </Text>
@@ -203,7 +204,7 @@ const styles = StyleSheet.create({
     },
 
     extLoginIcon: {
-        width: 50,
-        height: 50
+        width: 45,
+        height: 45
     },
 });

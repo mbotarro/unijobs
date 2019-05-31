@@ -2,8 +2,8 @@
 
 const TEXT_SIZES = {
     title:  32,
-    big:    20,
-    normal: 17,
+    big:    17,
+    normal: 15,
     small:  13,
     tiny:   10
 };
