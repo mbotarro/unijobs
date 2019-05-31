@@ -1,6 +1,7 @@
 package dal
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/jmoiron/sqlx"
@@ -22,14 +23,17 @@ func NewRequestDAL(db *sqlx.DB) *RequestDAL {
 // GetLastRequests returns the requests inserted in the dabase before the time specified by timestamp
 // The parameter size limits the number of returned requests
 func (dal *RequestDAL) GetLastRequests(before time.Time, size int) ([]models.Request, error) {
-	ints := []models.Request{}
-	err := dal.db.Select(&ints,
+	reqs := []models.Request{}
+	fmt.Println("before: ", before)
+	fmt.Println("size: ", size)
+	err := dal.db.Select(&reqs,
 		`SELECT * FROM request WHERE timestamp < $1
 			ORDER BY timestamp DESC
-			LIMIT $2`, before, size)
+			LIMIT $2`, before.UTC(), size)
 	if err != nil {
 		return nil, err
 	}
 
-	return ints, nil
+	fmt.Println("GOT REQUESTS: ", reqs)
+	return reqs, nil
 }

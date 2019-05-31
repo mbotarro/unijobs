@@ -1,26 +1,33 @@
 package handlers
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"log"
 	"net/http"
+	"time"
 
-	"github.com/mbotarro/unijobs/backend/models"
+	"github.com/mbotarro/unijobs/backend/errors"
+	"github.com/mbotarro/unijobs/backend/tools"
+	"github.com/mbotarro/unijobs/backend/usecases"
 )
 
-func createRequestHandler(w http.ResponseWriter, r *http.Request) {
-	body, err := ioutil.ReadAll(r.Body)
+// RequestHandler handle all Requests' API
+type RequestHandler struct {
+	requestController *usecases.RequestController
+}
+
+// NewRequestHandler returns a new RequestHandler
+func NewRequestHandler(requestCtrl *usecases.RequestController) *RequestHandler {
+	return &RequestHandler{
+		requestController: requestCtrl,
+	}
+}
+
+func (handler *RequestHandler) getLastRequests(w http.ResponseWriter, r *http.Request) {
+	reqs, err := handler.requestController.GetLastRequests(time.Now(), 30)
 	if err != nil {
-		panic(err)
+		http.Error(w, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error()).Error(), http.StatusInternalServerError)
+		return
 	}
 
-	log.Println(string(body))
-	var requestdata models.Request
-	err = json.Unmarshal(body, &requestdata)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Fprintf(w, "You've requested the requests: %s\n", requestdata.Name)
+	tools.WriteStructOnHTTPResponse(reqs, w)
 }

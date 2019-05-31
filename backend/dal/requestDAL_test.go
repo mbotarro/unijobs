@@ -22,7 +22,7 @@ func getRequestDAL(db *sqlx.DB) *dal.RequestDAL {
 }
 
 func createFakeRequest(t *testing.T, db *sqlx.DB, name, description string, user, category int, timestamp time.Time) models.Request {
-	db.MustExec(insertRequest, name, description, 20, 30, user, category, timestamp)
+	db.MustExec(insertRequest, name, description, 20, 30, user, category, timestamp.UTC())
 
 	r := models.Request{}
 	err := db.Get(&r, getRequest, name, description, user, category)

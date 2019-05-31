@@ -41,17 +41,20 @@ func (handler *UserHandler) authenticateUser(w http.ResponseWriter, r *http.Requ
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, fmt.Errorf("%s:%s", errors.ReadRequestBodyError, err.Error()).Error(), http.StatusBadRequest)
+		return
 	}
 
 	var ua UserAuthentication
 	err = json.Unmarshal(body, &ua)
 	if err != nil {
 		http.Error(w, fmt.Errorf("%s:%s", errors.JSONUnmarshalError, err.Error()).Error(), http.StatusInternalServerError)
+		return
 	}
 
 	valid, err := handler.userController.AuthenticateUser(ua.Email, ua.Password)
 	if err != nil {
 		http.Error(w, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error()).Error(), http.StatusInternalServerError)
+		return
 	}
 
 	res := UserAuthenticationResponse{
