@@ -23,3 +23,86 @@
     valid: <bool>
 }
 ```
+
+# Request API
+
+## Get all requests created in the platform
+
+### GET
+
+One must provide the number of requests that should be sent.
+
+```
+/requests/size=2
+```
+
+#### Expected Reponse
+
+```
+{
+    {
+        "requests": [
+            {
+            "ID": 6,
+            "Name": "Aula",
+            "Description": "Present Perfect",
+            "ExtraInfo": "",
+            "MaxPrice": 40,
+            "MinPrice": 20,
+            "Userid": 1,
+            "Categoryid": 2,
+            "Timestamp": "2019-05-31T16:59:57.728024Z"
+            },
+            {
+            "ID": 5,
+            "Name": "Aula",
+            "Description": "Phrasal Verbs",
+            "ExtraInfo": "",
+            "MaxPrice": 40,
+            "MinPrice": 20,
+            "Userid": 1,
+            "Categoryid": 2,
+            "Timestamp": "2019-05-31T15:59:57.728024Z"
+            }
+        ],
+        "last": 1559318397
+    }
+}
+```
+
+The **last** parameter is a cursor used for pagination. If you want to get the next 2 requests, you can send
+
+```
+/requests/size=2&before=1559318397
+```
+
+You'll get
+
+```{
+    "requests": [
+        {
+        "ID": 4,
+        "Name": "Aula",
+        "Description": "Calculo IV",
+        "ExtraInfo": "",
+        "MaxPrice": 40,
+        "MinPrice": 20,
+        "Userid": 1,
+        "Categoryid": 1,
+        "Timestamp": "2019-05-31T14:59:57.728024Z"
+        },
+        {
+        "ID": 3,
+        "Name": "Aula",
+        "Description": "Calculo III",
+        "ExtraInfo": "",
+        "MaxPrice": 40,
+        "MinPrice": 20,
+        "Userid": 1,
+        "Categoryid": 1,
+        "Timestamp": "2019-05-31T13:59:57.728024Z"
+        }
+    ],
+    "last": 1559311197
+}
+```
