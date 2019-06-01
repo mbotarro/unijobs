@@ -14,7 +14,7 @@ const (
 	getCategory    = `SELECT * FROM category WHERE name = $1`
 )
 
-func createFakeCategory(t *testing.T, db *sqlx.DB, name, description string) *models.Category {
+func CreateFakeCategory(t *testing.T, db *sqlx.DB, name, description string) *models.Category {
 	c := models.Category{}
 
 	db.MustExec(insertCategory, name, description)

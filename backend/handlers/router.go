@@ -31,12 +31,12 @@ func NewRouter(ctrl *usecases.Controller) *mux.Router {
 	// Request APIs
 	route.r.Path("/requests").
 		Queries("size", "{size:[0-9]*}").
-		HandlerFunc(requestHandler.getLastRequests).
+		HandlerFunc(requestHandler.GetLastRequests).
 		Methods("GET")
 
 	route.r.Path("/requests").
 		Queries("size, before", "{size:[0-9]*, before:[0-9]*}").
-		HandlerFunc(requestHandler.getLastRequests).
+		HandlerFunc(requestHandler.GetLastRequests).
 		Methods("GET")
 
 	return &route.r

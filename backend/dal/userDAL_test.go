@@ -20,7 +20,7 @@ func getUserDAL(db *sqlx.DB) *dal.UserDAL {
 	return dal.NewUserDAL(db)
 }
 
-func createFakeUser(t *testing.T, db *sqlx.DB, name, email, password string) *models.User {
+func CreateFakeUser(t *testing.T, db *sqlx.DB, name, email, password string) *models.User {
 	u := models.User{
 		Username:  name,
 		Password:  password,
@@ -61,7 +61,7 @@ func TestAuthenticateValidUser(t *testing.T) {
 	email := "user@user.com"
 	pass := "1234"
 
-	createFakeUser(t, db, name, email, pass)
+	CreateFakeUser(t, db, name, email, pass)
 
 	valid, err := userDAL.AuthenticateUser(email, pass)
 	assert.Equal(t, nil, err)

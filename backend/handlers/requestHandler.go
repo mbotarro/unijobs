@@ -33,7 +33,7 @@ type RequestResponse struct {
 	Last int64 `json:"last"`
 }
 
-func (handler *RequestHandler) getLastRequests(w http.ResponseWriter, r *http.Request) {
+func (handler *RequestHandler) GetLastRequests(w http.ResponseWriter, r *http.Request) {
 	sizeStr := r.FormValue("size")
 	size, err := strconv.ParseInt(sizeStr, 10, 32)
 	if err != nil {
