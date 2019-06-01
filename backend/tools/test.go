@@ -42,7 +42,7 @@ const (
 )
 
 // CreateFakeUser inserts a fake user in the db
-func CreateFakeUser(t *testing.T, db *sqlx.DB, name, email, password string) *models.User {
+func CreateFakeUser(t *testing.T, db *sqlx.DB, name, email, password string) models.User {
 	u := models.User{
 		Username:  name,
 		Password:  password,
@@ -57,11 +57,11 @@ func CreateFakeUser(t *testing.T, db *sqlx.DB, name, email, password string) *mo
 	err := db.Get(&gotU, getUser, u.Email)
 	assert.Equal(t, err, nil)
 
-	return &gotU
+	return gotU
 }
 
 // CreateFakeCategory inserts a fake category in the db
-func CreateFakeCategory(t *testing.T, db *sqlx.DB, name, description string) *models.Category {
+func CreateFakeCategory(t *testing.T, db *sqlx.DB, name, description string) models.Category {
 	c := models.Category{}
 
 	db.MustExec(insertCategory, name, description)
@@ -69,7 +69,7 @@ func CreateFakeCategory(t *testing.T, db *sqlx.DB, name, description string) *mo
 	err := db.Get(&c, getCategory, name)
 	assert.Equal(t, err, nil)
 
-	return &c
+	return c
 }
 
 // CreateFakeRequest creates a fake request in the db

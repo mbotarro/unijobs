@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/mbotarro/unijobs/backend/errors"
 	"github.com/mbotarro/unijobs/backend/models"
@@ -27,6 +28,7 @@ type UserAuthentication struct {
 // UserAuthenticationResponse contains the authentication response sent to the frontend
 type UserAuthenticationResponse struct {
 	Email string `json:"email"`
+	ID    int    `json:"id"`
 	Valid bool   `json:"valid"`
 }
 
@@ -63,6 +65,24 @@ func (handler *UserHandler) authenticateUser(w http.ResponseWriter, r *http.Requ
 	}
 
 	tools.WriteStructOnHTTPResponse(res, w)
+}
+
+// GetUserInfo returns all the information about an user
+func (handler *UserHandler) GetUserInfo(w http.ResponseWriter, r *http.Request) {
+	idStr := r.FormValue("id")
+	id, err := strconv.ParseInt(idStr, 10, 32)
+	if err != nil {
+		http.Error(w, fmt.Errorf("%s:%s", errors.QueryParameterError, err.Error()).Error(), http.StatusBadRequest)
+		return
+	}
+
+	u, err := handler.userController.GetUserInfo(int(id))
+	if err != nil {
+		http.Error(w, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error()).Error(), http.StatusInternalServerError)
+		return
+	}
+
+	tools.WriteStructOnHTTPResponse(u, w)
 }
 
 func createUserHandler(w http.ResponseWriter, r *http.Request) {

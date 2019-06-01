@@ -43,3 +43,16 @@ func TestAuthenticateValidUser(t *testing.T) {
 	assert.Equal(t, nil, err)
 	assert.Equal(t, true, valid)
 }
+
+func TestGetUserInfo(t *testing.T) {
+	db := tools.GetTestDB()
+	defer tools.CleanDB(db)
+
+	userDAL := getUserDAL(db)
+
+	u := tools.CreateFakeUser(t, db, "user", "user@userland.com", "1234")
+
+	gotU, err := userDAL.GetUserInfo(u.Userid)
+	assert.Equal(t, nil, err)
+	assert.Equal(t, u, gotU)
+}

@@ -2,6 +2,7 @@ package dal
 
 import (
 	"github.com/jmoiron/sqlx"
+	"github.com/mbotarro/unijobs/backend/models"
 )
 
 // UserDAL interacts with the DB to perform User related queries
@@ -25,4 +26,15 @@ func (dal *UserDAL) AuthenticateUser(email, password string) (bool, error) {
 	}
 
 	return c == 1, nil
+}
+
+// GetUserInfo returns information about an user given his/her ID
+func (dal *UserDAL) GetUserInfo(id int) (models.User, error) {
+	var u models.User
+	err := dal.db.Get(&u, "SELECT * FROM userdata WHERE userid = $1", id)
+	if err != nil {
+		return models.User{}, err
+	}
+
+	return u, nil
 }
