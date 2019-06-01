@@ -9,7 +9,10 @@ import MenuButton from '../components/MenuButton'
 export default class TestScreen extends React.Component {
     render() {
         return (
-            <MenuButton/>
+            <View style={{flex: 1}}>
+                <Text>asdhjfaskjlfdlasjfl</Text>
+                <MenuButton/>
+            </View>
         );
     }
 }

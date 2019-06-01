@@ -8,6 +8,9 @@ import {
     Image,
 } from "react-native" 
 
+import UniColors from '../constants/UniColors'
+import UniText from '../constants/UniText'
+
 
 export default class MenuButton extends Component {
 
@@ -24,6 +27,7 @@ export default class MenuButton extends Component {
     }
 
     render() {
+        const { text, onPress, buttonStyle, textStyle } = this.props;
 
         const bgStyle = {
             transform: [{
@@ -58,7 +62,7 @@ export default class MenuButton extends Component {
 
         const labelPositionInterpolate = this.state.animation.interpolate({
             inputRange: [0, 1],
-            outputRange: [0, -90],
+            outputRange: [0, -80],
         })
 
         const opacityInterpolate = this.state.animation.interpolate({
@@ -78,9 +82,9 @@ export default class MenuButton extends Component {
                 <Animated.View style={[styles.background, bgStyle]}/>
                 <TouchableWithoutFeedback>
                     <Animated.View style={[styles.button, styles.other, test2]}>
-                        <Animated.Text style={[styles.label, labelStyle]}>Test 2</Animated.Text>
+                        <Animated.Text style={[styles.label, labelStyle, {width:90}]}>Solicitação</Animated.Text>
                         <Image 
-                            source={require('../assets/icons/add.png')}
+                            source={require('../assets/icons/help.png')}
                             style={styles.ImageIconStyle}
                         />
                     </Animated.View>
@@ -88,9 +92,9 @@ export default class MenuButton extends Component {
 
                 <TouchableWithoutFeedback>
                     <Animated.View style={[styles.button, styles.other, test1]}>
-                        <Animated.Text style={[styles.label, labelStyle]}>Test 1</Animated.Text> 
+                        <Animated.Text style={[styles.label, labelStyle, {width:90}]}>Oferta</Animated.Text> 
                         <Image 
-                            source={require('../assets/icons/add.png')}
+                            source={require('../assets/icons/shopping-label.png')}
                             style={styles.ImageIconStyle}
                         />
                     </Animated.View>
@@ -98,7 +102,7 @@ export default class MenuButton extends Component {
 
                 <TouchableWithoutFeedback onPress={this.toggleOpen}>
                     <View style={[styles.button, styles.pay]}>
-                        <Animated.Text style={[styles.label, labelStyle]}>Add</Animated.Text> 
+                        {/* <Animated.Text style={[styles.label, labelStyle]}>Add</Animated.Text> */}
                         <Image 
                             source={require('../assets/icons/add.png')}
                             style={styles.ImageIconStyle}
@@ -116,7 +120,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#000000"
     },
     background: {
-        backgroundColor: "rgba(0, 0, 0, 0.2)",
+        backgroundColor: "rgba(0, 0, 0, 0.4)",
         position: "absolute",
         width: 60,
         height: 60, 
@@ -140,10 +144,14 @@ const styles = StyleSheet.create({
         right: 15,
     },
     pay: {
-        backgroundColor: "#00B15E",
+        backgroundColor: UniColors.main,
     },
     other: {
-        backgroundColor: "#DDD",
+        backgroundColor: UniColors.main,
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        right: 20,
     },
     ImageIconStyle: {
         padding: 5,
@@ -152,9 +160,9 @@ const styles = StyleSheet.create({
         resizeMode: 'stretch',
     },
     label: {
-        color: "#333",
+        color: UniColors.white,
+        fontSize: UniText.normal,
         position: "absolute",
-        fontSize: 18,
         backgroundColor: "transparent",
     },
 })
