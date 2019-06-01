@@ -37,17 +37,19 @@ const styles = StyleSheet.create({
     textStyle: {
         fontSize: UniText.normal,
         color: UniColors.white,
-        textAlign: 'center',
+        textAlign:  'center',
+        alignSelf:  'center',
         fontWeight: 'bold',
     },
 
     buttonStyle: {
-        flexDirection:      'row',      // this makes the button
-        alignSelf:          'center',   // resize itself to the content's size
+        alignContent:       'center',
+        flexDirection:      'column',
+        alignSelf:          'stretch',
 
         paddingVertical:    10,
-        paddingHorizontal:  20,
         backgroundColor:    UniColors.main,
         borderRadius:       20,
     }
 });
+
