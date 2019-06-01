@@ -1,11 +1,14 @@
 package handlers_test
 
 import (
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/mbotarro/unijobs/backend/handlers"
+	"github.com/mbotarro/unijobs/backend/models"
 	"github.com/mbotarro/unijobs/backend/tools"
 	"github.com/mbotarro/unijobs/backend/usecases"
 )
@@ -41,5 +44,16 @@ func TestGetLastRequest(t *testing.T) {
 	})
 
 	// Populate the database with some fake requests
-	// dal_test.CreateFakeUser()
+	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234")
+	c := tools.CreateFakeCategory(t, db, "Aula Matemática", "Matemática")
+
+	reqs := []models.Request{
+		tools.CreateFakeRequest(t, db, "Aula Cálculo I", "", u.Userid, c.ID, time.Now().Add(-25*time.Hour)),
+		tools.CreateFakeRequest(t, db, "Aula Cálculo II", "", u.Userid, c.ID, time.Now().Add(-24*time.Hour)),
+		tools.CreateFakeRequest(t, db, "Aula Álgebra Linear", "", u.Userid, c.ID, time.Now().Add(-23*time.Hour)),
+		tools.CreateFakeRequest(t, db, "Aula Cálculo III", "", u.Userid, c.ID, time.Now()),
+		tools.CreateFakeRequest(t, db, "Aula Cálculo IV", "", u.Userid, c.ID, time.Now()),
+	}
+
+	fmt.Println(reqs)
 }

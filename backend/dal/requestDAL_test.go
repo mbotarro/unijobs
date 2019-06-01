@@ -11,37 +11,21 @@ import (
 	"gotest.tools/assert"
 )
 
-const (
-	insertRequest = `INSERT INTO request (name, description, extrainfo, minprice, maxprice, userid, categoryid, timestamp) 
-						VALUES ($1, $2, '', $3, $4, $5, $6, $7)`
-	getRequest = `SELECT * FROM request WHERE (name, description, userid, categoryid) = ($1, $2, $3, $4)`
-)
-
 func getRequestDAL(db *sqlx.DB) *dal.RequestDAL {
 	return dal.NewRequestDAL(db)
 }
 
-func CreateFakeRequest(t *testing.T, db *sqlx.DB, name, description string, user, category int, timestamp time.Time) models.Request {
-	db.MustExec(insertRequest, name, description, 20, 30, user, category, timestamp.UTC())
-
-	r := models.Request{}
-	err := db.Get(&r, getRequest, name, description, user, category)
-	assert.Equal(t, nil, err)
-
-	return r
-
-}
 func TestGetLastRequests(t *testing.T) {
 	db := tools.GetTestDB()
 	defer tools.CleanDB(db)
 
-	u := CreateFakeUser(t, db, "user", "user@user.com", "1234")
-	c := CreateFakeCategory(t, db, "Aula Matemática", "Matemática")
+	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234")
+	c := tools.CreateFakeCategory(t, db, "Aula Matemática", "Matemática")
 
 	reqs := []models.Request{
-		CreateFakeRequest(t, db, "Aula Cálculo I", "", u.Userid, c.ID, time.Now()),
-		CreateFakeRequest(t, db, "Aula Cálculo II", "", u.Userid, c.ID, time.Now()),
-		CreateFakeRequest(t, db, "Aula Cálculo III", "", u.Userid, c.ID, time.Now()),
+		tools.CreateFakeRequest(t, db, "Aula Cálculo I", "", u.Userid, c.ID, time.Now()),
+		tools.CreateFakeRequest(t, db, "Aula Cálculo II", "", u.Userid, c.ID, time.Now()),
+		tools.CreateFakeRequest(t, db, "Aula Cálculo III", "", u.Userid, c.ID, time.Now()),
 	}
 
 	requestDAL := getRequestDAL(db)
@@ -81,15 +65,15 @@ func TestGetLastRequestsBeforeTimestamp(t *testing.T) {
 	db := tools.GetTestDB()
 	defer tools.CleanDB(db)
 
-	u := CreateFakeUser(t, db, "user", "user@user.com", "1234")
-	c := CreateFakeCategory(t, db, "Aula Matemática", "Matemática")
+	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234")
+	c := tools.CreateFakeCategory(t, db, "Aula Matemática", "Matemática")
 
 	reqs := []models.Request{
-		CreateFakeRequest(t, db, "Aula Cálculo I", "", u.Userid, c.ID, time.Now().Add(-25*time.Hour)),
-		CreateFakeRequest(t, db, "Aula Cálculo II", "", u.Userid, c.ID, time.Now().Add(-24*time.Hour)),
-		CreateFakeRequest(t, db, "Aula Álgebra Linear", "", u.Userid, c.ID, time.Now().Add(-23*time.Hour)),
-		CreateFakeRequest(t, db, "Aula Cálculo III", "", u.Userid, c.ID, time.Now()),
-		CreateFakeRequest(t, db, "Aula Cálculo IV", "", u.Userid, c.ID, time.Now()),
+		tools.CreateFakeRequest(t, db, "Aula Cálculo I", "", u.Userid, c.ID, time.Now().Add(-25*time.Hour)),
+		tools.CreateFakeRequest(t, db, "Aula Cálculo II", "", u.Userid, c.ID, time.Now().Add(-24*time.Hour)),
+		tools.CreateFakeRequest(t, db, "Aula Álgebra Linear", "", u.Userid, c.ID, time.Now().Add(-23*time.Hour)),
+		tools.CreateFakeRequest(t, db, "Aula Cálculo III", "", u.Userid, c.ID, time.Now()),
+		tools.CreateFakeRequest(t, db, "Aula Cálculo IV", "", u.Userid, c.ID, time.Now()),
 	}
 
 	requestDAL := getRequestDAL(db)
