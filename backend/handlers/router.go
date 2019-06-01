@@ -17,14 +17,27 @@ func NewRouter(ctrl *usecases.Controller) *mux.Router {
 	}
 
 	userHandler := NewUserHandler(ctrl.User)
+	requestHandler := NewRequestHandler(ctrl.Request)
 
 	route.r.HandleFunc("/createUser", createUserHandler).Methods("POST")
 	route.r.HandleFunc("/createCategory", createCategoryHandler).Methods("POST")
 	route.r.HandleFunc("/createOffer", createOfferHandler).Methods("POST")
-	route.r.HandleFunc("/createRequest", createRequestHandler).Methods("POST")
 
 	// User APIs
-	route.r.HandleFunc("/users/authenticate", userHandler.authenticateUser).Methods("POST")
+	route.r.Path("/users/authenticate").
+		HandlerFunc(userHandler.authenticateUser).
+		Methods("POST")
+
+	// Request APIs
+	route.r.Path("/requests").
+		Queries("size", "{size:[0-9]*}").
+		HandlerFunc(requestHandler.GetLastRequests).
+		Methods("GET")
+
+	route.r.Path("/requests").
+		Queries("size, before", "{size:[0-9]*, before:[0-9]*}").
+		HandlerFunc(requestHandler.GetLastRequests).
+		Methods("GET")
 
 	return &route.r
 }

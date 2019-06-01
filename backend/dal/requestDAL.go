@@ -1,6 +1,8 @@
 package dal
 
 import (
+	"time"
+
 	"github.com/jmoiron/sqlx"
 	"github.com/mbotarro/unijobs/backend/models"
 )
@@ -17,18 +19,17 @@ func NewRequestDAL(db *sqlx.DB) *RequestDAL {
 	}
 }
 
-// GetRequests get all of the requests of a certain user
-func (dal *RequestDAL) GetRequests(userid int) ([]*models.Request, error) {
-	requests := make([]*models.Request, 0)
-	rows, err := dal.db.Query("select * from request where id = $1", userid)
-
-	for rows.Next() {
-		request := new(models.Request)
-		println(request)
-		if err := rows.Scan(&request.ID, &request.Name, &request.Description, &request.Price, &request.Userid, request.Categoryid); err != nil {
-			panic(err)
-		}
-		requests = append(requests, request)
+// GetLastRequests returns the requests inserted in the dabase before the time specified by timestamp
+// The parameter size limits the number of returned requests
+func (dal *RequestDAL) GetLastRequests(before time.Time, size int) ([]models.Request, error) {
+	reqs := []models.Request{}
+	err := dal.db.Select(&reqs,
+		`SELECT * FROM request WHERE timestamp < $1
+			ORDER BY timestamp DESC
+			LIMIT $2`, before.UTC(), size)
+	if err != nil {
+		return nil, err
 	}
-	return requests, err
+
+	return reqs, nil
 }

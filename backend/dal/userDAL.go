@@ -2,7 +2,6 @@ package dal
 
 import (
 	"github.com/jmoiron/sqlx"
-	"github.com/mbotarro/unijobs/backend/models"
 )
 
 // UserDAL interacts with the DB to perform User related queries
@@ -26,20 +25,4 @@ func (dal *UserDAL) AuthenticateUser(email, password string) (bool, error) {
 	}
 
 	return c == 1, nil
-}
-
-// GetRequests get all of the requests of a certain user
-func (dal *UserDAL) GetRequests(userid int) ([]*models.Request, error) {
-	requests := make([]*models.Request, 0)
-	rows, err := dal.db.Query("select * from request where id = $1", userid)
-
-	for rows.Next() {
-		request := new(models.Request)
-		println(request)
-		if err := rows.Scan(&request.ID, &request.Name, &request.Description, &request.Price, &request.Userid, request.Categoryid); err != nil {
-			panic(err)
-		}
-		requests = append(requests, request)
-	}
-	return requests, err
 }

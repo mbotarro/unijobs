@@ -2,6 +2,7 @@ package errors
 
 // General Handlers errors
 const (
+	QueryParameterError  = "Invalid query parameter value"
 	ReadRequestBodyError = "Can't read the request body"
 )
 
