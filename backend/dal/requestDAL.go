@@ -1,7 +1,6 @@
 package dal
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/jmoiron/sqlx"
@@ -24,8 +23,6 @@ func NewRequestDAL(db *sqlx.DB) *RequestDAL {
 // The parameter size limits the number of returned requests
 func (dal *RequestDAL) GetLastRequests(before time.Time, size int) ([]models.Request, error) {
 	reqs := []models.Request{}
-	fmt.Println("before: ", before)
-	fmt.Println("size: ", size)
 	err := dal.db.Select(&reqs,
 		`SELECT * FROM request WHERE timestamp < $1
 			ORDER BY timestamp DESC
@@ -34,6 +31,5 @@ func (dal *RequestDAL) GetLastRequests(before time.Time, size int) ([]models.Req
 		return nil, err
 	}
 
-	fmt.Println("GOT REQUESTS: ", reqs)
 	return reqs, nil
 }

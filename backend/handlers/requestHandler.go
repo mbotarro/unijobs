@@ -33,6 +33,7 @@ type RequestResponse struct {
 	Last int64 `json:"last"`
 }
 
+// GetLastRequests sends the last requests created in the unijobs service
 func (handler *RequestHandler) GetLastRequests(w http.ResponseWriter, r *http.Request) {
 	sizeStr := r.FormValue("size")
 	size, err := strconv.ParseInt(sizeStr, 10, 32)
