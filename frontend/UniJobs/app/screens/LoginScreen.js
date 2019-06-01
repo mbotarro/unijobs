@@ -37,8 +37,8 @@ export default class LoginScreen extends React.Component {
             (email, valid) => {
                 alert(email + ' ' + valid);
                 if (valid) {
-                    AsyncStorage.setItem(UniData.username, email).then(() => 
-                    navigate('Home')
+                    AsyncStorage.setItem(UniData.username, email).then(() =>
+                        navigate('Home')
                     ).catch();
                 }
             }
@@ -94,82 +94,24 @@ export default class LoginScreen extends React.Component {
         const LoginButton = () => (
             <Button
                 text={this.textStrings.login}
-                buttonStyle={{ paddingHorizontal: 83, paddingVertical: 10, marginTop: 20 }}
+                buttonStyle={{ marginHorizontal: 64, paddingVertical: 10, marginTop: 20 }}
                 onPress={() => this.onLogin(navigate)}
             />
         );
 
-        // Social Media Login components
-        const SocialMediaIcon = (name) => {
-            switch (name) {
-                case 'facebook': return require('../assets/icons/facebook.png');
-                case 'twitter': return require('../assets/icons/twitter.png');
-            }
-        };
+        const FacebookLogin = () => (
+            <SocialNetworkLoginButton name='facebook' onPress = {() => this.onFacebookLogin(navigate)} />
+        );
 
-        const SocialMediaCallback = (name) => {
-            switch (name) {
-                case 'facebook': return this.onFacebookLogin;
-                case 'twitter': return this.onTwitterLogin;
-            }
-        }
-
-        const SocialNetworkColor = (name) => {
-            switch (name) {
-                case 'facebook': return '#475993';
-                case 'twitter': return '#50ABF1';
-            }
-        }
-
-        const SocialNetworkText = (name) => {
-            switch (name) {
-                case 'facebook': return 'Conexão com Facebook';
-                case 'twitter': return 'Conexão com Twitter';
-            }
-        }
-
-        const SocialNetworkLogin = ({ name }) => {
-            return (
-                <TouchableHighlight
-                    onPress={SocialMediaCallback(name)}
-                    underlayColor={UniColors.light}
-                >
-                    <View style={{ 
-                        alignContent:       'center',
-                        flexDirection:      'row',
-                        alignSelf:          'stretch',
-                        paddingVertical:    10,
-                        paddingHorizontal:  20,
-                        backgroundColor:    SocialNetworkColor(name),
-                        borderRadius:       20, }}
-                        >
-                        
-                        <Image
-                            style={styles.extLoginIcon}
-                            source={SocialMediaIcon(name)}
-                        />
-                        <Text style={[
-                            UniStyles.text,
-                            {
-                                marginLeft: 36,
-                                textAlign: 'center',
-                                alignSelf: 'center',
-                                color: UniColors.white,
-                                fontWeight: 'bold',
-                            }]}
-                        >
-                            {SocialNetworkText(name)}
-                        </Text>
-                    </View>
-                </TouchableHighlight>
-            )
-        };
+        const TwitterLogin = () => (
+            <SocialNetworkLoginButton name='twitter' onPress = {() => this.onTwitterLogin(navigate)} />
+        );
 
         // Registration components
         const RegistrationButton = () => (
             <TouchableHighlight
                 underlayColor={UniColors.light}
-                buttonStyle={[{ marginTop: 8}, { paddingHorizontal: 30, paddingVertical: 10 }]}
+                buttonStyle={[{ marginTop: 8 }, { paddingHorizontal: 30, paddingVertical: 10 }]}
                 onPress={() => this.onRegister(navigate)}
             >
                 <View>
@@ -207,10 +149,9 @@ export default class LoginScreen extends React.Component {
                     </View>
 
                     <View style={{ marginTop: 51, marginHorizontal: 64 }}>
-                        <SocialNetworkLogin name='facebook' />
+                        <FacebookLogin />
                         <View style={{ marginTop: 10 }} />
-                        <SocialNetworkLogin name='twitter' />
-
+                        <TwitterLogin />
                     </View>
 
                     <View style={{ marginTop: 50, marginBottom: 44 }}>
@@ -220,7 +161,72 @@ export default class LoginScreen extends React.Component {
             </KeyboardAwareScrollView>
         );
     }
-}
+};
+
+
+
+class SocialNetworkLoginButton extends React.Component {
+    render() {
+        const { name, onPress } = this.props;
+
+        // Social Media Login components
+        const SocialMediaIcon = (name) => {
+            switch (name) {
+                case 'facebook': return require('../assets/icons/facebook.png');
+                case 'twitter': return require('../assets/icons/twitter.png');
+            }
+        };
+
+        const SocialNetworkColor = (name) => {
+            switch (name) {
+                case 'facebook': return '#475993';
+                case 'twitter': return '#50ABF1';
+            }
+        }
+
+        const SocialNetworkText = (name) => {
+            switch (name) {
+                case 'facebook': return 'Conexão com Facebook';
+                case 'twitter': return 'Conexão com Twitter';
+            }
+        }
+
+        return (
+            <TouchableHighlight
+                onPress={onPress}
+                underlayColor={UniColors.light}
+            >
+                <View style={{
+                    alignContent: 'center',
+                    flexDirection: 'row',
+                    alignSelf: 'stretch',
+                    paddingVertical: 10,
+                    backgroundColor: SocialNetworkColor(name),
+                    borderRadius: 20,
+                }}
+                >
+
+                    <Image
+                        style={[styles.extLoginIcon, {marginLeft: 20}]}
+                        source={SocialMediaIcon(name)}
+                    />
+                    <Text style={[
+                        UniStyles.text,
+                        {
+                            marginLeft: 36,
+                            textAlign: 'center',
+                            alignSelf: 'center',
+                            color: UniColors.white,
+                            fontWeight: 'bold',
+                        }]}
+                    >
+                        {SocialNetworkText(name)}
+                    </Text>
+                </View>
+            </TouchableHighlight>
+        )
+    };
+};
 
 
 const styles = StyleSheet.create({
@@ -246,7 +252,7 @@ const styles = StyleSheet.create({
     },
 
     extLoginIcon: {
-        width:  20,
+        width: 20,
         height: 20,
     },
 });
