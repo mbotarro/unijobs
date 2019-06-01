@@ -1,13 +1,15 @@
 "use strict";
 
 import React from 'react';
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+
+import MenuButton from '../components/MenuButton'
 
 
 export default class TestScreen extends React.Component {
     render() {
         return (
-            <Text> THIS IS A TEST </Text>
+            <MenuButton/>
         );
     }
 }
