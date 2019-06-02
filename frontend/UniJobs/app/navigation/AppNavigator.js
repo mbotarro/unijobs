@@ -6,9 +6,9 @@ import TestScreen from "../screens/TestScreen";
 
 const AppNavigator = createStackNavigator({
     // Only for testing
-    // Test: {
-    //     screen: TestScreen,
-    // },
+    Test: {
+        screen: TestScreen,
+    },
     Login: {
         screen: LoginScreen,
     },
