@@ -109,3 +109,29 @@ func TestGetLastRequestsBeforeTimestamp(t *testing.T) {
 		})
 	})
 }
+
+func TestInsertRequest(t *testing.T) {
+	// Get connection to test database and cleans it
+	db := tools.GetTestDB()
+	defer tools.CleanDB(db)
+	requestDAL := getRequestDAL(db)
+
+	// Create the fake request
+	var req models.Request
+	req.Name = "Requis Aula Calc"
+	req.Description = "Procuro aula de calculo"
+	req.ExtraInfo = "Informacao X"
+	req.MinPrice = 20
+	req.MaxPrice = 50
+
+	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234", "9999-1111")
+	c := tools.CreateFakeCategory(t, db, "Aula Matemática", "Matemática")
+	req.Userid = u.Userid
+	req.Categoryid = c.ID
+
+	// Executes the test query
+	err := requestDAL.InsertRequest(req)
+
+	// Checks the expected results
+	assert.Equal(t, nil, err)
+}
