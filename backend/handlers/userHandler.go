@@ -39,7 +39,8 @@ func NewUserHandler(userCtrl *usecases.UserController) *UserHandler {
 	}
 }
 
-func (handler *UserHandler) authenticateUser(w http.ResponseWriter, r *http.Request) {
+// AuthenticateUser returns if a user is in the DB or not. If he's in the DB, returns his ID as well
+func (handler *UserHandler) AuthenticateUser(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, fmt.Errorf("%s:%s", errors.ReadRequestBodyError, err.Error()).Error(), http.StatusBadRequest)
@@ -53,7 +54,7 @@ func (handler *UserHandler) authenticateUser(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	valid, err := handler.userController.AuthenticateUser(ua.Email, ua.Password)
+	valid, id, err := handler.userController.AuthenticateUser(ua.Email, ua.Password)
 	if err != nil {
 		http.Error(w, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error()).Error(), http.StatusInternalServerError)
 		return
@@ -61,6 +62,7 @@ func (handler *UserHandler) authenticateUser(w http.ResponseWriter, r *http.Requ
 
 	res := UserAuthenticationResponse{
 		Email: ua.Email,
+		ID:    id,
 		Valid: valid,
 	}
 

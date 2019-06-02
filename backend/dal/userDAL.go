@@ -18,14 +18,26 @@ func NewUserDAL(db *sqlx.DB) *UserDAL {
 }
 
 // AuthenticateUser returns if an user is a valid one
-func (dal *UserDAL) AuthenticateUser(email, password string) (bool, error) {
+// It also returns the user id if he's a valid user
+func (dal *UserDAL) AuthenticateUser(email, password string) (bool, int, error) {
 	var c int
 	err := dal.db.Get(&c, "SELECT COUNT(1) FROM userdata WHERE email = $1 AND password = $2", email, password)
 	if err != nil {
-		return false, err
+		return false, -1, err
 	}
 
-	return c == 1, nil
+	if c != 1 {
+		return false, -1, nil
+	}
+
+	var id int
+	err = dal.db.Get(&id,
+		`SELECT userid FROM userdata WHERE email = $1 AND password = $2`, email, password)
+	if err != nil {
+		return false, -1, err
+	}
+
+	return true, id, nil
 }
 
 // GetUserInfo returns information about an user given his/her ID

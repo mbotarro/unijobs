@@ -17,12 +17,50 @@
 ```
 
 #### Expected Reponse
+
+##### Valid User
+
 ```
 {
     email: user@user.com
-    valid: <bool>
+    id: <int>
+    valid: true
 }
 ```
+
+##### Invalid User
+
+```
+{
+    email: user@user.com
+    id: -1
+    valid: false
+}
+```
+
+## Get User Info
+
+### GET
+
+```
+/users?id=<int>
+```
+
+#### Expected Reponse
+
+```
+{
+  "Username": "user",
+  "Password": "1234",
+  "Email": "user@gmail.com",
+  "Address": "",
+  "Telephone": "1234-1234",
+  "Userid": 2,
+  "Student": true
+}
+```
+
+##### Invalid User
 
 # Request API
 

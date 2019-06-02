@@ -19,7 +19,8 @@ func NewUserController(db *sqlx.DB) *UserController {
 }
 
 // AuthenticateUser returns if an user is a valid one
-func (uc *UserController) AuthenticateUser(email, password string) (bool, error) {
+// It also returns the user id if he's a valid user
+func (uc *UserController) AuthenticateUser(email, password string) (bool, int, error) {
 	return uc.userDAL.AuthenticateUser(email, password)
 }
 
