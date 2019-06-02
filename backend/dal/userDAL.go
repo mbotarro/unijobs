@@ -1,6 +1,8 @@
 package dal
 
 import (
+	"time"
+
 	"github.com/jmoiron/sqlx"
 	"github.com/mbotarro/unijobs/backend/models"
 )
@@ -49,4 +51,20 @@ func (dal *UserDAL) GetUserInfo(id int) (models.User, error) {
 	}
 
 	return u, nil
+}
+
+// GetUserRequests get all requests created by a user
+// The before parameter is used for pagination. Only the requests created before the time passed by before are returned.
+// size limits the number of fetched requests
+func (dal *UserDAL) GetUserRequests(id int, before time.Time, size int) ([]models.Request, error) {
+	reqs := []models.Request{}
+	err := dal.db.Select(&reqs,
+		`SELECT * FROM request WHERE userid = $1 AND timestamp < $2
+			ORDER BY timestamp DESC
+			LIMIT $3`, id, before.UTC(), size)
+	if err != nil {
+		return nil, err
+	}
+
+	return reqs, nil
 }

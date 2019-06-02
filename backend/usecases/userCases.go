@@ -1,6 +1,8 @@
 package usecases
 
 import (
+	"time"
+
 	"github.com/jmoiron/sqlx"
 	"github.com/mbotarro/unijobs/backend/dal"
 	"github.com/mbotarro/unijobs/backend/models"
@@ -27,4 +29,11 @@ func (uc *UserController) AuthenticateUser(email, password string) (bool, int, e
 // GetUserInfo gets all the information about an user given his/her id
 func (uc *UserController) GetUserInfo(id int) (models.User, error) {
 	return uc.userDAL.GetUserInfo(id)
+}
+
+// GetUserRequests get all requests created by a user
+// The before parameter is used for pagination. Only the requests created before the time passed by before are returned.
+// size limits the number of fetched requests
+func (uc *UserController) GetUserRequests(id int, before time.Time, size int) ([]models.Request, error) {
+	return uc.userDAL.GetUserRequests(id, before, size)
 }

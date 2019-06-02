@@ -19,7 +19,7 @@ func TestGetLastRequests(t *testing.T) {
 	db := tools.GetTestDB()
 	defer tools.CleanDB(db)
 
-	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234")
+	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234", "9999-1111")
 	c := tools.CreateFakeCategory(t, db, "Aula Matemática", "Matemática")
 
 	reqs := []models.Request{
@@ -65,7 +65,7 @@ func TestGetLastRequestsBeforeTimestamp(t *testing.T) {
 	db := tools.GetTestDB()
 	defer tools.CleanDB(db)
 
-	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234")
+	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234", "9999-1111")
 	c := tools.CreateFakeCategory(t, db, "Aula Matemática", "Matemática")
 
 	reqs := []models.Request{
