@@ -1,5 +1,5 @@
-insert into userdata(username, password, email, telephone, student) values ('Estevam', 'senhateste','estevam@estevam', '3258', TRUE);
-insert into userdata(username, password, email, telephone, student) values ('user', '1234','user@gmail.com', '1234-1234', TRUE);
+insert into userdata(username, password, email, address, telephone, student) values ('Estevam', 'senhateste','estevam@estevam', '', '3258', TRUE);
+insert into userdata(username, password, email, address, telephone, student) values ('user', '1234','user@gmail.com', '', '1234-1234', TRUE);
 insert into category(name) values('Aula de Matematica');
 insert into category(name) values('Aula de Ingles');
 -- insert into offer(name, userid, categoryid) values ('Aula basica', 1, 2);

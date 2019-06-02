@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/mbotarro/unijobs/backend/errors"
 	"github.com/mbotarro/unijobs/backend/models"
@@ -27,6 +28,7 @@ type UserAuthentication struct {
 // UserAuthenticationResponse contains the authentication response sent to the frontend
 type UserAuthenticationResponse struct {
 	Email string `json:"email"`
+	ID    int    `json:"id"`
 	Valid bool   `json:"valid"`
 }
 
@@ -37,7 +39,8 @@ func NewUserHandler(userCtrl *usecases.UserController) *UserHandler {
 	}
 }
 
-func (handler *UserHandler) authenticateUser(w http.ResponseWriter, r *http.Request) {
+// AuthenticateUser returns if a user is in the DB or not. If he's in the DB, returns his ID as well
+func (handler *UserHandler) AuthenticateUser(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, fmt.Errorf("%s:%s", errors.ReadRequestBodyError, err.Error()).Error(), http.StatusBadRequest)
@@ -51,7 +54,7 @@ func (handler *UserHandler) authenticateUser(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	valid, err := handler.userController.AuthenticateUser(ua.Email, ua.Password)
+	valid, id, err := handler.userController.AuthenticateUser(ua.Email, ua.Password)
 	if err != nil {
 		http.Error(w, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error()).Error(), http.StatusInternalServerError)
 		return
@@ -59,10 +62,29 @@ func (handler *UserHandler) authenticateUser(w http.ResponseWriter, r *http.Requ
 
 	res := UserAuthenticationResponse{
 		Email: ua.Email,
+		ID:    id,
 		Valid: valid,
 	}
 
 	tools.WriteStructOnHTTPResponse(res, w)
+}
+
+// GetUserInfo returns all the information about an user
+func (handler *UserHandler) GetUserInfo(w http.ResponseWriter, r *http.Request) {
+	idStr := r.FormValue("id")
+	id, err := strconv.ParseInt(idStr, 10, 32)
+	if err != nil {
+		http.Error(w, fmt.Errorf("%s:%s", errors.QueryParameterError, err.Error()).Error(), http.StatusBadRequest)
+		return
+	}
+
+	u, err := handler.userController.GetUserInfo(int(id))
+	if err != nil {
+		http.Error(w, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error()).Error(), http.StatusInternalServerError)
+		return
+	}
+
+	tools.WriteStructOnHTTPResponse(u, w)
 }
 
 func createUserHandler(w http.ResponseWriter, r *http.Request) {
