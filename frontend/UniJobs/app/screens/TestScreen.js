@@ -1,21 +1,26 @@
 "use strict";
 
 import React from 'react';
-import { StyleSheet, Text, TextInput, View, Image, ScrollView } from 'react-native';
+import { StyleSheet, Text, TextInput, View, Image, ScrollView, TouchableHighlight } from 'react-native';
 
 import ItemMiniCard from '../components/ItemMiniCard';
 import { populateRequestMiniCards } from '../components/FeedMiniCards';
 
 import UniStyles from '../constants/UniStyles'
-import UniData from '../constants/UniData'
 import UniColors from '../constants/UniColors'
+import UniText from '../constants/UniText'
+import UniData from '../constants/UniData'
 
 
 export default class TestScreen extends React.Component {
     static navigationOptions = { header: null };
-
+    
     state = {
         // use for store data
+    }
+
+    textStrings = {
+        searchBarPlaceHolder: 'Buscar Solicitações',
     }
 
 
@@ -23,17 +28,71 @@ export default class TestScreen extends React.Component {
         // use for fetching data to show
     }
 
+    onMenuButtonPress(navigate) {
+        alert('TODO: Integrate with menu (Bruna)');
+    }
+
+    onSearchBarChangeText(navigate, text) {
+
+    }
+
+    onSearch (navigate) {
+        alert('TODO: Search ');
+    }
+
+
     render() {
+        const { navigate } = this.props.navigation;
+
+        const menuButton = (
+            <TouchableHighlight
+                underlayColor={UniColors.main}
+                onPress={() => this.onMenuButtonPress(navigate)}
+                style={styles.menuButton}
+            >
+                <Image source={require('../assets/icons/line-menu.png')} />
+            </TouchableHighlight>
+        );
+
+        const searchBar = (
+            <View style = {styles.searchBarView} >
+                <TextInput
+                    style={styles.searchBarText}
+                    placeholder={this.textStrings.searchBarPlaceHolder}
+                    onChangeText={(text) => { this.onSearchBarChangeText(navigate, text) }}
+                    onSubmitEditing={(event) => this.onSearch(navigate)}
+                />
+                <TouchableHighlight
+                    underlayColor= {UniColors.transparent}
+                    onPress = {(event) => this.onSearch(navigate)}
+                >
+                    <Image
+                        source={require('../assets/icons/search.png')}
+                        style = {styles.searchBarIcon}
+                    />
+                </TouchableHighlight>
+            </View>
+        );
+
+        const searchHeader = (
+            <View style={styles.searchHeader} >
+                {menuButton}
+                {searchBar}
+            </View>
+        );
 
         const miniCards = populateRequestMiniCards(testRequests);
 
         return (
-            <ScrollView contentContainerStyle = { styles.container }>
-                <Text style={UniStyles.text}>
-                    Welcome to UniJobs!
-                </Text>
-                { miniCards }
-            </ScrollView>
+            <View style={{ flex: 1 }} >
+                {searchHeader}
+                <ScrollView contentContainerStyle={styles.container}>
+                    <Text style={UniStyles.text}>
+                        Welcome to UniJobs!
+                    </Text>
+                    {miniCards}
+                </ScrollView>
+            </View>
         );
     }
 }
@@ -46,6 +105,48 @@ const styles = StyleSheet.create({
         alignSelf: 'stretch',
         justifyContent: 'center',
     },
+
+    searchHeader : {
+        flexDirection: 'row',
+        alignSelf: 'stretch',
+        backgroundColor: UniColors.main,
+    },
+
+    menuButton: {
+        marginTop: 38,
+        marginLeft: 20,
+        marginBottom: 14,
+    },
+
+    searchBarView : {
+        backgroundColor: UniColors.light,
+        borderRadius:   25,
+
+        height:         30,
+        marginLeft:     20,
+        marginRight:    20,
+        marginTop:      35,
+        flex:           1,
+        flexDirection:  'row',
+        justifyContent: 'space-between',
+    },
+
+    searchBarText: {
+        paddingLeft:    15,
+        paddingRight:   5,
+        paddingVertical:      6,
+        flexGrow: 1,
+        width: 0,
+
+        fontSize:       UniText.normal,
+        color:          UniColors.dark,
+        textAlign:      'left',
+    },
+
+    searchBarIcon: {
+        marginRight:    15,
+        marginTop:      7,
+    }
 });
 
 
