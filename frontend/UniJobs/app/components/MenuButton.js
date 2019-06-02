@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
     Animated,
     View,
-    Text,
     TouchableWithoutFeedback,
     StyleSheet,
     Image,
@@ -27,8 +26,6 @@ export default class MenuButton extends Component {
     }
 
     render() {
-        const { text, onPress, buttonStyle, textStyle } = this.props;
-
         const bgStyle = {
             transform: [{
                 scale: this.state.animation.interpolate({
@@ -102,7 +99,6 @@ export default class MenuButton extends Component {
 
                 <TouchableWithoutFeedback onPress={this.toggleOpen}>
                     <View style={[styles.button, styles.pay]}>
-                        {/* <Animated.Text style={[styles.label, labelStyle]}>Add</Animated.Text> */}
                         <Image 
                             source={require('../assets/icons/add.png')}
                             style={styles.ImageIconStyle}
