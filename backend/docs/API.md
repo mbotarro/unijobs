@@ -43,7 +43,7 @@
 ### GET
 
 ```
-/users?id=<int>
+/users/<id>
 ```
 
 #### Expected Reponse

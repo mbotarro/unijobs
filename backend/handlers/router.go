@@ -27,8 +27,7 @@ func NewRouter(ctrl *usecases.Controller) *mux.Router {
 	route.r.Path("/users/authenticate").
 		HandlerFunc(userHandler.AuthenticateUser).
 		Methods("POST")
-	route.r.Path("/users").
-		Queries("id", "{id:[0-9]*}").
+	route.r.Path("/users/{id:[0-9]*}").
 		HandlerFunc(userHandler.GetUserInfo).
 		Methods("GET")
 

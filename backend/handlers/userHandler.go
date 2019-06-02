@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/gorilla/mux"
 	"github.com/mbotarro/unijobs/backend/errors"
 	"github.com/mbotarro/unijobs/backend/models"
 	"github.com/mbotarro/unijobs/backend/tools"
@@ -71,7 +72,8 @@ func (handler *UserHandler) AuthenticateUser(w http.ResponseWriter, r *http.Requ
 
 // GetUserInfo returns all the information about an user
 func (handler *UserHandler) GetUserInfo(w http.ResponseWriter, r *http.Request) {
-	idStr := r.FormValue("id")
+	vars := mux.Vars(r)
+	idStr := vars["id"]
 	id, err := strconv.ParseInt(idStr, 10, 32)
 	if err != nil {
 		http.Error(w, fmt.Errorf("%s:%s", errors.QueryParameterError, err.Error()).Error(), http.StatusBadRequest)
