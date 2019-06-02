@@ -74,8 +74,12 @@ const styles = StyleSheet.create({
 
     textContainer: {
         marginLeft:     20,
-        marginRight:    115,
+        marginRight:    20,
         alignSelf:      'center',
+        
+        // !!! GAMBIARRA PARA CONCERTAR O MARGIN RIGHT QUEBRADO DO REACT NATIVE QUANDO FLEX ESTÁ EM ROW!
+        width:          0,
+        flexGrow:       1,
     },
 
     titleText: {
