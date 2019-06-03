@@ -40,10 +40,27 @@ export default class TestScreen extends React.Component {
         alert('TODO: Search ');
     }
 
+    onMyFeedPress(navigate) {
+        alert('TODO: Hide feed');
+    }
+
+    onMyFeedFilterPress(navigate) {
+        alert('TODO: Filters');
+    }
+
+    onAllFeedPress(navigate) {
+        alert('TODO: Hide feed');
+    }
+
+    onAllFeedFilterPress(navigate) {
+        alert('TODO: Filters');
+    }
+
 
     render() {
         const { navigate } = this.props.navigation;
 
+        // header
         const menuButton = (
             <TouchableHighlight
                 underlayColor={UniColors.main}
@@ -81,15 +98,58 @@ export default class TestScreen extends React.Component {
             </View>
         );
 
+        // feed headers
+        const feedHeader = (text, onPress, onFilter, showFilter) => {
+            return (
+            <View style = {styles.feedBar}>
+                <TouchableHighlight 
+                    underlayColor = {UniColors.transparent}
+                    onPress = {() => onPress(navigate)}
+                    style={{flexGrow: 1, alignSelf: 'stretch'}}
+                >
+                    <View style={{flexDirection: 'row'}}>
+                        <Image
+                            source = {require('../assets/icons/arrow-down.png')}
+                            style = {styles.feedBarLeftIcon}
+                        />
+                        <Text style = {styles.feedBarText}>
+                            {text}
+                        </Text>
+                    </View>
+                </TouchableHighlight>
+                {
+                    showFilter ?
+                    <TouchableHighlight
+                        underlayColor = {UniColors.transparent}
+                        onPress = {() => onFilter(navigate)}
+                        style = {styles.feedBarRightIcon}
+                    >
+                        <Image
+                            source = {require('../assets/icons/controls.png')}
+                        />
+                    </TouchableHighlight>
+                    :
+                    <View />
+                }
+            </View>
+        )};
+
+        const myFeedHeader = feedHeader('Novas Solicitações', this.onMyFeedPress, this.onMyFeedFilterPress, false);
+        
+        const generalFeedHeader = feedHeader('Novas Solicitações', this.onAllFeedPress, this.onAllFeedFilterPress, true);
+        
+        // feed
         const miniCards = populateRequestMiniCards(testRequests);
 
         return (
-            <View style={{ flex: 1 }} >
-                {searchHeader}
-                <ScrollView contentContainerStyle={styles.container}>
-                    <Text style={UniStyles.text}>
-                        Welcome to UniJobs!
-                    </Text>
+            <View style={styles.container} >
+                <View style = {styles.headerContainer}>
+                    {searchHeader}
+                    {myFeedHeader}
+                    <View style = {{marginTop: 2}} />
+                    {generalFeedHeader}
+                </View>
+                <ScrollView contentContainerStyle={styles.feedContainer}>
                     {miniCards}
                 </ScrollView>
             </View>
@@ -100,26 +160,34 @@ export default class TestScreen extends React.Component {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        alignContent: 'center',
-        alignSelf: 'stretch',
-        justifyContent: 'center',
+        flex:           1,
+        alignSelf:      'stretch',
+    },
+
+    headerContainer: {
+        zIndex:         1
+    },
+
+    feedContainer: {
+        paddingTop:      2,
+        paddingBottom:   5,
+        alignSelf:      'stretch',
     },
 
     searchHeader : {
-        flexDirection: 'row',
-        alignSelf: 'stretch',
+        flexDirection:   'row',
+        alignSelf:       'stretch',
         backgroundColor: UniColors.main,
     },
 
     menuButton: {
-        marginTop: 38,
-        marginLeft: 20,
-        marginBottom: 14,
+        marginTop:      38,
+        marginLeft:     20,
+        marginBottom:   14,
     },
 
     searchBarView : {
-        backgroundColor: UniColors.light,
+        backgroundColor:UniColors.light,
         borderRadius:   25,
 
         height:         30,
@@ -134,9 +202,9 @@ const styles = StyleSheet.create({
     searchBarText: {
         paddingLeft:    15,
         paddingRight:   5,
-        paddingVertical:      6,
-        flexGrow: 1,
-        width: 0,
+        paddingVertical:6,
+        flexGrow:       1,
+        width:          0,
 
         fontSize:       UniText.normal,
         color:          UniColors.dark,
@@ -146,6 +214,37 @@ const styles = StyleSheet.create({
     searchBarIcon: {
         marginRight:    15,
         marginTop:      7,
+    },
+
+    feedBar: {
+        flexDirection:  'row',
+
+        backgroundColor:UniColors.white,
+        alignSelf:      'stretch', 
+        
+        shadowOffset:   { width: 0, height: 2 },
+        shadowRadius :  2,
+        shadowColor:    UniColors.black,
+        shadowOpacity:  0.16,
+    },
+
+    feedBarLeftIcon: {
+        marginLeft:     23,
+        marginVertical: 10,
+    },
+
+    feedBarRightIcon: {
+        marginRight:    23,
+        marginVertical: 8,
+    },
+
+    feedBarText: {
+        marginLeft:     22,
+        flexGrow:       1,
+
+        fontSize:       UniText.big,
+        color:          UniColors.dark,
+        marginVertical: 10,
     }
 });
 
@@ -197,6 +296,46 @@ const testRequests = [
         MaxPrice: '30',
         UserId : 0,
         CategoryId : 3,
+    },
+    {
+        ID : 4,
+        Name : 'Aula de Mandarim',
+        Description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
+        ExtraInfo : '',
+        MinPrice : '80',
+        MaxPrice: '80',
+        UserId : 0,
+        CategoryId : 2,
+    },
+    {
+        ID : 4,
+        Name : 'Aula de Mandarim',
+        Description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
+        ExtraInfo : '',
+        MinPrice : '80',
+        MaxPrice: '80',
+        UserId : 0,
+        CategoryId : 2,
+    },
+    {
+        ID : 4,
+        Name : 'Aula de Mandarim',
+        Description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
+        ExtraInfo : '',
+        MinPrice : '80',
+        MaxPrice: '80',
+        UserId : 0,
+        CategoryId : 2,
+    },
+    {
+        ID : 4,
+        Name : 'Aula de Mandarim',
+        Description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
+        ExtraInfo : '',
+        MinPrice : '80',
+        MaxPrice: '80',
+        UserId : 0,
+        CategoryId : 2,
     },
     {
         ID : 4,

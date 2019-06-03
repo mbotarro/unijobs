@@ -9,7 +9,7 @@ import UniColors from '../constants/UniColors'
 function populateRequestMiniCards(requests) {
     return (
         requests.map((req, index) => (
-        <View key = {index} style = {{marginTop: 5}} >
+        <View key = {index} style = {{marginTop: 3}} >
             {populateRequestMiniCard(req)}
         </View>
     )));

@@ -52,7 +52,7 @@ ItemMiniCard.propTypes = {
 const styles = StyleSheet.create({
     container: {
         height:             130,
-        borderRadius:       20,
+        borderRadius:       10,
         
         marginHorizontal:   7,
         alignContent:       'center',
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
         backgroundColor:    UniColors.white,
         
         shadowOffset:       { width: 0, height: 2 },
-        shadowRadius :      6,
+        shadowRadius :      3,
         shadowColor:        UniColors.black,
         shadowOpacity:      0.16,
     },
