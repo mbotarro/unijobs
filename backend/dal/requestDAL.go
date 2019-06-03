@@ -61,7 +61,7 @@ func (dal *RequestDAL) InsertRequest(request models.Request) error {
 	fmt.Println(request.Categoryid)
 	fmt.Println(request.Timestamp)
 
-	err := dal.db.MustExec(insertQuery, request.Name, request.Description, request.ExtraInfo, request.MinPrice, request.MaxPrice, request.Userid, request.Categoryid, request.Timestamp)
+	_, err := dal.db.Exec(insertQuery, request.Name, request.Description, request.ExtraInfo, request.MinPrice, request.MaxPrice, request.Userid, request.Categoryid, request.Timestamp)
 
 	// Checks if any error happened during the query execution
 	if err != nil {
