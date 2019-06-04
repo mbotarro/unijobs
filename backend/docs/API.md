@@ -71,7 +71,7 @@
 One must provide the number of requests that should be sent.
 
 ```
-/requests/size=2
+/requests?size=2
 ```
 
 #### Expected Reponse
@@ -111,7 +111,7 @@ One must provide the number of requests that should be sent.
 The **last** parameter is a cursor used for pagination. If you want to get the next 2 requests, you can send
 
 ```
-/requests/size=2&before=1559318397
+/requests?size=2&before=1559318397
 ```
 
 You'll get
