@@ -7,14 +7,18 @@ import UniColors from "../constants/UniColors";
 
 import TestScreen from "../screens/TestScreen";
 import HomeScreen from "../screens/HomeScreen";
+import FeedRequestScreen from "../screens/FeedRequestScreen"
 
 
 export default FeedNavigator = createBottomTabNavigator({
-    Test: {
-        screen: TestScreen,
+    FeedRequest : {
+        screen : FeedRequestScreen,
     },
     Home: {
         screen: HomeScreen,
+    },
+    Test: {
+        screen: TestScreen,
     },
 }, {
     tabBarOptions: {
