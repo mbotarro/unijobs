@@ -144,16 +144,17 @@ func TestInsertRequest(t *testing.T) {
 	req.Categoryid = c.ID
 
 	// Executes the test query
-	reqInserted, err := requestDAL.InsertRequest(req)
+	err := requestDAL.InsertRequest(req)
 
 	// Checks the expected results
 	assert.Equal(t, nil, err)
 
+	// Checks if the request was inserted successfully
 	t.Run("size 1", func(t *testing.T) {
 		gotReqs, err := requestDAL.GetLastRequests(time.Now().Add(-time.Hour), 1)
 		assert.Equal(t, nil, err)
 
-		equalReqs := CompareRequests(gotReqs[0], reqInserted)
+		equalReqs := CompareRequests(gotReqs[0], req)
 		assert.Equal(t, equalReqs, true)
 	})
 }
