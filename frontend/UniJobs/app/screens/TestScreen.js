@@ -3,7 +3,6 @@
 import React from 'react';
 import { StyleSheet, Text, TextInput, View, Image, ScrollView, TouchableHighlight } from 'react-native';
 
-import ItemMiniCard from '../components/ItemMiniCard';
 import { populateRequestMiniCards } from '../components/FeedMiniCards';
 
 import UniStyles from '../constants/UniStyles'
@@ -13,7 +12,7 @@ import UniData from '../constants/UniData'
 
 
 export default class TestScreen extends React.Component {
-    static navigationOptions = { header: null };
+    static navigationOptions = { title: 'Solicitações' };
     
     state = {
         // use for store data
