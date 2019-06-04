@@ -1,7 +1,7 @@
 "use strict";
 
 import React from 'react';
-import { StyleSheet, Text, TextInput, View, Image, ScrollView, TouchableHighlight } from 'react-native';
+import { StyleSheet, Text, TextInput, View, Image, ScrollView, TouchableHighlight, ActivityIndicator } from 'react-native';
 
 import { populateRequestMiniCards } from '../components/FeedMiniCards';
 
@@ -15,16 +15,24 @@ export default class FeedRequestScreen extends React.Component {
     static navigationOptions = { title: 'Solicitações' };
     
     state = {
-        // use for store data
+        isLoading : true,
+        isMyFeedOpen: false,
+        searchBarText: '',
+        allFeedRequests: {},
+        myFeedRequests: {},
     }
 
     textStrings = {
         searchBarPlaceHolder: 'Buscar Solicitações',
+        myFeedHeader: 'Minhas Solicitações',
+        allFeedHeader: 'Últimas Solicitações'
     }
 
 
     async componentDidMount() {
         // use for fetching data to show
+        this.setState({isLoading: false});
+        this.setState({allFeedRequests: testRequests});
     }
 
     onMenuButtonPress(navigate) {
@@ -32,26 +40,28 @@ export default class FeedRequestScreen extends React.Component {
     }
 
     onSearchBarChangeText(navigate, text) {
-
+        this.setState({searchBarText: text})
     }
 
     onSearch (navigate) {
         alert('TODO: Search ');
     }
 
-    onMyFeedPress(navigate) {
-        alert('TODO: Hide feed');
+    onMyFeedPress(self, navigate) {
+        // !! self here is because something is overriding 'this', and
+        // I don't know why! (maybe the arrow function... :/)
+        self.setState({isMyFeedOpen: !self.state.isMyFeedOpen})
     }
 
-    onMyFeedFilterPress(navigate) {
+    onMyFeedFilterPress(self, navigate) {
         alert('TODO: Filters');
     }
 
-    onAllFeedPress(navigate) {
+    onAllFeedPress(self, navigate) {
         alert('TODO: Hide feed');
     }
 
-    onAllFeedFilterPress(navigate) {
+    onAllFeedFilterPress(self, navigate) {
         alert('TODO: Filters');
     }
 
@@ -98,19 +108,24 @@ export default class FeedRequestScreen extends React.Component {
         );
 
         // feed headers
-        const feedHeader = (text, onPress, onFilter, showFilter) => {
+        const feedHeader = (text, onPress, onFilter, showFilter, showDropDown) => {
             return (
             <View style = {styles.feedBar}>
                 <TouchableHighlight 
                     underlayColor = {UniColors.transparent}
-                    onPress = {() => onPress(navigate)}
+                    onPress = {() => onPress(this, navigate)}
                     style={{flexGrow: 1, alignSelf: 'stretch'}}
                 >
                     <View style={{flexDirection: 'row'}}>
-                        <Image
-                            source = {require('../assets/icons/arrow-down.png')}
-                            style = {styles.feedBarLeftIcon}
-                        />
+                        {
+                            showDropDown ?
+                                <Image
+                                    source = {require('../assets/icons/arrow-down.png')}
+                                    style = {styles.feedBarLeftIcon}
+                                />
+                                :
+                                <View style = {{marginLeft: 43}} />
+                        }
                         <Text style = {styles.feedBarText}>
                             {text}
                         </Text>
@@ -118,38 +133,61 @@ export default class FeedRequestScreen extends React.Component {
                 </TouchableHighlight>
                 {
                     showFilter ?
-                    <TouchableHighlight
-                        underlayColor = {UniColors.transparent}
-                        onPress = {() => onFilter(navigate)}
-                        style = {styles.feedBarRightIcon}
-                    >
-                        <Image
-                            source = {require('../assets/icons/controls.png')}
-                        />
-                    </TouchableHighlight>
-                    :
-                    <View />
+                        <TouchableHighlight
+                            underlayColor = {UniColors.transparent}
+                            onPress = {() => onFilter(navigate)}
+                            style = {styles.feedBarRightIcon}
+                        >
+                            <Image
+                                source = {require('../assets/icons/controls.png')}
+                            />
+                        </TouchableHighlight>
+                        :
+                        null
                 }
             </View>
         )};
 
-        const myFeedHeader = feedHeader('Novas Solicitações', this.onMyFeedPress, this.onMyFeedFilterPress, false);
+        const myFeedHeader = feedHeader(
+            this.textStrings.myFeedHeader,
+            this.onMyFeedPress,
+            this.onMyFeedFilterPress,
+            this.state.isMyFeedOpen,
+            !this.state.isMyFeedOpen
+        );
         
-        const generalFeedHeader = feedHeader('Novas Solicitações', this.onAllFeedPress, this.onAllFeedFilterPress, true);
+        const allFeedHeader = feedHeader(
+            this.textStrings.allFeedHeader,
+            this.onAllFeedPress,
+            this.onAllFeedFilterPress,
+            !this.state.isMyFeedOpen,
+            this.state.isMyFeedOpen
+        );
         
         // feed
-        const miniCards = populateRequestMiniCards(testRequests);
+        const feedView = this.state.isLoading ?
+            <ActivityIndicator style = {{marginTop: 10}}/>
+            :
+            populateRequestMiniCards(
+                this.state.isMyFeedOpen ? this.state.myFeedRequests :  this.state.allFeedRequests
+            );
 
         return (
             <View style={styles.container} >
                 <View style = {styles.headerContainer}>
                     {searchHeader}
                     {myFeedHeader}
-                    <View style = {{marginTop: 2}} />
-                    {generalFeedHeader}
+                    {
+                        !this.state.isMyFeedOpen ?
+                        <View style = {{marginTop: 2}}>
+                            {allFeedHeader}
+                        </View>
+                        :
+                        null
+                    }
                 </View>
                 <ScrollView contentContainerStyle={styles.feedContainer}>
-                    {miniCards}
+                    {feedView}
                 </ScrollView>
             </View>
         );

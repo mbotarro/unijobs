@@ -20,7 +20,8 @@ export default FeedNavigator = createBottomTabNavigator({
     Test: {
         screen: TestScreen,
     },
-}, {
+},
+{
     tabBarOptions: {
         activeTintColor: UniColors.main,
         inactiveTintColor: UniColors.dark_grey,
