@@ -45,5 +45,8 @@ func NewRouter(ctrl *usecases.Controller) *mux.Router {
 	// Categories API
 	route.r.HandleFunc("/categories", categoryHandler.getAllCategories).Methods("GET")
 
+	// Categories API
+	route.r.HandleFunc("/categories", categoryHandler.getAllCategories).Methods("GET")
+
 	return &route.r
 }

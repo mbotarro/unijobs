@@ -22,12 +22,11 @@ func NewCategoryHandler(categoryCtrl *usecases.CategoryController) *CategoryHand
 }
 
 func (handler *CategoryHandler) getAllCategories(w http.ResponseWriter, r *http.Request) {
-	valid, err := handler.categoryController.GetAllCategories()
+	categories, err := handler.categoryController.GetAllCategories()
 	if err != nil {
 		http.Error(w, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error()).Error(), http.StatusInternalServerError)
 		return
 	}
 
-	fmt.Println("CATS", valid)
-	tools.WriteStructOnHTTPResponse(valid[0], w)
+	tools.WriteStructOnHTTPResponse(categories, w)
 }
