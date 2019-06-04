@@ -47,7 +47,7 @@ func TestGetLastRequest(t *testing.T) {
 	})
 
 	// Populate the database with some fake requests
-	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234")
+	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234", "9999-1111")
 	c := tools.CreateFakeCategory(t, db, "Aula Matemática", "Matemática")
 
 	reqs := []models.Request{

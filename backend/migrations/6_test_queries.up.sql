@@ -1,8 +1,5 @@
 insert into userdata(username, password, email, address, telephone, student) values ('Estevam', 'senhateste','estevam@estevam', '', '3258', TRUE);
 insert into userdata(username, password, email, address, telephone, student) values ('user', '1234','user@gmail.com', '', '1234-1234', TRUE);
-insert into category(name) values('Aula de Matematica');
-insert into category(name) values('Aula de Ingles');
--- insert into offer(name, userid, categoryid) values ('Aula basica', 1, 2);
 insert into request (name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp ) values ('Aula', 'Calculo I', '', 20, 40, 1, 1, NOW() - INTERVAL '10 HOUR');
 insert into request (name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp ) values ('Aula', 'Calculo II', '', 20, 40, 1, 1, NOW() - INTERVAL '9 HOUR');
 insert into request (name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp ) values ('Aula', 'Calculo III', '', 20, 40, 1, 1, NOW() - INTERVAL '8 HOUR');

@@ -42,13 +42,13 @@ const (
 )
 
 // CreateFakeUser inserts a fake user in the db
-func CreateFakeUser(t *testing.T, db *sqlx.DB, name, email, password string) models.User {
+func CreateFakeUser(t *testing.T, db *sqlx.DB, name, email, password, telephone string) models.User {
 	u := models.User{
 		Username:  name,
 		Password:  password,
 		Email:     email,
 		Address:   "USP SC",
-		Telephone: "(11)98765-12345",
+		Telephone: telephone,
 		Student:   true,
 	}
 
