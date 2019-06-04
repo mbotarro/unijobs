@@ -17,7 +17,7 @@ func NewCategoryDAL(db *sqlx.DB) *CategoryDAL {
 	}
 }
 
-// GelAllCategories return ALL categories from category_table
+// GetAllCategories return ALL categories from category_table
 func (dal *CategoryDAL) GetAllCategories() ([]models.Category, error) {
 	categories := []models.Category{}
 	err := dal.db.Select(&categories, "SELECT * FROM category ORDER BY id ASC")

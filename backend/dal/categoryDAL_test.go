@@ -16,17 +16,6 @@ const (
 	getCategory    = `SELECT * FROM category WHERE name = $1`
 )
 
-func createFakeCategory(t *testing.T, db *sqlx.DB, name, description string) *models.Category {
-	c := models.Category{}
-
-	db.MustExec(insertCategory, name, description)
-
-	err := db.Get(&c, getCategory, name)
-	assert.Equal(t, err, nil)
-
-	return &c
-}
-
 func getCategoryDAL(db *sqlx.DB) *dal.CategoryDAL {
 	return dal.NewCategoryDAL(db)
 }
@@ -37,10 +26,10 @@ func TestGetAllCategories(t *testing.T) {
 
 	categoryDAL := getCategoryDAL(db)
 
-	cats := []*models.Category{
-		createFakeCategory(t, db, "Aula.Matemática", "Aula de Matemática"),
-		createFakeCategory(t, db, "Aula.Português", "Aula de Português"),
-		createFakeCategory(t, db, "Aula.Música", "Aula de Música"),
+	cats := []models.Category{
+		tools.CreateFakeCategory(t, db, "Aula.Matemática", "Aula de Matemática"),
+		tools.CreateFakeCategory(t, db, "Aula.Português", "Aula de Português"),
+		tools.CreateFakeCategory(t, db, "Aula.Música", "Aula de Música"),
 	}
 
 	categories, err := categoryDAL.GetAllCategories()
