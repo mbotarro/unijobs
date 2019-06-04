@@ -110,6 +110,20 @@ func TestGetLastRequestsBeforeTimestamp(t *testing.T) {
 	})
 }
 
+func CompareRequests(req1, req2 models.Request) bool {
+	equalReqs := true
+
+	equalReqs = equalReqs && (req1.Name == req2.Name)
+	equalReqs = equalReqs && (req1.Description == req2.Description)
+	equalReqs = equalReqs && (req1.ExtraInfo == req2.ExtraInfo)
+	equalReqs = equalReqs && (req1.MaxPrice == req2.MaxPrice)
+	equalReqs = equalReqs && (req1.MinPrice == req2.MinPrice)
+	equalReqs = equalReqs && (req1.Userid == req2.Userid)
+	equalReqs = equalReqs && (req1.Categoryid == req2.Categoryid)
+
+	return equalReqs
+}
+
 func TestInsertRequest(t *testing.T) {
 	// Get connection to test database and cleans it
 	db := tools.GetTestDB()
@@ -130,8 +144,16 @@ func TestInsertRequest(t *testing.T) {
 	req.Categoryid = c.ID
 
 	// Executes the test query
-	err := requestDAL.InsertRequest(req)
+	reqInserted, err := requestDAL.InsertRequest(req)
 
 	// Checks the expected results
 	assert.Equal(t, nil, err)
+
+	t.Run("size 1", func(t *testing.T) {
+		gotReqs, err := requestDAL.GetLastRequests(time.Now().Add(-time.Hour), 1)
+		assert.Equal(t, nil, err)
+
+		equalReqs := CompareRequests(gotReqs[0], reqInserted)
+		assert.Equal(t, equalReqs, true)
+	})
 }

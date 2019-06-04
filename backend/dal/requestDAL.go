@@ -2,7 +2,6 @@ package dal
 
 import (
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/jmoiron/sqlx"
@@ -21,16 +20,6 @@ func NewRequestDAL(db *sqlx.DB) *RequestDAL {
 	}
 }
 
-// Gets the database connection to be used in requests
-func getDB() *sqlx.DB {
-	db, err := sqlx.Connect("postgres", "user=postgres dbname=unijobs sslmode=disable host=localhost port=5432")
-	if err != nil {
-		log.Panicf("Can't connect to the db")
-	}
-
-	return db
-}
-
 // GetLastRequests returns the requests inserted in the dabase before the time specified by timestamp
 // The parameter size limits the number of returned requests
 func (dal *RequestDAL) GetLastRequests(before time.Time, size int) ([]models.Request, error) {
@@ -47,7 +36,7 @@ func (dal *RequestDAL) GetLastRequests(before time.Time, size int) ([]models.Req
 }
 
 // InsertRequest Receives a request as a parameter and inserts into the database
-func (dal *RequestDAL) InsertRequest(request models.Request) error {
+func (dal *RequestDAL) InsertRequest(request models.Request) (models.Request, error) {
 	insertQuery := `INSERT INTO request (name, description, extrainfo, minprice, maxprice, userid, categoryid, timestamp) 
 						VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`
 
@@ -65,8 +54,8 @@ func (dal *RequestDAL) InsertRequest(request models.Request) error {
 
 	// Checks if any error happened during the query execution
 	if err != nil {
-		panic(err)
+		return request, err
 	}
 
-	return nil
+	return request, nil
 }
