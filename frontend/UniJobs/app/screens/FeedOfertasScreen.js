@@ -1,3 +1,25 @@
+/*
+//inside render->return
+const MenuButton = () => (
+    <Button
+        text={this.textStrings.login}
+        buttonStyle={{ paddingHorizontal: 77 }}
+        onPress={() => this.onDrawerMenu(navigate)}
+    />
+);
+                <View style={{ marginTop: 10 }}>
+                        <MenuButton />
+                </View>
+//before render
+
+    onDrawerMenu(navigate) {
+        alert('TODO: Autentication');
+
+        AsyncStorage.setItem(UniData.username, this.state.username.toLowerCase());
+        AsyncStorage.setItem(UniData.password, this.state.password.toLowerCase());
+        navigate('DrawerMenu');
+    };
+*/
 "use strict";
 
 import React from 'react';
@@ -7,7 +29,7 @@ import { AsyncStorage } from 'react-native';
 import UniStyles from '../constants/UniStyles'
 import UniData from '../constants/UniData'
 
-export default class HomeScreen extends React.Component {
+export default class FeedOfertasScreen extends React.Component {
     static navigationOptions = { header: null };
 
     state = {
