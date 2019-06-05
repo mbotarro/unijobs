@@ -37,8 +37,8 @@ export default class LoginScreen extends React.Component {
             (email, valid) => {
                 alert(email + ' ' + valid);
                 if (valid) {
-                    AsyncStorage.setItem(UniData.username, email).then(() =>
-                        navigate('Home')
+                    AsyncStorage.setItem(UniData.username, email).then(() => 
+                    navigate('TabStack')
                     ).catch();
                 }
             }
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
     },
 
     logoText: {
-        fontSize: 66,
+        fontSize: 60,
         alignSelf: 'center',
         position: 'absolute',
         bottom: 0,
