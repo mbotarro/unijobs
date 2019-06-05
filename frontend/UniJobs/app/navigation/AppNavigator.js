@@ -29,7 +29,7 @@ const DrawerStack = createDrawerNavigator(
         navigationOptions: { header: null },
     },
 },
-{   
+{
     initialRouteName: 'TabStack',
     contentComponent: SideDrawer,
 })

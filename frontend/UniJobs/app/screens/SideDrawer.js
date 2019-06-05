@@ -1,11 +1,14 @@
 import React from 'react'
 import { StyleSheet, Text, View, Image,TouchableHighlight } from 'react-native'
-import { NavigationActions } from 'react-navigation'
+
+
 import UniStyles from '../constants/UniStyles'
 import UniColors from '../constants/UniColors'
 import UniData from '../constants/UniData'
+
 import Button from '../components/Button'
 import { AsyncStorage } from 'react-native';
+
 export default class SideDrawer extends React.Component {
     static navigationOptions = { header: null}
     state = {
@@ -26,9 +29,11 @@ export default class SideDrawer extends React.Component {
     onUserOptions(navigate){
         navigate('UserOptions')
     }
+
     onMinhasOfertas(navigate) {
         navigate('MyOffers')
     }
+
     onMinhasSolicitacoes(navigate) {
         navigate('MyRequests')
     }

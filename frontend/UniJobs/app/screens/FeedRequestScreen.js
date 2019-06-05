@@ -12,6 +12,8 @@ import UniColors from '../constants/UniColors'
 import UniText from '../constants/UniText'
 import UniData from '../constants/UniData'
 
+import { DrawerActions } from 'react-navigation';
+
 
 export default class FeedRequestScreen extends React.Component {
     static navigationOptions = { title: 'Solicitações' };
@@ -50,48 +52,47 @@ export default class FeedRequestScreen extends React.Component {
         });
     }
 
-    onMenuButtonPress(navigate) {
-        alert('TODO: Integrate with menu (Bruna)');
+    onMenuButtonPress(navigation) {
+        navigation.openDrawer();
     }
 
-    onSearchBarChangeText(navigate, text) {
+    onSearchBarChangeText(navigation, text) {
         this.setState({searchBarText: text})
     }
 
-    onSearch (navigate) {
-        alert('TODO: Search ');
+    onSearch (navigation) {
+        alert('TODO: Search');
     }
 
-    onMyFeedPress(self, navigate) {
+    onMyFeedPress(self, navigation) {
         // !! self here is because something is overriding 'this', and
         // I don't know why! (maybe the arrow function... :/)
         self.setState({isMyFeedOpen: !self.state.isMyFeedOpen})
     }
 
-    onMyFeedFilterPress(self, navigate) {
+    onMyFeedFilterPress(self, navigation) {
         alert('TODO: Filters');
     }
 
-    onAllFeedPress(self, navigate) {
+    onAllFeedPress(self, navigation) {
     }
 
-    onAllFeedFilterPress(self, navigate) {
+    onAllFeedFilterPress(self, navigation) {
         alert('TODO: Filters');
     }
 
 
     render() {
-        const { navigate } = this.props.navigation;
+        const navigation = this.props.navigation;
 
 
         // header
         const menuButton = (
             <TouchableHighlight
                 underlayColor={UniColors.main}
-                onPress={() => this.onMenuButtonPress(navigate)}
-                style={styles.menuButton}
+                onPress={() => this.onMenuButtonPress(navigation)}
             >
-                <Image source={require('../assets/icons/line-menu.png')} />
+                <Image source={require('../assets/icons/line-menu.png')}  style={styles.menuButton} />
             </TouchableHighlight>
         );
 
@@ -100,12 +101,12 @@ export default class FeedRequestScreen extends React.Component {
                 <TextInput
                     style={styles.searchBarText}
                     placeholder={this.textStrings.searchBarPlaceHolder}
-                    onChangeText={(text) => { this.onSearchBarChangeText(navigate, text) }}
-                    onSubmitEditing={(event) => this.onSearch(navigate)}
+                    onChangeText={(text) => { this.onSearchBarChangeText(navigation, text) }}
+                    onSubmitEditing={(event) => this.onSearch(navigation)}
                 />
                 <TouchableHighlight
                     underlayColor= {UniColors.transparent}
-                    onPress = {(event) => this.onSearch(navigate)}
+                    onPress = {(event) => this.onSearch(navigation)}
                 >
                     <Image
                         source={require('../assets/icons/search.png')}
@@ -129,7 +130,7 @@ export default class FeedRequestScreen extends React.Component {
             <View style = {styles.feedBar}>
                 <TouchableHighlight 
                     underlayColor = {UniColors.transparent}
-                    onPress = {() => onPress(this, navigate)}
+                    onPress = {() => onPress(this, navigation)}
                     style={{flexGrow: 1, alignSelf: 'stretch'}}
                 >
                     <View style={{flexDirection: 'row'}}>
@@ -151,7 +152,7 @@ export default class FeedRequestScreen extends React.Component {
                     showFilter ?
                         <TouchableHighlight
                             underlayColor = {UniColors.transparent}
-                            onPress = {() => onFilter(navigate)}
+                            onPress = {() => onFilter(navigation)}
                             style = {styles.feedBarRightIcon}
                         >
                             <Image

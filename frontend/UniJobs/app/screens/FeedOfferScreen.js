@@ -30,7 +30,8 @@ import UniStyles from '../constants/UniStyles'
 import UniData from '../constants/UniData'
 
 export default class FeedOfertasScreen extends React.Component {
-    static navigationOptions = { header: null };
+    static navigationOptions = { title: 'Ofertas' };
+    
 
     state = {
         username: '',
