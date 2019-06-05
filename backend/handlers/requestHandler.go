@@ -1,7 +1,9 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"strconv"
 	"time"
@@ -31,6 +33,17 @@ type RequestResponse struct {
 
 	// Last is the timestamp of the last request sent to the front. It can be used to get the requests created before it
 	Last int64 `json:"last"`
+}
+
+// RequestInsertion contains the expected input from the frontend
+type RequestInsertion struct {
+	Name        string `json: Name`
+	Description string `json: Description`
+	ExtraInfo   string `json: ExtraInfo`
+	MaxPrice    int    `json: MaxPrice`
+	MinPrice    int    `json: MinPrice`
+	Userid      int    `json: Userid`
+	Categoryid  int    `json: Categoryid`
 }
 
 // GetLastRequests sends the last requests created in the unijobs service
@@ -74,26 +87,36 @@ func (handler *RequestHandler) GetLastRequests(w http.ResponseWriter, r *http.Re
 // InsertRequest is a function that receives a post request with some parameters and calls the function to insert it in the database
 // The request is sent as a json file. It's fields are given in Models.Request
 func (handler *RequestHandler) InsertRequest(w http.ResponseWriter, r *http.Request) {
-	var req models.Request
-	r.ParseMultipartForm(32 << 20)
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, fmt.Errorf("%s:%s", errors.ReadRequestBodyError, err.Error()).Error(), http.StatusBadRequest)
+		return
+	}
 
-	fmt.Sscan(r.Form.Get("id"), &req.ID)
-	fmt.Println("%d", req.ID)
-	req.Name = r.FormValue("Name")
-	req.Description = r.FormValue("Description")
-	req.ExtraInfo = r.FormValue("ExtraInfo")
-	fmt.Sscan(r.Form.Get("MaxPrice"), &req.MaxPrice)
-	fmt.Sscan(r.Form.Get("MinPrice"), &req.MinPrice)
-	fmt.Sscan(r.Form.Get("Userid"), &req.Userid)
-	fmt.Sscan(r.Form.Get("Categoryid"), &req.Categoryid)
+	var reqInserted RequestInsertion
+	err = json.Unmarshal(body, &reqInserted)
+	if err != nil {
+		http.Error(w, fmt.Errorf("%s:%s", errors.JSONUnmarshalError, err.Error()).Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Passes the received data into a request for it to be inserted
+	var req models.Request
+
+	req.Name = reqInserted.Name
+	req.Description = reqInserted.Description
+	req.ExtraInfo = reqInserted.ExtraInfo
+	req.MaxPrice = reqInserted.MaxPrice
+	req.MinPrice = reqInserted.MinPrice
+	req.Userid = reqInserted.Userid
+	req.Categoryid = reqInserted.Categoryid
 	req.Timestamp = time.Now()
 
-	fmt.Println(req)
-
-	err := handler.requestController.InsertRequest(req)
+	err = handler.requestController.InsertRequest(req)
 	if err != nil {
-		fmt.Println("Tudo ok")
-	} else {
-		fmt.Println("Tudo errado")
+		http.Error(w, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error()).Error(), http.StatusInternalServerError)
+		return
 	}
+
+	w.WriteHeader(http.StatusCreated)
 }
