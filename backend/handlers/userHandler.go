@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/mbotarro/unijobs/backend/errors"
@@ -102,4 +103,50 @@ func createUserHandler(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 	fmt.Fprintf(w, "You've requested the user: %s\n", userdata.Username)
+}
+
+// GetUserRequests
+func (handler *UserHandler) GetUserRequests(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	idStr := vars["id"]
+	id, err := strconv.ParseInt(idStr, 10, 32)
+	if err != nil {
+		http.Error(w, fmt.Errorf("%s:%s", errors.QueryParameterError, err.Error()).Error(), http.StatusBadRequest)
+		return
+	}
+
+	sizeStr := r.FormValue("size")
+	size, err := strconv.ParseInt(sizeStr, 10, 32)
+	if err != nil {
+		http.Error(w, fmt.Errorf("%s:%s", errors.QueryParameterError, err.Error()).Error(), http.StatusBadRequest)
+		return
+	}
+
+	before := time.Now()
+	beforeStr := r.FormValue("before")
+	if beforeStr != "" {
+		beforeInt, err := strconv.ParseInt(beforeStr, 10, 64)
+		if err != nil {
+			http.Error(w, fmt.Errorf("%s:%s", errors.QueryParameterError, err.Error()).Error(), http.StatusBadRequest)
+			return
+		}
+
+		before = time.Unix(beforeInt, 0)
+	}
+
+	reqs, err := handler.userController.GetUserRequests(int(id), before, int(size))
+	if err != nil {
+		http.Error(w, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error()).Error(), http.StatusInternalServerError)
+		return
+	}
+
+	reqRes := RequestResponse{
+		Requests: reqs,
+	}
+
+	if l := len(reqs); l > 0 {
+		reqRes.Last = reqs[l-1].Timestamp.Unix()
+	}
+
+	tools.WriteStructOnHTTPResponse(reqRes, w)
 }
