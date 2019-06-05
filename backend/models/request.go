@@ -2,7 +2,7 @@ package models
 
 import "time"
 
-type Offer struct {
+type Request struct {
 	ID          int       `db:"id"`
 	Name        string    `db:"name"`
 	Description string    `db:"description"`

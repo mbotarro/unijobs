@@ -4,8 +4,8 @@ const UNIJOBS_COLORS = {
     main:       '#00A5F2',
     dark:       '#50514F',
     dark_grey:  '#65737E',
-    light_grey: '#C2D3CD',
-    light:      '#AFBFC0',
+    light_grey: '#AFBFC0',
+    light:      '#F4F5F6',
 };
 
 const BASIC_COLORS = {

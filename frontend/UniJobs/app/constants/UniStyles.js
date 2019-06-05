@@ -4,12 +4,15 @@ import UniColors from './UniColors'
 import UniText from './UniText'
 
 const textInput = {
-    borderColor:    UniColors.dark_grey,
+    backgroundColor: UniColors.light,
+
+    borderColor:    UniColors.white,
     borderRadius:   25,
     borderWidth:    1,
 
-    height:     50,
-    width:      290,
+    height:     45,
+    width:      307,
+    marginHorizontal: 53,
 
     fontSize:   UniText.normal,
     color:      UniColors.dark,
@@ -17,7 +20,7 @@ const textInput = {
 };
 
 const text = {
-    fontSize:   15,
+    fontSize:   UniText.normal,
     color:      UniColors.dark_grey
 }
 
