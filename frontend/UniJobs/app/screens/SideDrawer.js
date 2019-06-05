@@ -27,18 +27,18 @@ export default class SideDrawer extends React.Component {
         navigate('UserOptions')
     }
     onMinhasOfertas(navigate) {
-        navigate('MinhasOfertas')
+        navigate('MyOffers')
     }
     onMinhasSolicitacoes(navigate) {
-        navigate('MinhasSolicitacoes')
+        navigate('MyRequests')
     }
 
     onHistoricoInteresses(navigate) {
-        navigate('HistoricoInteresses')
+        navigate('MyInterests')
     }
 
     onConfiguracoes(navigate) {
-        navigate('Configuracoes')
+        navigate('Settings')
     }
 
     onSair(navigate) {

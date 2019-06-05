@@ -6,16 +6,16 @@ import UniText from "../constants/UniText";
 import UniColors from "../constants/UniColors";
 
 import TestScreen from "../screens/TestScreen";
-import HomeScreen from "../screens/HomeScreen";
 import FeedRequestScreen from "../screens/FeedRequestScreen"
+import FeedOfferScreen from "../screens/FeedOfferScreen"
 
 
 export default FeedNavigator = createBottomTabNavigator({
     FeedRequest : {
         screen : FeedRequestScreen,
     },
-    Home: {
-        screen: HomeScreen,
+    FeedOffer : {
+        screen : FeedOfferScreen,
     },
     Test: {
         screen: TestScreen,

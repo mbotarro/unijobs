@@ -2,67 +2,48 @@ import { createStackNavigator, createAppContainer, createDrawerNavigator, create
 import UniStyles from "../constants/UniStyles"
 import UniColors from "../constants/UniColors"
 
-import FeedOfertasScreen from "../screens/FeedOfertasScreen"
-import FeedSolicitacoesScreen from "../screens/FeedSolicitacoesScreen"
-
 import LoginScreen from "../screens/LoginScreen"
 import RegisterScreen from "../screens/RegisterScreen"
 import SideDrawer from "../screens/SideDrawer"
 
-import UserOptionsScreen from "../screens/UserOptionsScreen"
-import MinhasOfertasScreen from "../screens/MinhasOfertasScreen"
-import MinhasSolicitacoesScreen from "../screens/MinhasSolicitacoesScreen"
-import HistoricoInteressesScreen from "../screens/HistoricoInteressesScreen"
-import ConfiguracoesScreen from "../screens/ConfiguracoesScreen"
+import UserOptionScreen from "../screens/UserOptionScreen"
+import MyOfferScreen from "../screens/MyOfferScreen"
+import MyRequestScreen from "../screens/MyRequestScreen"
+import MyInterestScreen from "../screens/MyInterestScreen"
+import SettingScreen from "../screens/SettingScreen"
 
-const TabNavigator = createBottomTabNavigator(
-{
-    //Screens that contain drawer and bottomtab 
-    Ofertas:{screen: FeedOfertasScreen},
-    Solicitacoes: {screen: FeedSolicitacoesScreen},
-},
-{
-    tabBarPosition: 'bottom',
-    swipeEnabled: true,
-    animationEnabled: true,
-    tabBarOptions: {
-        activeTintColor: UniColors.main,
-        activeBackgroundColor: UniColors.white,
-        inactiveTintColor: UniColors.dark_grey,
-        inactiveBackgroundColor: UniColors.white,
-        labelStyle: {
-            fontSize: 16,
-            padding: 10
-        }
-    },
-})
+import FeedNavigator from  "./FeedNavigator"
+
+
 
 const DrawerStack = createDrawerNavigator(
 {
     //Screens that only contain drawer 
-    MinhasOfertas:{screen: MinhasOfertasScreen},
-    MinhasSolicitacoes:{screen: MinhasSolicitacoesScreen},
-    HistoricoInteresses:{screen: HistoricoInteressesScreen},
-    Configuracoes:{screen:ConfiguracoesScreen},
-    UserOptions:{screen:UserOptionsScreen},
-    TabStack:{screen: TabNavigator},
-}, 
+    MyOffers: { screen: MyOfferScreen },
+    MyRequests: { screen: MyRequestScreen },
+    MyInterests: { screen: MyInterestScreen },
+    Settings: { screen:SettingScreen },
+    UserOptions: { screen:UserOptionScreen },
+    TabStack: {
+        screen: FeedNavigator,
+        navigationOptions: { header: null },
+    },
+},
 {   
     initialRouteName: 'TabStack',
     contentComponent: SideDrawer,
 })
 
 const LoginStack = createStackNavigator({
-    //Screen without Drawer and bottomTab  
     Login: { screen: LoginScreen },
-    Register: {screen: RegisterScreen},
+    Register: { screen: RegisterScreen },
 })
 
 
 //Navigator of all the Screens of the App
 const AppNavigator = createStackNavigator({
-    loginStack: {screen: LoginStack,},
-    drawerStack: {screen: DrawerStack,}
+    loginStack: { screen: LoginStack },
+    drawerStack: { screen: DrawerStack }
 },{
     //initialRouteName:'drawerStack',
     //Default config for all screens
