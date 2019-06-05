@@ -25,3 +25,9 @@ func NewRequestController(db *sqlx.DB) *RequestController {
 func (rc *RequestController) GetLastRequests(before time.Time, size int) ([]models.Request, error) {
 	return rc.requestDAL.GetLastRequests(before, size)
 }
+
+// InsertRequest inserts the given request into the database, calling the DAL package function.
+// It returns error != nil in case some error occured.
+func (rc *RequestController) InsertRequest(req models.Request) error {
+	return rc.requestDAL.InsertRequest(req)
+}
