@@ -87,10 +87,6 @@ func (handler *RequestHandler) GetLastRequests(w http.ResponseWriter, r *http.Re
 // InsertRequest is a function that receives a post request with some parameters and calls the function to insert it in the database
 // The request is sent as a json file. It's fields are given in Models.Request
 func (handler *RequestHandler) InsertRequest(w http.ResponseWriter, r *http.Request) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> Add working insertion handler and testing
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, fmt.Errorf("%s:%s", errors.ReadRequestBodyError, err.Error()).Error(), http.StatusBadRequest)
