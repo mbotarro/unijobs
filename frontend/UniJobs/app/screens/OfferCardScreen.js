@@ -6,7 +6,7 @@ import UniData from '../constants/UniData'
 import UniText from '../constants/UniText'
 import Button from '../components/Button'
 
-import OfferMiniCard from '../components/OfferMiniCards'
+import {populateRequestOfferCards} from '../components/OfferMiniCards' 
 
 export default class OfferCardScreen extends React.Component {
     static navigationOptions = {title: '???'};
@@ -49,15 +49,15 @@ export default class OfferCardScreen extends React.Component {
         const Images = (name) => {
             switch (name) {
                 case 'exit': return require('../assets/icons/exit.png');
-                case 'profile': return {uri: 'https://scontent.fqsc1-1.fna.fbcdn.net/v/t1.0-9/20729327_1168149799953296_8838092191541694934_n.jpg?_nc_cat=104&_nc_oc=AQmT313LRkvKv48lUd4VRdNJZc4YDo9rtGcGUbSSBzZs5aS33UB9O2_zue4PP57VrEkmjwScnDuktRnrRs7xIo9D&_nc_ht=scontent.fqsc1-1.fna&oh=9ce3152e54b88a4b0a6124039a9c90e1&oe=5D8F03D9'};
+                case 'profile': return {uri: 'https://scontent.fbsb9-1.fna.fbcdn.net/v/t1.0-9/426056_4489254589510_757001532_n.jpg?_nc_cat=101&_nc_oc=AQlQUXcAo9rf4C-S53BUVzn0OxTouzx4E31KsnLXkMGL3HuBYwRL9bHJ8uyeXEcgtjE&_nc_ht=scontent.fbsb9-1.fna&oh=6f1621de613155e2155a6743c913bdeb&oe=5D938675'};
             }
         };
 
         const QuitButton = () => (
-            <TouchableOpacity activeOpacity={0.5} onPress={this._onQuit}>
+            <TouchableOpacity onPress={this._onQuit} style={{padding: iconStyles.exitIcon.width * 2.2, marginLeft: -25, marginTop: -25}}>
                 <Image
                     source={Images('exit')}
-                    style={iconStyles.exitIcon}
+                    style={[iconStyles.exitIcon]}
                 />
             </TouchableOpacity>
         )
@@ -72,15 +72,13 @@ export default class OfferCardScreen extends React.Component {
             )
         };
 
+        const offerCards = this.state.isLoading ? <ActivityIndicator style = {{marginTop: 10}}/> :
+            populateRequestOfferCards(this.state.allOffersRequests);
         const CardsView = () => {
             return (
                 <View style={[containerStyles.cardsContainer]}>
                     <Text style={[textStyles.cardsViewTitle]}>{this.textStrings.offerCardsHeader}</Text>
-                    <OfferMiniCard/>
-                    <OfferMiniCard/>
-                    <OfferMiniCard/>
-                    <OfferMiniCard/>
-                    <OfferMiniCard/>
+                    {offerCards}
                 </View>
             )
         }
@@ -121,13 +119,10 @@ export default class OfferCardScreen extends React.Component {
         const EditButton = ActionButton('Editar', this.onEditPress, '#0BA5F2');
         const RemoveButton = ActionButton('Remover', this.onRemovePress, '#EF513A');
 
-        // const offerCards = this.state.isLoading ? <ActivityIndicator style = {{marginTop: 10}}/> :
-        //     populateRequestOfferCards(this.state.allOffersRequests);
-
         return (
             <View style={[containerStyles.greyContainer]}>
-                <View style={[containerStyles.whiteContainer]}>
-                    <ScrollView scrollEnabled={true} showsVerticalScrollIndicator={false}>
+                <ScrollView scrollEnabled={true} showsVerticalScrollIndicator={false}>
+                    <View style={[containerStyles.whiteContainer]}>
                         <PageHeader/>
                         <RequestDescription/>
                         <CardsView/>
@@ -136,8 +131,8 @@ export default class OfferCardScreen extends React.Component {
                             {EditButton}
                             {RemoveButton}
                         </View>
-                    </ScrollView>
-                </View>
+                    </View>
+                </ScrollView>
             </View>
         );
     }
@@ -152,7 +147,8 @@ const containerStyles = StyleSheet.create({
     whiteContainer: {
         backgroundColor: '#FFFFFF',
         marginHorizontal: 5,
-        marginVertical: 20,
+        marginTop: 40,
+        marginBottom: 20,
         borderRadius: 20,
         flexDirection: 'column',
     },
@@ -183,6 +179,7 @@ const iconStyles = StyleSheet.create({
         width: 85,
         height: 85,
         alignSelf: 'center',
+        borderRadius: 15,
     },
 })
 
