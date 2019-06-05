@@ -3,10 +3,25 @@ import { StyleSheet, Text, View, Image,TouchableHighlight } from 'react-native'
 import { NavigationActions } from 'react-navigation'
 import UniStyles from '../constants/UniStyles'
 import UniColors from '../constants/UniColors'
+import UniData from '../constants/UniData'
 import Button from '../components/Button'
-
+import { AsyncStorage } from 'react-native';
 export default class SideDrawer extends React.Component {
     static navigationOptions = { header: null}
+    state = {
+        username: '',
+    }
+
+    async componentDidMount() {
+        try {
+            const username = await AsyncStorage.getItem(UniData.username);
+            if (username !== null)
+                this.setState({ username: username });
+        } catch (error) {
+        }
+    }
+
+
     /* components callbacks */
     onUserOptions(navigate){
         navigate('UserOptions')
@@ -39,13 +54,16 @@ export default class SideDrawer extends React.Component {
             return (
                 <TouchableHighlight
                     onPress={() => this.onUserOptions(navigate)}
-                    underlayColor={UniColors.light}
+                    //underlayColor={UniColors.light}
                 >
                     <View style={styles.headerContent}>
-                        <Image style={UniStyles.useravatar} source={require('../assets/icons/user.png')}/>
                         
-                        <Text style={UniStyles.username}>
-                            Usuário
+                        <Image style={[UniStyles.useravatar,{marginLeft: 15}]} source={require('../assets/icons/user.png')}/>
+                        <Text style={[UniStyles.username,{marginLeft: 15}]}>
+                            usuário
+                        </Text>
+                        <Text style={[UniStyles.username,{marginLeft: 15}]}>
+                            {this.state.username}
                         </Text>
                         
                     </View>
@@ -53,39 +71,56 @@ export default class SideDrawer extends React.Component {
             )
         };
         const MinhasOfertas = () => (
-            <Button
-                text='Minhas ofertas'
-                buttonStyle={[{ marginTop: 15, marginBottom: 10 },{width:250},{backgroundColor:'transparent'}]}
-                onPress={() => this.onMinhasOfertas(navigate)}
-            />
+            <View style={{flexDirection: 'row', flex: 1,marginTop :15 ,marginBottom:5,alignContent:'flex-start'}}>
+                <Image style={[UniStyles.icons,{marginLeft: 15}]} source={require('../assets/icons/gift.png')}/>
+                <Button
+                    text='Minhas ofertas'
+                    buttonStyle={[{backgroundColor:'transparent'}]}
+                    onPress={() => this.onMinhasOfertas(navigate)}
+                />
+            </View>
         )
         const MinhasSolicitacoes = () => (
-            <Button
-                text='Minhas solicitações'
-                buttonStyle={[{ marginTop: 10, marginBottom: 10 },{width:250},{backgroundColor:'transparent'}]}
-                onPress={() => this.onMinhasSolicitacoes(navigate)}
-            />
+            <View style={{flexDirection: 'row', flex: 1,marginTop :5 ,marginBottom:5}}>
+                <Image style={[UniStyles.icons,{marginLeft: 15}]} source={require('../assets/icons/clipboards.png')}/>
+                <Button
+                    text='Minhas solicitações'
+                    buttonStyle={[{backgroundColor:'transparent'}]}
+                    onPress={() => this.onMinhasSolicitacoes(navigate)}
+                />
+            </View>
         )
         const HistoricoInteresses = () => (
-            <Button
-                text='Histórico de interesses'
-                buttonStyle={[{ marginTop: 10, marginBottom: 10 },{width:250},{backgroundColor:'transparent'}]}
-                onPress={() => this.onHistoricoInteresses(navigate)}
-            />
+            <View style={{flexDirection: 'row', flex: 1,marginTop :5 ,marginBottom:5}}>
+                <Image style={[UniStyles.icons,{marginLeft: 15}]} source={require('../assets/icons/history.png')}/>
+                <Button
+                    text='Histórico de interesses'
+                    buttonStyle={[{backgroundColor:'transparent'}]}
+                    onPress={() => this.onHistoricoInteresses(navigate)}
+                />
+            </View>
+            
+    
         )
         const Configuracoes = () => (
-            <Button
-                text='Configurações'
-                buttonStyle={[{ marginTop: 10, marginBottom: 10 },{width:250},{backgroundColor:'transparent'}]}
-                onPress={() => this.onConfiguracoes(navigate)}
-            />
+            <View style={{flexDirection: 'row', flex: 1,marginTop :5 ,marginBottom:5}}>
+                <Image style={[UniStyles.icons,{marginLeft: 15}]} source={require('../assets/icons/settings.png')}/>
+                <Button
+                    text='Configurações'
+                    buttonStyle={[{backgroundColor:'transparent'}]}
+                    onPress={() => this.onConfiguracoes(navigate)}
+                />
+            </View>
         )
         const Sair = () => (
-            <Button
-                text='Sair'
-                buttonStyle={[{ marginTop: 180}, { paddingHorizontal: 18 }]}
-                onPress={() => this.onSair(navigate)}
-            />
+            <View style={{flexDirection: 'row', flex: 1,marginTop :180 ,marginBottom:10}}>
+                <Image style={[UniStyles.icons,{marginLeft: 15}]} source={require('../assets/icons/return.png')}/>
+                <Button
+                    text='Sair'
+                    buttonStyle={[{ paddingHorizontal: 18, backgroundColor:'transparent' }]}
+                    onPress={() => this.onSair(navigate)}
+                />
+            </View>
         )
         return(
             <View style={styles.SideDrawercontainer}>
@@ -118,7 +153,7 @@ const styles = StyleSheet.create({
     },
     headerContent:{
         backgroundColor: UniColors.main,
-        padding:30,
-        alignItems: 'center',
+        padding:18,
+        //alignItems: 'center',
       },
   })

@@ -21,6 +21,13 @@ const text = {
     color:      UniColors.dark_grey
 }
 
+const icons ={
+    width: 20,
+    height: 20,
+    alignSelf: 'center',
+
+}
+
 const container = {
     flex: 1,
     alignContent: 'center',
@@ -29,8 +36,8 @@ const container = {
 }
 
 const useravatar= {
-    width: 100,
-    height: 100,
+    width: 60,
+    height: 60,
     borderRadius: 50,
     borderWidth: 2,
     borderColor: "white",
@@ -39,9 +46,10 @@ const useravatar= {
 }
 
 const username={
-    fontSize:22,
-    color:"#FFFFFF",
+    fontSize:15,
+    color:UniColors.white,
     fontWeight:'100',
+    
 }
 
 module.exports = {
@@ -50,4 +58,5 @@ module.exports = {
     container,
     useravatar,
     username,
+    icons,
 }
