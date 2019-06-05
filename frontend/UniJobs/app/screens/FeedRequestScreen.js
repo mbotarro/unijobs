@@ -2,8 +2,10 @@
 
 import React from 'react';
 import { StyleSheet, Text, TextInput, View, Image, ScrollView, TouchableHighlight, ActivityIndicator } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import { populateRequestMiniCards } from '../components/FeedMiniCards';
+import { loadRequests, loadCategories } from '../actions/FeedActions'
 
 import UniStyles from '../constants/UniStyles'
 import UniColors from '../constants/UniColors'
@@ -17,9 +19,12 @@ export default class FeedRequestScreen extends React.Component {
     state = {
         isLoading : true,
         isMyFeedOpen: false,
+
         searchBarText: '',
+        
         allFeedRequests: {},
         myFeedRequests: {},
+        categories: {},
     }
 
     textStrings = {
@@ -31,8 +36,18 @@ export default class FeedRequestScreen extends React.Component {
 
     async componentDidMount() {
         // use for fetching data to show
-        this.setState({isLoading: false});
-        this.setState({allFeedRequests: testRequests});
+        loadCategories((categories) => {
+            var hash = {}
+            for (var i = 0; i < categories.length; i++)
+                hash[categories[i].ID] = categories[i];
+            this.setState({categories: hash})
+
+            loadRequests((requests) => {
+                this.setState({allFeedRequests: requests, myFeedRequests: myFeedTestRequests});
+                this.setState({isLoading: false});
+                // console.log(requests)
+            })
+        });
     }
 
     onMenuButtonPress(navigate) {
@@ -58,7 +73,6 @@ export default class FeedRequestScreen extends React.Component {
     }
 
     onAllFeedPress(self, navigate) {
-        alert('TODO: Hide feed');
     }
 
     onAllFeedFilterPress(self, navigate) {
@@ -68,6 +82,7 @@ export default class FeedRequestScreen extends React.Component {
 
     render() {
         const { navigate } = this.props.navigation;
+
 
         // header
         const menuButton = (
@@ -106,6 +121,7 @@ export default class FeedRequestScreen extends React.Component {
                 {searchBar}
             </View>
         );
+
 
         // feed headers
         const feedHeader = (text, onPress, onFilter, showFilter, showDropDown) => {
@@ -164,32 +180,41 @@ export default class FeedRequestScreen extends React.Component {
             this.state.isMyFeedOpen
         );
         
+
         // feed
         const feedView = this.state.isLoading ?
-            <ActivityIndicator style = {{marginTop: 10}}/>
+            <ActivityIndicator style={{ marginTop: 10 }} />
             :
             populateRequestMiniCards(
-                this.state.isMyFeedOpen ? this.state.myFeedRequests :  this.state.allFeedRequests
+                this.state.isMyFeedOpen ? this.state.myFeedRequests : this.state.allFeedRequests,
+                this.state.categories
             );
 
+
         return (
-            <View style={styles.container} >
-                <View style = {styles.headerContainer}>
-                    {searchHeader}
-                    {myFeedHeader}
-                    {
-                        !this.state.isMyFeedOpen ?
-                        <View style = {{marginTop: 2}}>
-                            {allFeedHeader}
-                        </View>
-                        :
-                        null
-                    }
+            <KeyboardAwareScrollView
+                contentContainerStyle={{ flex: 1 }}
+                resetScrollToCoords={{ x: 0, y: 0 }}
+                scrollEnabled={false}
+            >
+                <View style={styles.container} >
+                    <View style={styles.headerContainer}>
+                        {searchHeader}
+                        {myFeedHeader}
+                        {
+                            !this.state.isMyFeedOpen ?
+                                <View style={{ marginTop: 2 }}>
+                                    {allFeedHeader}
+                                </View>
+                                :
+                                null
+                        }
+                    </View>
+                    <ScrollView contentContainerStyle={styles.feedContainer}>
+                        {feedView}
+                    </ScrollView>
                 </View>
-                <ScrollView contentContainerStyle={styles.feedContainer}>
-                    {feedView}
-                </ScrollView>
-            </View>
+            </KeyboardAwareScrollView>
         );
     }
 }
@@ -293,7 +318,7 @@ const styles = StyleSheet.create({
 
 
 // TEST !!! (TODO: REMOVE)
-const testRequests = [
+const myFeedTestRequests = [
     {
         ID : 0,
         Name : 'Titulo Solicitação',
@@ -301,8 +326,8 @@ const testRequests = [
         ExtraInfo : '',
         MinPrice : 'XXXXX',
         MaxPrice: 'XXXXX',
-        UserId : 0,
-        CategoryId : 0,
+        Userid : 0,
+        Categoryid : 0,
     },
     {
         ID : 1,
@@ -311,8 +336,8 @@ const testRequests = [
         ExtraInfo : '',
         MinPrice : '50',
         MaxPrice: '50',
-        UserId : 0,
-        CategoryId : 1,
+        Userid : 0,
+        Categoryid : 1,
     },
     {
         ID : 2,
@@ -321,8 +346,8 @@ const testRequests = [
         ExtraInfo : '',
         MinPrice : '100',
         MaxPrice: '100',
-        UserId : 0,
-        CategoryId : 2,
+        Userid : 0,
+        Categoryid : 2,
     },
     {
         ID : 3,
@@ -331,8 +356,8 @@ const testRequests = [
         ExtraInfo : '',
         MinPrice : '30',
         MaxPrice: '30',
-        UserId : 0,
-        CategoryId : 3,
+        Userid : 0,
+        Categoryid : 3,
     },
     {
         ID : 4,
@@ -341,8 +366,8 @@ const testRequests = [
         ExtraInfo : '',
         MinPrice : '80',
         MaxPrice: '80',
-        UserId : 0,
-        CategoryId : 2,
+        Userid : 0,
+        Categoryid : 2,
     },
     {
         ID : 4,
@@ -351,8 +376,8 @@ const testRequests = [
         ExtraInfo : '',
         MinPrice : '80',
         MaxPrice: '80',
-        UserId : 0,
-        CategoryId : 2,
+        Userid : 0,
+        Categoryid : 12,
     },
     {
         ID : 4,
@@ -361,8 +386,8 @@ const testRequests = [
         ExtraInfo : '',
         MinPrice : '80',
         MaxPrice: '80',
-        UserId : 0,
-        CategoryId : 2,
+        Userid : 0,
+        Categoryid : 8,
     },
     {
         ID : 4,
@@ -371,8 +396,8 @@ const testRequests = [
         ExtraInfo : '',
         MinPrice : '80',
         MaxPrice: '80',
-        UserId : 0,
-        CategoryId : 2,
+        Userid : 0,
+        Categoryid : 9,
     },
     {
         ID : 4,
@@ -381,7 +406,7 @@ const testRequests = [
         ExtraInfo : '',
         MinPrice : '80',
         MaxPrice: '80',
-        UserId : 0,
-        CategoryId : 2,
+        Userid : 0,
+        Categoryid : 7,
     },
 ]
