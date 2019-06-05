@@ -9,8 +9,9 @@ const UNIJOBS_COLORS = {
 };
 
 const BASIC_COLORS = {
-    white: 'white',
-    black: 'black',
+    white:          'white',
+    black:          'black',
+    transparent:    '#ffffff00',
 };
 
 module.exports = {
