@@ -44,15 +44,13 @@ func NewRouter(ctrl *usecases.Controller) *mux.Router {
 		HandlerFunc(requestHandler.GetLastRequests).
 		Methods("GET")
 
-<<<<<<< HEAD
-	// Categories API
-	route.r.HandleFunc("/categories", categoryHandler.getAllCategories).Methods("GET")
-=======
 	// Send new request
 	route.r.Path("/requests").
 		HandlerFunc(requestHandler.InsertRequest).
 		Methods("POST")
->>>>>>> Add request insertion handler
+
+	// Categories API
+	route.r.HandleFunc("/categories", categoryHandler.getAllCategories).Methods("GET")
 
 	return &route.r
 }
