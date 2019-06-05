@@ -1,6 +1,7 @@
 package handlers_test
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -187,4 +188,31 @@ func TestGetLastRequest(t *testing.T) {
 
 		assert.Equal(t, string(expectedJs), rr.Body.String())
 	})
+}
+
+func TestInsertRequest(t *testing.T) {
+	db := tools.GetTestDB()
+	defer tools.CleanDB(db)
+
+	ctrl := usecases.NewController(db)
+	rh := handlers.NewRequestHandler(ctrl.Request)
+
+	// Creates fake user and category to be used at the request
+	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234", "9999-1111")
+	c := tools.CreateFakeCategory(t, db, "Aula Matemática", "Matemática")
+
+	handler := http.HandlerFunc(rh.InsertRequest)
+
+	jsonStr := fmt.Sprintf(`{"Name": "Aula de Teste", "Description": "Teste de Insercao","ExtraInfo": "Info extra","MaxPrice": 50,"MinPrice": 0,"Userid": %d,"Categoryid": %d}`, u.Userid, c.ID)
+	jsonReq := []byte(jsonStr)
+
+	req, err := http.NewRequest("POST", "/requests", bytes.NewBuffer(jsonReq))
+	assert.Equal(t, nil, err)
+	req.Header.Set("Content-Type", "application/json")
+
+	reqRecord := httptest.NewRecorder()
+	handler.ServeHTTP(reqRecord, req)
+
+	status := reqRecord.Code
+	assert.Equal(t, 201, status)
 }

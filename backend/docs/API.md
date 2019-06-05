@@ -82,22 +82,15 @@
 ```
 
 ##### Valid Insertion
+A valid insert returns a 201 HTTP Status Code.
 ```
-{
-    id: <int>
-    name: <string>
-    timestamp: <int>
-}
+HTTP/1.1 201 Created
+Date: Wed, 05 Jun 2019 12:00:59 GMT
+Content-Length: 0
 ```
 
 ##### Invalid Insertion
-```
-{
-    id: -1
-    name: <string>
-    timestamp: <int>
-}
-```
+An invalid insertion returns the error message.
 
 ### GET
 
