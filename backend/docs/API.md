@@ -66,6 +66,39 @@
 
 ## Get all requests created in the platform
 
+### POST
+
+#### Expected Body
+```
+{
+    name: <string>
+    description: <string>
+    extrainfo: <string>
+    maxprice: <int>
+    minprice: <int>
+    userid: <int>
+    categoryid: <int>
+}
+```
+
+##### Valid Insertion
+```
+{
+    id: <int>
+    name: <string>
+    timestamp: <int>
+}
+```
+
+##### Invalid Insertion
+```
+{
+    id: -1
+    name: <string>
+    timestamp: <int>
+}
+```
+
 ### GET
 
 One must provide the number of requests that should be sent.

@@ -32,15 +32,22 @@ func NewRouter(ctrl *usecases.Controller) *mux.Router {
 		Methods("GET")
 
 	// Request APIs
+	// Get last requests
 	route.r.Path("/requests").
 		Queries("size", "{size:[0-9]*}").
 		HandlerFunc(requestHandler.GetLastRequests).
 		Methods("GET")
 
+	// Get last requests with paging
 	route.r.Path("/requests").
 		Queries("size, before", "{size:[0-9]*, before:[0-9]*}").
 		HandlerFunc(requestHandler.GetLastRequests).
 		Methods("GET")
+
+	// Send new request
+	route.r.Path("/requests").
+		HandlerFunc(requestHandler.InsertRequest).
+		Methods("POST")
 
 	return &route.r
 }
