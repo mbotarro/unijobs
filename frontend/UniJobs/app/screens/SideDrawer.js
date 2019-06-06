@@ -25,19 +25,21 @@ export default class SideDrawer extends React.Component {
     onUserOptions(navigate){
         navigate('UserOptions')
     }
+
     onMinhasOfertas(navigate) {
-        navigate('MinhasOfertas')
+        navigate('MyOffers')
     }
+
     onMinhasSolicitacoes(navigate) {
-        navigate('MinhasSolicitacoes')
+        navigate('MyRequests')
     }
 
     onHistoricoInteresses(navigate) {
-        navigate('HistoricoInteresses')
+        navigate('MyInterests')
     }
 
     onConfiguracoes(navigate) {
-        navigate('Configuracoes')
+        navigate('Settings')
     }
 
     onSair(navigate) {
@@ -70,8 +72,8 @@ export default class SideDrawer extends React.Component {
             )
         }; 
         const MinhasOfertas = () => (
-            <View style={styles.DrawerItem}>
-                <Image style={UniStyles.icons} source={require('../assets/icons/gift.png')}/>
+            <View style={{flexDirection: 'row', flex: 1,marginTop :15 ,marginBottom:5,alignContent:'flex-start'}}>
+                <Image style={[UniStyles.icons,{marginLeft: 15}]} source={require('../assets/icons/gift.png')}/>
                 <Button
                     text='Minhas ofertas'
                     buttonStyle={[{backgroundColor:'transparent'}]}

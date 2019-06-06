@@ -8,8 +8,8 @@ async function tryLogin (email, password, onResponse) {
     fetch(UniData.autenticationApi, {
     method: 'POST',
         body: JSON.stringify({
-        email: email,
-        password: password,
+            email: email,
+            password: password,
         }),
     })
     .then((response) => response.json())

@@ -6,9 +6,7 @@ import UniText from './UniText'
 const textInput = {
     backgroundColor: UniColors.light,
 
-    borderColor:    UniColors.white,
-    borderRadius:   5,
-    borderWidth:    1,
+    borderRadius:   25,
 
     height:     45,
     width:      307,
