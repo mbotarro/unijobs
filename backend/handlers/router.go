@@ -30,6 +30,14 @@ func NewRouter(ctrl *usecases.Controller) *mux.Router {
 	route.r.Path("/users/{id:[0-9]+}").
 		HandlerFunc(userHandler.GetUserInfo).
 		Methods("GET")
+	route.r.Path("/users/{id:[0-9]+}/requests").
+		Queries("size", "{size:[0-9]+}", "before", "{before:[0-9]+}").
+		HandlerFunc(userHandler.GetUserRequests).
+		Methods("GET")
+	route.r.Path("/users/{id:[0-9]+}/requests").
+		Queries("size", "{size:[0-9]+}").
+		HandlerFunc(userHandler.GetUserRequests).
+		Methods("GET")
 
 	// Request APIs
 	route.r.Path("/requests").
