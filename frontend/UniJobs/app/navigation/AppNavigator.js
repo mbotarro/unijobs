@@ -4,11 +4,12 @@ import LoginScreen from "../screens/LoginScreen";
 import HomeScreen from "../screens/HomeScreen";
 import TestScreen from "../screens/TestScreen";
 import OfferCardScreen from "../screens/OfferCardScreen";
+import RequestCardScreen from '../screens/RequestCardScreen'
 
 const AppNavigator = createStackNavigator({
     // Only for testing
     Test: {
-        screen: OfferCardScreen,
+        screen: RequestCardScreen,
     },
     Login: {
         screen: LoginScreen,

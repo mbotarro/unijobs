@@ -12,7 +12,7 @@ import PropTypes from 'prop-types'
 function populateRequestOfferCards(requests) {
     return (
         requests.map((req, index) => (
-                <View key = {index} style = {{marginTop: 3}}>
+                <View key = {index} style = {{marginTop: 3, flex: 1}}>
                     <OfferMiniCard 
                         image={req.Image}
                         title={req.Title}
@@ -27,18 +27,23 @@ function populateRequestOfferCards(requests) {
 }
 
 class OfferMiniCard extends React.Component {
+
+    _onTouch() {
+        alert('TOUCHED A CARD, HAVE TO PAY...')
+    }
+
     render() {
 
         const {image, title, userId, price, description} = this.props
 
         return(
-            <TouchableOpacity>
+            <TouchableOpacity onPress={this._onTouch}>
                 <View style={{flexDirection: 'row', width: window.width, justifyContent: 'space-between',
                     marginHorizontal: 25, marginVertical: 0
                 }}>
                     <Image
-                        source={{uri: 'https://scontent.fbsb9-1.fna.fbcdn.net/v/t1.0-9/380610_3187067755653_628186151_n.jpg?_nc_cat=109&_nc_oc=AQlJxxAQwZVYqktXB7SGCnEli6fbB_jlBln5JziI8nIAfKwgDlJc_vS2qxly5TDDIlk&_nc_ht=scontent.fbsb9-1.fna&oh=f2eed9d5d1e213b414025bad0b4dac04&oe=5D8E1840'}}
-                        style={[{marginHorizontal: 15, marginVertical: 10, width: 50, height: 50, alignSelf: 'center'}]}
+                        source={{uri: 'https://scontent.fqsc1-1.fna.fbcdn.net/v/t1.0-9/11096522_771344399648889_5338287702752396658_n.jpg?_nc_cat=101&_nc_oc=AQnlvMQxz6LOHWo05wXhzlVTq10vzzJPoP5qrnMHmN6zRkWIp0jRnyXwg0N3ze7kQzM&_nc_ht=scontent.fqsc1-1.fna&oh=6cc578d97b92748023e687ccdfec981f&oe=5D8E943E'}}
+                        style={[{marginHorizontal: 15, marginVertical: 10, width: 50, height: 50, alignSelf: 'center', borderRadius: 10}]}
                     />
                     <View style={{flexDirection: 'column', flex: 1, justifyContent: 'flex-start'}}>
                         <Text style={{marginHorizontal: 12, textAlign: 'left', marginTop: 8, color: '#00A5F2', fontSize: UniText.small, fontWeight: '600'}}>Aulas de Cálculo 1</Text>

@@ -6,42 +6,21 @@ import UniData from '../constants/UniData'
 import UniText from '../constants/UniText'
 import Button from '../components/Button'
 
-import {populateRequestOfferCards} from '../components/OfferMiniCards' 
+import {OfferMiniCard} from '../components/OfferMiniCards' 
 
 export default class OfferCardScreen extends React.Component {
     static navigationOptions = {title: '???'};
 
-    state = {
-        isLoading: true,
-        allOffersRequests: {},
+    _onTouchRequester() {
+        alert('You want to know the requester... naughty personx')
     }
 
-    textStrings = {
-        offerCardsHeader : 'Ofertas criadas à partir da sua solicitação'
-    }
-
-    async componentDidMount() {
-        this.setState({isLoading: false})
-        this.setState({allOffersRequests: testRequests})
-    }
-
-    _onQuit() {
-        alert('YOUR QUITTER!!!')
-    }
-
-    onHidePress() {
-        alert('Hide')
-    }
-
-    onEditPress() {
-        alert('Edit')
-    }
-
-    onRemovePress() {
-        alert('Remove')
+    _onCreatOfferPress() {
+        alert('NOW THERE IS NO TURNING BACK...')
     }
 
     render() {
+
         const {navigation} = this.props.navigation
 
         const testText = 'Descrição bem grande o suficiente para usar todo o espaço disponível em preview limitado em espaço maximo e restrito !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Esse espaço é ainda maior quando vc abre a solicitação e faz com que mais informação importante seja dita.sadfasdfasdfasdf'
@@ -72,17 +51,6 @@ export default class OfferCardScreen extends React.Component {
             )
         };
 
-        const offerCards = this.state.isLoading ? <ActivityIndicator style = {{marginTop: 10}}/> :
-            populateRequestOfferCards(this.state.allOffersRequests);
-        const CardsView = () => {
-            return (
-                <View style={[containerStyles.cardsContainer]}>
-                    <Text style={[textStyles.cardsViewTitle]}>{this.textStrings.offerCardsHeader}</Text>
-                    {offerCards}
-                </View>
-            )
-        }
-
         const PageHeader = () => {
             return(
                 <View style={{flexDirection: 'row', width: window.width, justifyContent: 'space-between', marginVertical: 15, marginHorizontal: 10}}>
@@ -95,7 +63,7 @@ export default class OfferCardScreen extends React.Component {
             )
         }
 
-        RequestDescription = () => {
+        const RequestDescription = () => {
             return(
                 <View style={{flexDirection: 'row', width: window.width, justifyContent: 'space-between', marginTop: -25}}>
                     <View style={[containerStyles.photoPriceContainer]}>
@@ -115,9 +83,28 @@ export default class OfferCardScreen extends React.Component {
             )
         }
 
-        const HideButton = ActionButton('Ocultar', this.onHidePress, '#0BA5F2');
-        const EditButton = ActionButton('Editar', this.onEditPress, '#0BA5F2');
-        const RemoveButton = ActionButton('Remover', this.onRemovePress, '#EF513A');
+        const CardView = () => {
+            return (
+                <View style={[containerStyles.cardsContainer]}>
+                    <TouchableOpacity onPress={this._onTouchRequester}>
+                        <View style={{flexDirection: 'row', width: window.width, justifyContent: 'space-between', alignItems: 'center',
+                            marginHorizontal: 25
+                        }}>
+                            <View style={{justifyContent: 'center'}}>
+                                <Image
+                                    source={{uri: 'https://scontent.fbsb9-1.fna.fbcdn.net/v/t1.0-9/380610_3187067755653_628186151_n.jpg?_nc_cat=109&_nc_oc=AQlJxxAQwZVYqktXB7SGCnEli6fbB_jlBln5JziI8nIAfKwgDlJc_vS2qxly5TDDIlk&_nc_ht=scontent.fbsb9-1.fna&oh=f2eed9d5d1e213b414025bad0b4dac04&oe=5D8E1840'}}
+                                    style={[{marginHorizontal: 15, width: 50, height: 50, alignSelf: 'center', borderRadius: 25}]}
+                                />
+                            </View>
+                            <Text numberOfLines={1} style={{marginBottom: 5, alignSelf: 'center', marginHorizontal: 12, textAlign: 'left', marginTop: 8, color: '#00A5F2', fontSize: UniText.normal, fontWeight: '600'}}>Nome do usuário ridiculamente</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            )
+        }
+
+
+        const CreateOfferButtom = ActionButton('Criar Oferta', this._onCreatOfferPress, '#0BA5F2');
 
         return (
             <View style={[containerStyles.greyContainer]}>
@@ -125,19 +112,16 @@ export default class OfferCardScreen extends React.Component {
                     <View style={[containerStyles.whiteContainer]}>
                         <PageHeader/>
                         <RequestDescription/>
-                        <CardsView/>
+                        <CardView/>
                         <View style={{flexDirection: 'column', marginBottom: 30}}>
-                            {HideButton}
-                            {EditButton}
-                            {RemoveButton}
+                            {CreateOfferButtom}
                         </View>
                     </View>
                 </ScrollView>
             </View>
-        );
+        )
     }
 }
-
 
 const containerStyles = StyleSheet.create({
     greyContainer: {
@@ -210,34 +194,3 @@ const textStyles = StyleSheet.create({
         marginBottom: 15,
     }
 })
-
-const testRequests = [
-    {
-        ID: '0',
-        Image: 'https://scontent.fqsc1-1.fna.fbcdn.net/v/t1.0-9/20729327_1168149799953296_8838092191541694934_n.jpg?_nc_cat=104&_nc_oc=AQmT313LRkvKv48lUd4VRdNJZc4YDo9rtGcGUbSSBzZs5aS33UB9O2_zue4PP57VrEkmjwScnDuktRnrRs7xIo9D&_nc_ht=scontent.fqsc1-1.fna&oh=9ce3152e54b88a4b0a6124039a9c90e1&oe=5D8F03D9',
-        Title: 'Aulas de Cálculo 1',
-        Description: 'This is a test discription 1',
-        Price: '100',
-    },
-    {
-        ID: '1',
-        Image: 'https://scontent.fqsc1-1.fna.fbcdn.net/v/t1.0-9/20729327_1168149799953296_8838092191541694934_n.jpg?_nc_cat=104&_nc_oc=AQmT313LRkvKv48lUd4VRdNJZc4YDo9rtGcGUbSSBzZs5aS33UB9O2_zue4PP57VrEkmjwScnDuktRnrRs7xIo9D&_nc_ht=scontent.fqsc1-1.fna&oh=9ce3152e54b88a4b0a6124039a9c90e1&oe=5D8F03D9',
-        Title: 'Aulas de topologia básica',
-        Description: 'This is a test discription 2',
-        Price: '60',
-    },
-    {
-        ID: '2',
-        Image: 'https://scontent.fqsc1-1.fna.fbcdn.net/v/t1.0-9/20729327_1168149799953296_8838092191541694934_n.jpg?_nc_cat=104&_nc_oc=AQmT313LRkvKv48lUd4VRdNJZc4YDo9rtGcGUbSSBzZs5aS33UB9O2_zue4PP57VrEkmjwScnDuktRnrRs7xIo9D&_nc_ht=scontent.fqsc1-1.fna&oh=9ce3152e54b88a4b0a6124039a9c90e1&oe=5D8F03D9',
-        Title: 'Exercícios resolvidos de intergral',
-        Description: 'This is a test discription 3',
-        Price: '25',
-    },
-    {
-        ID: '3',
-        Image: 'https://scontent.fqsc1-1.fna.fbcdn.net/v/t1.0-9/20729327_1168149799953296_8838092191541694934_n.jpg?_nc_cat=104&_nc_oc=AQmT313LRkvKv48lUd4VRdNJZc4YDo9rtGcGUbSSBzZs5aS33UB9O2_zue4PP57VrEkmjwScnDuktRnrRs7xIo9D&_nc_ht=scontent.fqsc1-1.fna&oh=9ce3152e54b88a4b0a6124039a9c90e1&oe=5D8F03D9',
-        Title: 'Monitoria de Análise',
-        Description: 'This is a test discription 4',
-        Price: '140',
-    },
-]
