@@ -105,7 +105,7 @@ func createUserHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "You've requested the user: %s\n", userdata.Username)
 }
 
-// GetUserRequests
+// GetUserRequests return Requests required by the user
 func (handler *UserHandler) GetUserRequests(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	idStr := vars["id"]

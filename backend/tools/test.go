@@ -18,6 +18,9 @@ func GetTestDB() *sqlx.DB {
 		log.Panicf("Can't connect to the db")
 	}
 
+	// Clean DB for test
+	CleanDB(db)
+
 	return db
 }
 
