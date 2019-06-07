@@ -11,8 +11,8 @@
 #### Expected Body
 ```
 {
-    email: user@user.com
-    password: <string>
+    "email": user@user.com
+    "password": <string>
 }
 ```
 
@@ -22,9 +22,9 @@
 
 ```
 {
-    email: user@user.com
-    id: <int>
-    valid: true
+    "email": user@user.com
+    "id": <int>
+    "valid": true
 }
 ```
 
@@ -32,9 +32,9 @@
 
 ```
 {
-    email: user@user.com
-    id: -1
-    valid: false
+    "email": user@user.com
+    "id": -1
+    "valid": false
 }
 ```
 
@@ -50,13 +50,13 @@
 
 ```
 {
-  "Username": "user",
-  "Password": "1234",
-  "Email": "user@gmail.com",
-  "Address": "",
-  "Telephone": "1234-1234",
-  "Userid": 2,
-  "Student": true
+  "username": "user",
+  "password": "1234",
+  "email": "user@gmail.com",
+  "address": "",
+  "telephone": "1234-1234",
+  "userid": 2,
+  "student": true
 }
 ```
 
@@ -78,26 +78,26 @@ For size = 2
 {
   "requests": [
     {
-      "ID": 6,
-      "Name": "Aula",
-      "Description": "Present Perfect",
-      "ExtraInfo": "",
-      "MaxPrice": 40,
-      "MinPrice": 20,
-      "Userid": 1,
-      "Categoryid": 2,
-      "Timestamp": "2019-06-06T08:25:44.596591Z"
+      "id": 6,
+      "name": "Aula",
+      "description": "Present Perfect",
+      "extraInfo": "",
+      "maxPrice": 40,
+      "minPrice": 20,
+      "userid": 1,
+      "categoryid": 2,
+      "timestamp": "2019-06-06T08:25:44.596591Z"
     },
     {
-      "ID": 5,
-      "Name": "Aula",
-      "Description": "Phrasal Verbs",
-      "ExtraInfo": "",
-      "MaxPrice": 40,
-      "MinPrice": 20,
-      "Userid": 1,
-      "Categoryid": 2,
-      "Timestamp": "2019-06-06T07:25:44.596591Z"
+      "id": 5,
+      "name": "Aula",
+      "description": "Phrasal Verbs",
+      "extraInfo": "",
+      "maxPrice": 40,
+      "minPrice": 20,
+      "userid": 1,
+      "categoryid": 2,
+      "timestamp": "2019-06-06T07:25:44.596591Z"
     }
   ],
   "last": 1559805944
@@ -116,26 +116,26 @@ You'll get
 {
   "requests": [
     {
-      "ID": 4,
-      "Name": "Aula",
-      "Description": "Calculo IV",
-      "ExtraInfo": "",
-      "MaxPrice": 40,
-      "MinPrice": 20,
-      "Userid": 1,
-      "Categoryid": 1,
-      "Timestamp": "2019-06-06T06:25:44.596591Z"
+      "id": 4,
+      "name": "Aula",
+      "description": "Calculo IV",
+      "extraInfo": "",
+      "maxPrice": 40,
+      "minPrice": 20,
+      "userid": 1,
+      "categoryid": 1,
+      "timestamp": "2019-06-06T06:25:44.596591Z"
     },
     {
-      "ID": 3,
-      "Name": "Aula",
-      "Description": "Calculo III",
-      "ExtraInfo": "",
-      "MaxPrice": 40,
-      "MinPrice": 20,
-      "Userid": 1,
-      "Categoryid": 1,
-      "Timestamp": "2019-06-06T05:25:44.596591Z"
+      "id": 3,
+      "name": "Aula",
+      "description": "Calculo III",
+      "extraInfo": "",
+      "maxPrice": 40,
+      "minPrice": 20,
+      "userid": 1,
+      "categoryid": 1,
+      "timestamp": "2019-06-06T05:25:44.596591Z"
     }
   ],
   "last": 1559798744
@@ -155,13 +155,13 @@ You'll get
 #### Expected Body
 ```
 {
-    name: <string>
-    description: <string>
-    extrainfo: <string>
-    maxprice: <int>
-    minprice: <int>
-    userid: <int>
-    categoryid: <int>
+    "name": <string>
+    "description": <string>
+    "extrainfo": <string>
+    "maxprice": <int>
+    "minprice": <int>
+    "userid": <int>
+    "categoryid": <int>
 }
 ```
 
@@ -193,26 +193,26 @@ For size = 2
     {
         "requests": [
             {
-            "ID": 6,
-            "Name": "Aula",
-            "Description": "Present Perfect",
-            "ExtraInfo": "",
-            "MaxPrice": 40,
-            "MinPrice": 20,
-            "Userid": 1,
-            "Categoryid": 2,
-            "Timestamp": "2019-05-31T16:59:57.728024Z"
+            "id": 6,
+            "name": "Aula",
+            "description": "Present Perfect",
+            "extraInfo": "",
+            "maxPrice": 40,
+            "minPrice": 20,
+            "userid": 1,
+            "categoryid": 2,
+            "timestamp": "2019-05-31T16:59:57.728024Z"
             },
             {
-            "ID": 5,
-            "Name": "Aula",
-            "Description": "Phrasal Verbs",
-            "ExtraInfo": "",
-            "MaxPrice": 40,
-            "MinPrice": 20,
-            "Userid": 1,
-            "Categoryid": 2,
-            "Timestamp": "2019-05-31T15:59:57.728024Z"
+            "id": 5,
+            "name": "Aula",
+            "description": "Phrasal Verbs",
+            "extraInfo": "",
+            "maxPrice": 40,
+            "minPrice": 20,
+            "userid": 1,
+            "categoryid": 2,
+            "timestamp": "2019-05-31T15:59:57.728024Z"
             }
         ],
         "last": 1559318397
@@ -231,26 +231,26 @@ You'll get
 ```{
     "requests": [
         {
-        "ID": 4,
-        "Name": "Aula",
-        "Description": "Calculo IV",
-        "ExtraInfo": "",
-        "MaxPrice": 40,
-        "MinPrice": 20,
-        "Userid": 1,
-        "Categoryid": 1,
-        "Timestamp": "2019-05-31T14:59:57.728024Z"
+        "id": 4,
+        "name": "Aula",
+        "description": "Calculo IV",
+        "extraInfo": "",
+        "maxPrice": 40,
+        "minPrice": 20,
+        "userid": 1,
+        "categoryid": 1,
+        "timestamp": "2019-05-31T14:59:57.728024Z"
         },
         {
-        "ID": 3,
-        "Name": "Aula",
-        "Description": "Calculo III",
-        "ExtraInfo": "",
-        "MaxPrice": 40,
-        "MinPrice": 20,
-        "Userid": 1,
-        "Categoryid": 1,
-        "Timestamp": "2019-05-31T13:59:57.728024Z"
+        "id": 3,
+        "name": "Aula",
+        "description": "Calculo III",
+        "extraInfo": "",
+        "maxPrice": 40,
+        "minPrice": 20,
+        "userid": 1,
+        "categoryid": 1,
+        "timestamp": "2019-05-31T13:59:57.728024Z"
         }
     ],
     "last": 1559311197
@@ -270,19 +270,19 @@ You'll get
 ```
 [
   {
-    "ID": 1,
-    "Name": "Aulas.Biológicas",
-    "Description": "Aulas de biológicas"
+    "id": 1,
+    "name": "Aulas.Biológicas",
+    "description": "Aulas de biológicas"
   },
   {
-    "ID": 2,
-    "Name": "Aulas.Exatas",
-    "Description": "Aulas de exatas"
+    "id": 2,
+    "name": "Aulas.Exatas",
+    "description": "Aulas de exatas"
   },
   {
-    "ID": 3,
-    "Name": "Aulas.Humanas",
-    "Description": "Aulas de humanas"
+    "id": 3,
+    "name": "Aulas.Humanas",
+    "description": "Aulas de humanas"
   }
 ]
 ```
