@@ -10,9 +10,7 @@ import { loadRequests, loadCategories } from '../actions/FeedActions'
 import UniStyles from '../constants/UniStyles'
 import UniColors from '../constants/UniColors'
 import UniText from '../constants/UniText'
-import UniData from '../constants/UniData'
 
-import { DrawerActions } from 'react-navigation';
 
 
 export default class FeedRequestScreen extends React.Component {

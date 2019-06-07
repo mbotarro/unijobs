@@ -34,12 +34,16 @@ export default class LoginScreen extends React.Component {
     /* components callbacks */
     onLogin(navigate) {
         tryLogin(this.state.username.toLowerCase(), this.state.password,
-            (email, valid) => {
-                alert(email + ' ' + valid);
+            (email, id, valid) => {
                 if (valid) {
-                    AsyncStorage.setItem(UniData.username, email).then(() => 
-                    navigate('TabStack')
-                    ).catch();
+                    AsyncStorage.setItem(UniData.username, email)
+                    .then(
+                        AsyncStorage.setItem(UniData.userid, id.toString())
+                        .then(navigate('TabStack'))
+                    );
+                }
+                else {
+                    alert('Email / Password missmatch');
                 }
             }
         );

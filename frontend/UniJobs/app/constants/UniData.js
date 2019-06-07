@@ -3,16 +3,19 @@
 // assync storage keys
 const USER_STORAGE_KEYS = {
     username: 'user.username',
-    // password: 'user.password',
+    userid: 'user.userid',
 };
 
 const AWS_SERVER = {
     serverUrl: 'http://ec2-54-205-214-239.compute-1.amazonaws.com:8080',
 
     autenticationApi: 'http://ec2-54-205-214-239.compute-1.amazonaws.com:8080/users/authenticate',
-    allRequestsApi: 'http://ec2-54-205-214-239.compute-1.amazonaws.com:8080/requests?size=2',
+    allRequestsApi: (size) => ('http://ec2-54-205-214-239.compute-1.amazonaws.com:8080/requests?size=' + size),
     categoriesApi: 'http://ec2-54-205-214-239.compute-1.amazonaws.com:8080/categories',
-    //'http://ec2-54-205-214-239.compute-1.amazonaws.com:8080/requests/size=2'
+
+    userDataApi: (id) => ('http://ec2-54-205-214-239.compute-1.amazonaws.com:8080/users/' + id),
+    userRequestsApi: (id, size) => ('http://ec2-54-205-214-239.compute-1.amazonaws.com:8080/users/' + id +'/requests?size=' + size),
+
 }
 
 module.exports = {

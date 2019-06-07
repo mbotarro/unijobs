@@ -40,6 +40,7 @@ export default class FeedOfertasScreen extends React.Component {
     async componentDidMount() {
         try {
             const username = await AsyncStorage.getItem(UniData.username);
+            console.log("offer screen : " + username)
             if (username !== null)
                 this.setState({ username: username });
         } catch (error) {

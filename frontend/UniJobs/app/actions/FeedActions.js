@@ -15,7 +15,17 @@ import UniData from '../constants/UniData'
 // Categoryid
 // Timestamp
 async function loadRequests (onResponse) {
-    fetch(UniData.allRequestsApi, { method: 'GET' })
+    fetch(UniData.allRequestsApi(10), { method: 'GET' })
+    .then((response) => response.json())
+    .then((response) => onResponse(response.requests))
+    .catch((error) => {
+        console.log("Load All Requests Error!");
+        alert(error.message);
+    });
+};
+
+async function loadMyRequests (id, onResponse) {
+    fetch(UniData.userRequestsApi(id, 10), { method: 'GET' })
     .then((response) => response.json())
     .then((response) => onResponse(response.requests))
     .catch((error) => {
@@ -29,10 +39,10 @@ async function loadCategories (onResponse) {
     .then((response) => response.json())
     .then((response) => onResponse(response))
     .catch((error) => {
-        console.log("Load All Requests Error!");
+        console.log(error.message);
         alert(error.message);
     });
 }
 
 
-module.exports = { loadRequests, loadCategories };
+module.exports = { loadRequests, loadCategories, loadMyRequests };
