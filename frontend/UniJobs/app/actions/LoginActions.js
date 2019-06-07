@@ -8,18 +8,30 @@ async function tryLogin (email, password, onResponse) {
     fetch(UniData.autenticationApi, {
     method: 'POST',
         body: JSON.stringify({
-        email: email,
-        password: password,
+            email: email,
+            password: password,
         }),
     })
     .then((response) => response.json())
     .then((json) => {
-        onResponse(json.email, json.valid);
+        onResponse(json.email, json.id, json.valid);
     }).catch((error) => {
-        console.log("Autentication API error!");
-        alert(error.message);
+        console.log(error.message);
+        alert("Autentication API error!");
+    });
+};
+
+async function getUserData (id, onResponse) {
+    fetch(UniData.userDataApi(id), { method: 'GET' })
+    .then((response) => response.json())
+    .then((response) => onResponse(response))
+    .catch((error) => {
+        console.log(error.message);
+        alert('User Data API error!');
     });
 };
 
 
-module.exports = { tryLogin };
+
+
+module.exports = { tryLogin, getUserData };

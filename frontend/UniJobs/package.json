@@ -11,7 +11,10 @@
     "react": "16.5.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
     "react-native-keyboard-aware-scroll-view": "^0.8.0",
-    "react-navigation": "^3.11.0"
+    "react-native-vector-icons": "^6.4.2",
+    "react-navigation": "^3.11.0",
+    "react-redux": "^5.0.6",
+    "redux": "^3.7.2"
   },
   "devDependencies": {
     "babel-preset-expo": "^5.0.0"

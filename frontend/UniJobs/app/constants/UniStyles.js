@@ -6,9 +6,7 @@ import UniText from './UniText'
 const textInput = {
     backgroundColor: UniColors.light,
 
-    borderColor:    UniColors.white,
     borderRadius:   25,
-    borderWidth:    1,
 
     height:     45,
     width:      307,
@@ -24,7 +22,41 @@ const text = {
     color:      UniColors.dark_grey
 }
 
+const icons ={
+    width: 20,
+    height: 20,
+    alignSelf: 'center',
+    margin: 20,
+}
+
+const container = {
+    flex: 1,
+    alignContent: 'center',
+    alignSelf: 'center',
+    justifyContent: 'center',
+}
+
+const useravatar= {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    borderWidth: 2,
+    borderColor: "white",
+    margin:20,
+}
+
+const username={
+    fontSize: UniText.normal,
+    color:UniColors.white,
+    fontWeight:'100',
+    
+}
+
 module.exports = {
     textInput,
     text,
-};
+    container,
+    useravatar,
+    username,
+    icons,
+}
