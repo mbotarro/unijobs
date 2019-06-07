@@ -74,7 +74,7 @@ export default class CardsWrapper extends React.Component {
         }
 
         return (
-            <View style={[containerStyles.greyContainer]}>
+            <View style={[containerStyles.container]}>
                 <View style={{width: 60, height: 5, backgroundColor: 'white', borderRadius: 3, marginTop: 30, alignSelf: 'center'}}/>
                 <ScrollView scrollEnabled={true} showsVerticalScrollIndicator={false}>
                     <View style={[containerStyles.whiteContainer]}>
@@ -91,9 +91,8 @@ export default class CardsWrapper extends React.Component {
 
 
 const containerStyles = StyleSheet.create({
-    greyContainer: {
+    container: {
         flex: 1,
-        backgroundColor: '#B1B8BE',
     },
     whiteContainer: {
         backgroundColor: '#FFFFFF',
