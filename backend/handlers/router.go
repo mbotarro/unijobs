@@ -17,14 +17,48 @@ func NewRouter(ctrl *usecases.Controller) *mux.Router {
 	}
 
 	userHandler := NewUserHandler(ctrl.User)
+	categoryHandler := NewCategoryHandler(ctrl.Category)
+	requestHandler := NewRequestHandler(ctrl.Request)
 
 	route.r.HandleFunc("/createUser", createUserHandler).Methods("POST")
-	route.r.HandleFunc("/createCategory", createCategoryHandler).Methods("POST")
 	route.r.HandleFunc("/createOffer", createOfferHandler).Methods("POST")
-	route.r.HandleFunc("/createInterest", createInterestHandler).Methods("POST")
 
 	// User APIs
-	route.r.HandleFunc("/users/authenticate", userHandler.authenticateUser).Methods("POST")
+	route.r.Path("/users/authenticate").
+		HandlerFunc(userHandler.AuthenticateUser).
+		Methods("POST")
+	route.r.Path("/users/{id:[0-9]+}").
+		HandlerFunc(userHandler.GetUserInfo).
+		Methods("GET")
+	route.r.Path("/users/{id:[0-9]+}/requests").
+		Queries("size", "{size:[0-9]+}", "before", "{before:[0-9]+}").
+		HandlerFunc(userHandler.GetUserRequests).
+		Methods("GET")
+	route.r.Path("/users/{id:[0-9]+}/requests").
+		Queries("size", "{size:[0-9]+}").
+		HandlerFunc(userHandler.GetUserRequests).
+		Methods("GET")
+
+	// Request APIs
+	// Get last requests
+	route.r.Path("/requests").
+		Queries("size", "{size:[0-9]+}").
+		HandlerFunc(requestHandler.GetLastRequests).
+		Methods("GET")
+
+	// Get last requests with paging
+	route.r.Path("/requests").
+		Queries("size", "{size:[0-9]+}", "before", "{before:[0-9]+}").
+		HandlerFunc(requestHandler.GetLastRequests).
+		Methods("GET")
+
+	// Send new request
+	route.r.Path("/requests").
+		HandlerFunc(requestHandler.InsertRequest).
+		Methods("POST")
+
+	// Categories API
+	route.r.HandleFunc("/categories", categoryHandler.getAllCategories).Methods("GET")
 
 	return &route.r
 }

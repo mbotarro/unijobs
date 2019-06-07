@@ -1,0 +1,619 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">github.com/mbotarro/unijobs/backend/dal/categoryDAL.go (83.3%)</option>
+				
+				<option value="file1">github.com/mbotarro/unijobs/backend/dal/requestDAL.go (81.8%)</option>
+				
+				<option value="file2">github.com/mbotarro/unijobs/backend/dal/userDAL.go (81.8%)</option>
+				
+				<option value="file3">github.com/mbotarro/unijobs/backend/handlers/categoryHandler.go (16.7%)</option>
+				
+				<option value="file4">github.com/mbotarro/unijobs/backend/handlers/offerHandler.go (0.0%)</option>
+				
+				<option value="file5">github.com/mbotarro/unijobs/backend/handlers/requestHandler.go (72.7%)</option>
+				
+				<option value="file6">github.com/mbotarro/unijobs/backend/handlers/router.go (100.0%)</option>
+				
+				<option value="file7">github.com/mbotarro/unijobs/backend/handlers/userHandler.go (31.7%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package dal
+
+import (
+        "github.com/jmoiron/sqlx"
+        "github.com/mbotarro/unijobs/backend/models"
+)
+
+// CategoryDAL interacts with the DB to perform Category related queries
+type CategoryDAL struct {
+        db *sqlx.DB
+}
+
+// NewCategoryDAL returns a new CategoryDAL
+func NewCategoryDAL(db *sqlx.DB) *CategoryDAL <span class="cov8" title="1">{
+        return &amp;CategoryDAL{
+                db: db,
+        }
+}</span>
+
+// GetAllCategories return ALL categories from category_table
+func (dal *CategoryDAL) GetAllCategories() ([]models.Category, error) <span class="cov8" title="1">{
+        categories := []models.Category{}
+        err := dal.db.Select(&amp;categories, "SELECT * FROM category ORDER BY id ASC")
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">return categories, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package dal
+
+import (
+        "time"
+
+        "github.com/jmoiron/sqlx"
+        "github.com/mbotarro/unijobs/backend/models"
+)
+
+// RequestDAL interacts with the DB to perform User related queries
+type RequestDAL struct {
+        db *sqlx.DB
+}
+
+// NewRequestDAL returns a new RequestDAL
+func NewRequestDAL(db *sqlx.DB) *RequestDAL <span class="cov8" title="1">{
+        return &amp;RequestDAL{
+                db: db,
+        }
+}</span>
+
+// GetLastRequests returns the requests inserted in the dabase before the time specified by timestamp
+// The parameter size limits the number of returned requests
+func (dal *RequestDAL) GetLastRequests(before time.Time, size int) ([]models.Request, error) <span class="cov8" title="1">{
+        reqs := []models.Request{}
+        err := dal.db.Select(&amp;reqs,
+                `SELECT * FROM request WHERE timestamp &lt; $1
+                        ORDER BY timestamp DESC
+                        LIMIT $2`, before.UTC(), size)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">return reqs, nil</span>
+}
+
+// InsertRequest Receives a request as a parameter and inserts into the database
+func (dal *RequestDAL) InsertRequest(request models.Request) error <span class="cov8" title="1">{
+        insertQuery := `INSERT INTO request (name, description, extrainfo, minprice, maxprice, userid, categoryid, timestamp) 
+                                                VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`
+
+        // Gets the controller of the database and executes the query
+        _, err := dal.db.Exec(insertQuery, request.Name, request.Description, request.ExtraInfo, request.MinPrice, request.MaxPrice, request.Userid, request.Categoryid, request.Timestamp)
+
+        // Checks if any error happened during the query execution
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package dal
+
+import (
+        "time"
+
+        "github.com/jmoiron/sqlx"
+        "github.com/mbotarro/unijobs/backend/models"
+)
+
+// UserDAL interacts with the DB to perform User related queries
+type UserDAL struct {
+        db *sqlx.DB
+}
+
+// NewUserDAL returns a new UserDAL
+func NewUserDAL(db *sqlx.DB) *UserDAL <span class="cov8" title="1">{
+        return &amp;UserDAL{
+                db: db,
+        }
+}</span>
+
+// AuthenticateUser returns if an user is a valid one
+// It also returns the user id if he's a valid user
+func (dal *UserDAL) AuthenticateUser(email, password string) (bool, int, error) <span class="cov8" title="1">{
+        var c int
+        err := dal.db.Get(&amp;c, "SELECT COUNT(1) FROM userdata WHERE email = $1 AND password = $2", email, password)
+        if err != nil </span><span class="cov0" title="0">{
+                return false, -1, err
+        }</span>
+
+        <span class="cov8" title="1">if c != 1 </span><span class="cov8" title="1">{
+                return false, -1, nil
+        }</span>
+
+        <span class="cov8" title="1">var id int
+        err = dal.db.Get(&amp;id,
+                `SELECT userid FROM userdata WHERE email = $1 AND password = $2`, email, password)
+        if err != nil </span><span class="cov0" title="0">{
+                return false, -1, err
+        }</span>
+
+        <span class="cov8" title="1">return true, id, nil</span>
+}
+
+// GetUserInfo returns information about an user given his/her ID
+func (dal *UserDAL) GetUserInfo(id int) (models.User, error) <span class="cov8" title="1">{
+        var u models.User
+        err := dal.db.Get(&amp;u, "SELECT * FROM userdata WHERE userid = $1", id)
+        if err != nil </span><span class="cov0" title="0">{
+                return models.User{}, err
+        }</span>
+
+        <span class="cov8" title="1">return u, nil</span>
+}
+
+// GetUserRequests get all requests created by a user
+// The before parameter is used for pagination. Only the requests created before the time passed by before are returned.
+// size limits the number of fetched requests
+func (dal *UserDAL) GetUserRequests(id int, before time.Time, size int) ([]models.Request, error) <span class="cov8" title="1">{
+        reqs := []models.Request{}
+        err := dal.db.Select(&amp;reqs,
+                `SELECT * FROM request WHERE userid = $1 AND timestamp &lt; $2
+                        ORDER BY timestamp DESC
+                        LIMIT $3`, id, before.UTC(), size)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">return reqs, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package handlers
+
+import (
+        "fmt"
+        "net/http"
+
+        "github.com/mbotarro/unijobs/backend/errors"
+        "github.com/mbotarro/unijobs/backend/tools"
+        "github.com/mbotarro/unijobs/backend/usecases"
+)
+
+// CategoryHandler handle all Categories API
+type CategoryHandler struct {
+        categoryController *usecases.CategoryController
+}
+
+// NewCategoryHandler returns a new CategoryHandler
+func NewCategoryHandler(categoryCtrl *usecases.CategoryController) *CategoryHandler <span class="cov8" title="1">{
+        return &amp;CategoryHandler{
+                categoryController: categoryCtrl,
+        }
+}</span>
+
+func (handler *CategoryHandler) getAllCategories(w http.ResponseWriter, r *http.Request) <span class="cov0" title="0">{
+        categories, err := handler.categoryController.GetAllCategories()
+        if err != nil </span><span class="cov0" title="0">{
+                http.Error(w, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error()).Error(), http.StatusInternalServerError)
+                return
+        }</span>
+
+        <span class="cov0" title="0">tools.WriteStructOnHTTPResponse(categories, w)</span>
+}
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package handlers
+
+import (
+        "encoding/json"
+        "fmt"
+        "io/ioutil"
+        "log"
+        "net/http"
+
+        "github.com/mbotarro/unijobs/backend/models"
+)
+
+func createOfferHandler(w http.ResponseWriter, r *http.Request) <span class="cov0" title="0">{
+        body, err := ioutil.ReadAll(r.Body)
+        if err != nil </span><span class="cov0" title="0">{
+                panic(err)</span>
+        }
+
+        <span class="cov0" title="0">log.Println(string(body))
+        var offerdata models.Offer
+        err = json.Unmarshal(body, &amp;offerdata)
+        if err != nil </span><span class="cov0" title="0">{
+                panic(err)</span>
+        }
+        <span class="cov0" title="0">fmt.Fprintf(w, "You've requested the offer: %s\n", offerdata.Name)</span>
+}
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package handlers
+
+import (
+        "fmt"
+        "net/http"
+        "strconv"
+        "time"
+
+        "github.com/mbotarro/unijobs/backend/models"
+
+        "github.com/mbotarro/unijobs/backend/errors"
+        "github.com/mbotarro/unijobs/backend/tools"
+        "github.com/mbotarro/unijobs/backend/usecases"
+)
+
+// RequestHandler handle all Requests' API
+type RequestHandler struct {
+        requestController *usecases.RequestController
+}
+
+// NewRequestHandler returns a new RequestHandler
+func NewRequestHandler(requestCtrl *usecases.RequestController) *RequestHandler <span class="cov8" title="1">{
+        return &amp;RequestHandler{
+                requestController: requestCtrl,
+        }
+}</span>
+
+// RequestResponse contains the respons sent to the frontend
+type RequestResponse struct {
+        Requests []models.Request `json:"requests"`
+
+        // Last is the timestamp of the last request sent to the front. It can be used to get the requests created before it
+        Last int64 `json:"last"`
+}
+
+// GetLastRequests sends the last requests created in the unijobs service
+func (handler *RequestHandler) GetLastRequests(w http.ResponseWriter, r *http.Request) <span class="cov8" title="1">{
+        sizeStr := r.FormValue("size")
+        size, err := strconv.ParseInt(sizeStr, 10, 32)
+        if err != nil </span><span class="cov0" title="0">{
+                http.Error(w, fmt.Errorf("%s:%s", errors.QueryParameterError, err.Error()).Error(), http.StatusBadRequest)
+                return
+        }</span>
+
+        <span class="cov8" title="1">before := time.Now()
+        beforeStr := r.FormValue("before")
+        if beforeStr != "" </span><span class="cov8" title="1">{
+                beforeInt, err := strconv.ParseInt(beforeStr, 10, 64)
+                if err != nil </span><span class="cov0" title="0">{
+                        http.Error(w, fmt.Errorf("%s:%s", errors.QueryParameterError, err.Error()).Error(), http.StatusBadRequest)
+                        return
+                }</span>
+
+                <span class="cov8" title="1">before = time.Unix(beforeInt, 0)</span>
+        }
+
+        <span class="cov8" title="1">reqs, err := handler.requestController.GetLastRequests(before, int(size))
+        if err != nil </span><span class="cov0" title="0">{
+                http.Error(w, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error()).Error(), http.StatusInternalServerError)
+                return
+        }</span>
+
+        <span class="cov8" title="1">reqRes := RequestResponse{
+                Requests: reqs,
+        }
+
+        if l := len(reqs); l &gt; 0 </span><span class="cov8" title="1">{
+                reqRes.Last = reqs[l-1].Timestamp.Unix()
+        }</span>
+
+        <span class="cov8" title="1">tools.WriteStructOnHTTPResponse(reqRes, w)</span>
+}
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">package handlers
+
+import (
+        "github.com/gorilla/mux"
+        "github.com/mbotarro/unijobs/backend/usecases"
+)
+
+// Router Contains a mux.Router object
+type Router struct {
+        r mux.Router
+}
+
+// NewRouter creates the router of the functions and returns a mux.Router object
+func NewRouter(ctrl *usecases.Controller) *mux.Router <span class="cov8" title="1">{
+        route := Router{
+                r: mux.Router{},
+        }
+
+        userHandler := NewUserHandler(ctrl.User)
+        categoryHandler := NewCategoryHandler(ctrl.Category)
+        requestHandler := NewRequestHandler(ctrl.Request)
+
+        route.r.HandleFunc("/createUser", createUserHandler).Methods("POST")
+        route.r.HandleFunc("/createOffer", createOfferHandler).Methods("POST")
+
+        // User APIs
+        route.r.Path("/users/authenticate").
+                HandlerFunc(userHandler.AuthenticateUser).
+                Methods("POST")
+        route.r.Path("/users/{id:[0-9]+}").
+                HandlerFunc(userHandler.GetUserInfo).
+                Methods("GET")
+        route.r.Path("/users/{id:[0-9]+}/requests").
+                Queries("size", "{size:[0-9]+}", "before", "{before:[0-9]+}").
+                HandlerFunc(userHandler.GetUserRequests).
+                Methods("GET")
+        route.r.Path("/users/{id:[0-9]+}/requests").
+                Queries("size", "{size:[0-9]+}").
+                HandlerFunc(userHandler.GetUserRequests).
+                Methods("GET")
+
+        // Request APIs
+        route.r.Path("/requests").
+                Queries("size", "{size:[0-9]+}").
+                HandlerFunc(requestHandler.GetLastRequests).
+                Methods("GET")
+
+        route.r.Path("/requests").
+                Queries("size", "{size:[0-9]+}", "before", "{before:[0-9]+}").
+                HandlerFunc(requestHandler.GetLastRequests).
+                Methods("GET")
+
+        // Categories API
+        route.r.HandleFunc("/categories", categoryHandler.getAllCategories).Methods("GET")
+
+        return &amp;route.r
+}</span>
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">package handlers
+
+import (
+        "encoding/json"
+        "fmt"
+        "io/ioutil"
+        "log"
+        "net/http"
+        "strconv"
+        "time"
+
+        "github.com/gorilla/mux"
+        "github.com/mbotarro/unijobs/backend/errors"
+        "github.com/mbotarro/unijobs/backend/models"
+        "github.com/mbotarro/unijobs/backend/tools"
+        "github.com/mbotarro/unijobs/backend/usecases"
+)
+
+// UserHandler handle all Users API
+type UserHandler struct {
+        userController *usecases.UserController
+}
+
+// UserAuthentication has all the information that the frontend sends to authenticate an user
+type UserAuthentication struct {
+        Email    string `json:"email"`
+        Password string `json:"password"`
+}
+
+// UserAuthenticationResponse contains the authentication response sent to the frontend
+type UserAuthenticationResponse struct {
+        Email string `json:"email"`
+        ID    int    `json:"id"`
+        Valid bool   `json:"valid"`
+}
+
+// NewUserHandler returns a new UserHandler
+func NewUserHandler(userCtrl *usecases.UserController) *UserHandler <span class="cov8" title="1">{
+        return &amp;UserHandler{
+                userController: userCtrl,
+        }
+}</span>
+
+// AuthenticateUser returns if a user is in the DB or not. If he's in the DB, returns his ID as well
+func (handler *UserHandler) AuthenticateUser(w http.ResponseWriter, r *http.Request) <span class="cov0" title="0">{
+        body, err := ioutil.ReadAll(r.Body)
+        if err != nil </span><span class="cov0" title="0">{
+                http.Error(w, fmt.Errorf("%s:%s", errors.ReadRequestBodyError, err.Error()).Error(), http.StatusBadRequest)
+                return
+        }</span>
+
+        <span class="cov0" title="0">var ua UserAuthentication
+        err = json.Unmarshal(body, &amp;ua)
+        if err != nil </span><span class="cov0" title="0">{
+                http.Error(w, fmt.Errorf("%s:%s", errors.JSONUnmarshalError, err.Error()).Error(), http.StatusInternalServerError)
+                return
+        }</span>
+
+        <span class="cov0" title="0">valid, id, err := handler.userController.AuthenticateUser(ua.Email, ua.Password)
+        if err != nil </span><span class="cov0" title="0">{
+                http.Error(w, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error()).Error(), http.StatusInternalServerError)
+                return
+        }</span>
+
+        <span class="cov0" title="0">res := UserAuthenticationResponse{
+                Email: ua.Email,
+                ID:    id,
+                Valid: valid,
+        }
+
+        tools.WriteStructOnHTTPResponse(res, w)</span>
+}
+
+// GetUserInfo returns all the information about an user
+func (handler *UserHandler) GetUserInfo(w http.ResponseWriter, r *http.Request) <span class="cov0" title="0">{
+        vars := mux.Vars(r)
+        idStr := vars["id"]
+        id, err := strconv.ParseInt(idStr, 10, 32)
+        if err != nil </span><span class="cov0" title="0">{
+                http.Error(w, fmt.Errorf("%s:%s", errors.QueryParameterError, err.Error()).Error(), http.StatusBadRequest)
+                return
+        }</span>
+
+        <span class="cov0" title="0">u, err := handler.userController.GetUserInfo(int(id))
+        if err != nil </span><span class="cov0" title="0">{
+                http.Error(w, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error()).Error(), http.StatusInternalServerError)
+                return
+        }</span>
+
+        <span class="cov0" title="0">tools.WriteStructOnHTTPResponse(u, w)</span>
+}
+
+func createUserHandler(w http.ResponseWriter, r *http.Request) <span class="cov0" title="0">{
+        body, err := ioutil.ReadAll(r.Body)
+        if err != nil </span><span class="cov0" title="0">{
+                panic(err)</span>
+        }
+
+        <span class="cov0" title="0">log.Println(string(body))
+        var userdata models.User
+        err = json.Unmarshal(body, &amp;userdata)
+        if err != nil </span><span class="cov0" title="0">{
+                panic(err)</span>
+        }
+        <span class="cov0" title="0">fmt.Fprintf(w, "You've requested the user: %s\n", userdata.Username)</span>
+}
+
+// GetUserRequests return Requests required by the user
+func (handler *UserHandler) GetUserRequests(w http.ResponseWriter, r *http.Request) <span class="cov8" title="1">{
+        vars := mux.Vars(r)
+        idStr := vars["id"]
+        id, err := strconv.ParseInt(idStr, 10, 32)
+        if err != nil </span><span class="cov0" title="0">{
+                http.Error(w, fmt.Errorf("%s:%s", errors.QueryParameterError, err.Error()).Error(), http.StatusBadRequest)
+                return
+        }</span>
+
+        <span class="cov8" title="1">sizeStr := r.FormValue("size")
+        size, err := strconv.ParseInt(sizeStr, 10, 32)
+        if err != nil </span><span class="cov0" title="0">{
+                http.Error(w, fmt.Errorf("%s:%s", errors.QueryParameterError, err.Error()).Error(), http.StatusBadRequest)
+                return
+        }</span>
+
+        <span class="cov8" title="1">before := time.Now()
+        beforeStr := r.FormValue("before")
+        if beforeStr != "" </span><span class="cov8" title="1">{
+                beforeInt, err := strconv.ParseInt(beforeStr, 10, 64)
+                if err != nil </span><span class="cov0" title="0">{
+                        http.Error(w, fmt.Errorf("%s:%s", errors.QueryParameterError, err.Error()).Error(), http.StatusBadRequest)
+                        return
+                }</span>
+
+                <span class="cov8" title="1">before = time.Unix(beforeInt, 0)</span>
+        }
+
+        <span class="cov8" title="1">reqs, err := handler.userController.GetUserRequests(int(id), before, int(size))
+        if err != nil </span><span class="cov0" title="0">{
+                http.Error(w, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error()).Error(), http.StatusInternalServerError)
+                return
+        }</span>
+
+        <span class="cov8" title="1">reqRes := RequestResponse{
+                Requests: reqs,
+        }
+
+        if l := len(reqs); l &gt; 0 </span><span class="cov8" title="1">{
+                reqRes.Last = reqs[l-1].Timestamp.Unix()
+        }</span>
+
+        <span class="cov8" title="1">tools.WriteStructOnHTTPResponse(reqRes, w)</span>
+}
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>
