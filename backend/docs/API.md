@@ -146,6 +146,32 @@ You'll get
 
 ## Get all requests created in the platform
 
+### POST
+
+#### Expected Body
+```
+{
+    name: <string>
+    description: <string>
+    extrainfo: <string>
+    maxprice: <int>
+    minprice: <int>
+    userid: <int>
+    categoryid: <int>
+}
+```
+
+##### Valid Insertion
+A valid insert returns a 201 HTTP Status Code.
+```
+HTTP/1.1 201 Created
+Date: Wed, 05 Jun 2019 12:00:59 GMT
+Content-Length: 0
+```
+
+##### Invalid Insertion
+An invalid insertion returns the error message.
+
 ### GET
 
 One must provide the number of requests that should be sent.
