@@ -1,12 +1,13 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 
 import UniStyles from '../constants/UniStyles'
 import UniData from '../constants/UniData'
 import UniText from '../constants/UniText'
 import Button from '../components/Button'
 
-import {populateRequestOfferCards} from '../components/OfferMiniCards' 
+import {populateRequestOfferCards} from '../components/OfferMiniCards'
+import CardsWrapper from '../components/CardsWrapper'
 
 export default class OfferCardScreen extends React.Component {
     static navigationOptions = {title: '???'};
@@ -29,38 +30,20 @@ export default class OfferCardScreen extends React.Component {
         alert('YOUR QUITTER!!!')
     }
 
-    onHidePress() {
+    _onHidePress() {
         alert('Hide')
     }
 
-    onEditPress() {
+    _onEditPress() {
         alert('Edit')
     }
 
-    onRemovePress() {
+    _onRemovePress() {
         alert('Remove')
     }
 
     render() {
-        const {navigation} = this.props.navigation
-
-        const testText = 'Descrição bem grande o suficiente para usar todo o espaço disponível em preview limitado em espaço maximo e restrito !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Esse espaço é ainda maior quando vc abre a solicitação e faz com que mais informação importante seja dita.sadfasdfasdfasdf'
-
-        const Images = (name) => {
-            switch (name) {
-                case 'exit': return require('../assets/icons/exit.png');
-                case 'profile': return {uri: 'https://scontent.fbsb9-1.fna.fbcdn.net/v/t1.0-9/426056_4489254589510_757001532_n.jpg?_nc_cat=101&_nc_oc=AQlQUXcAo9rf4C-S53BUVzn0OxTouzx4E31KsnLXkMGL3HuBYwRL9bHJ8uyeXEcgtjE&_nc_ht=scontent.fbsb9-1.fna&oh=6f1621de613155e2155a6743c913bdeb&oe=5D938675'};
-            }
-        };
-
-        const QuitButton = () => (
-            <TouchableOpacity onPress={this._onQuit} style={{padding: iconStyles.exitIcon.width * 2.2, marginLeft: -25, marginTop: -25}}>
-                <Image
-                    source={Images('exit')}
-                    style={[iconStyles.exitIcon]}
-                />
-            </TouchableOpacity>
-        )
+        const {navigation, request, categories} = this.props.navigation
 
         const ActionButton = (text, onPress, color) => {
             return (
@@ -71,6 +54,20 @@ export default class OfferCardScreen extends React.Component {
                 />
             )
         };
+
+        const HideButton = ActionButton('Ocultar', this._onHidePress, '#0BA5F2');
+        const EditButton = ActionButton('Editar', this._onEditPress, '#0BA5F2');
+        const RemoveButton = ActionButton('Remover', this._onRemovePress, '#EF513A');
+
+        const ButtonWrapper = () => {
+            return (
+                <View style={{flexDirection: 'column', marginBottom: 30}}>
+                    {HideButton}
+                    {EditButton}
+                    {RemoveButton}
+                </View>
+            )
+        }
 
         const offerCards = this.state.isLoading ? <ActivityIndicator style = {{marginTop: 10}}/> :
             populateRequestOfferCards(this.state.allOffersRequests);
@@ -83,83 +80,18 @@ export default class OfferCardScreen extends React.Component {
             )
         }
 
-        const PageHeader = () => {
-            return(
-                <View style={{flexDirection: 'row', width: window.width, justifyContent: 'space-between', marginVertical: 15, marginHorizontal: 10}}>
-                    <View style={{alignSelf: 'center', justifyContent: 'flex-start'}}>
-                        <QuitButton/>
-                    </View>
-                    <Text style={textStyles.textTitle}>********* This is a test ********</Text>
-                    <View style={{justifyContent: 'flex-end'}} />
-                </View>
-            )
-        }
-
-        RequestDescription = () => {
-            return(
-                <View style={{flexDirection: 'row', width: window.width, justifyContent: 'space-between', marginTop: -25}}>
-                    <View style={[containerStyles.photoPriceContainer]}>
-                        <Image
-                            source={Images('profile')}
-                            style={[iconStyles.profileImage]}
-                        />
-                        <View style={{flex: 1, justifyContent: 'center', flexDirection: 'column'}}>
-                            <Text style={[textStyles.categoryText, {marginVertical: 5}]}> Maior das categorias </Text>
-                            <Text style={[textStyles.categoryText]}>R$ MIN - MAX</Text>
-                        </View>
-                    </View>
-                    <Text style={[textStyles.mainDescText]}>
-                        {((testText).length > 290) ? (((testText).substring(0,290-3)) + '...') : testText}
-                    </Text>
-                </View>
-            )
-        }
-
-        const HideButton = ActionButton('Ocultar', this.onHidePress, '#0BA5F2');
-        const EditButton = ActionButton('Editar', this.onEditPress, '#0BA5F2');
-        const RemoveButton = ActionButton('Remover', this.onRemovePress, '#EF513A');
-
         return (
-            <View style={[containerStyles.greyContainer]}>
-                <ScrollView scrollEnabled={true} showsVerticalScrollIndicator={false}>
-                    <View style={[containerStyles.whiteContainer]}>
-                        <PageHeader/>
-                        <RequestDescription/>
-                        <CardsView/>
-                        <View style={{flexDirection: 'column', marginBottom: 30}}>
-                            {HideButton}
-                            {EditButton}
-                            {RemoveButton}
-                        </View>
-                    </View>
-                </ScrollView>
-            </View>
+            <CardsWrapper
+                request={myFeedTestRequests[0]}
+                categories={myFeedCategoriesTest}
+                ButtonWrapper={ButtonWrapper}
+                Cards={CardsView}
+            />
         );
     }
 }
 
-
-const containerStyles = StyleSheet.create({
-    greyContainer: {
-        flex: 1,
-        backgroundColor: '#B1B8BE',
-    },
-    whiteContainer: {
-        backgroundColor: '#FFFFFF',
-        marginHorizontal: 5,
-        marginTop: 40,
-        marginBottom: 20,
-        borderRadius: 20,
-        flexDirection: 'column',
-    },
-    photoPriceContainer: {
-        flexDirection: 'column',
-        marginVertical: 10,
-        marginRight: 10,
-        marginLeft: 15,
-        alignContent: 'center',
-        justifyContent: 'center',
-    },  
+const containerStyles = StyleSheet.create({ 
     cardsContainer: {
         marginTop: 20,
         marginBottom: 30,
@@ -168,41 +100,7 @@ const containerStyles = StyleSheet.create({
     },
 });
 
-const iconStyles = StyleSheet.create({
-    exitIcon: {
-        width: 14,
-        height: 14,
-        resizeMode: 'stretch',
-        marginLeft: 5,
-    },
-    profileImage: {
-        width: 85,
-        height: 85,
-        alignSelf: 'center',
-        borderRadius: 15,
-    },
-})
-
 const textStyles = StyleSheet.create({
-    textTitle: {
-        fontSize: UniText.big,
-        fontWeight: 'bold',
-        color: '#00A5F2',
-    },
-    categoryText: {
-        width: 0.95*iconStyles.profileImage.width,
-        textAlign: 'center',
-        fontSize: UniText.small,
-        fontWeight: '500',
-    },
-    mainDescText: {
-        flex: 1,
-        marginRight: 25,
-        marginLeft: 20,
-        marginTop: 5,
-        fontSize: UniText.small,
-        textAlign: 'justify'
-    },
     cardsViewTitle: {
         fontSize: UniText.big,
         color: '#00A5F2',
@@ -239,5 +137,108 @@ const testRequests = [
         Title: 'Monitoria de Análise',
         Description: 'This is a test discription 4',
         Price: '140',
+    },
+]
+
+const myFeedCategoriesTest = [
+    {Name: 'category1'},
+    {Name: 'category2'},
+    {Name: 'category3'},
+    {Name: 'category4'},
+    {Name: 'category5'},
+    {Name: 'category6'},
+    {Name: 'category7'},
+]
+
+const myFeedTestRequests = [
+    {
+        ID : 0,
+        Name : 'Titulo Solicitação',
+        Description : 'Descrição bem grande o suficiente para usar todo o espaço disponível em preview limitado em espaço máximo e restrito!!!!!!!!!!!!!!!!!!!!!!!!!!',
+        ExtraInfo : '',
+        MinPrice : 'XXXXX',
+        MaxPrice: 'XXXXX',
+        Userid : 0,
+        Categoryid : 0,
+    },
+    {
+        ID : 1,
+        Name : 'Aula de Cálculo Numérico',
+        Description : 'Correção de exercícios e revisão teórica. Aulas em grupos de 3 a 4 pessoas',
+        ExtraInfo : '',
+        MinPrice : '50',
+        MaxPrice: '50',
+        Userid : 0,
+        Categoryid : 1,
+    },
+    {
+        ID : 2,
+        Name : 'Aula de Piano',
+        Description : 'Teoria da música, leitura de partituras e exercícios de dedo. Aprenda suas músicas favoritas!',
+        ExtraInfo : '',
+        MinPrice : '100',
+        MaxPrice: '100',
+        Userid : 0,
+        Categoryid : 2,
+    },
+    {
+        ID : 3,
+        Name : 'Tradução Chinês - Português',
+        Description : 'Tradução em chinês tradicional ou simplificado. Preço por página em português.',
+        ExtraInfo : '',
+        MinPrice : '30',
+        MaxPrice: '30',
+        Userid : 0,
+        Categoryid : 3,
+    },
+    {
+        ID : 4,
+        Name : 'Aula de Mandarim',
+        Description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
+        ExtraInfo : '',
+        MinPrice : '80',
+        MaxPrice: '80',
+        Userid : 0,
+        Categoryid : 2,
+    },
+    {
+        ID : 4,
+        Name : 'Aula de Mandarim',
+        Description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
+        ExtraInfo : '',
+        MinPrice : '80',
+        MaxPrice: '80',
+        Userid : 0,
+        Categoryid : 1,
+    },
+    {
+        ID : 4,
+        Name : 'Aula de Mandarim',
+        Description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
+        ExtraInfo : '',
+        MinPrice : '80',
+        MaxPrice: '80',
+        Userid : 0,
+        Categoryid : 3,
+    },
+    {
+        ID : 4,
+        Name : 'Aula de Mandarim',
+        Description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
+        ExtraInfo : '',
+        MinPrice : '80',
+        MaxPrice: '80',
+        Userid : 0,
+        Categoryid : 2,
+    },
+    {
+        ID : 4,
+        Name : 'Aula de Mandarim',
+        Description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
+        ExtraInfo : '',
+        MinPrice : '80',
+        MaxPrice: '80',
+        Userid : 0,
+        Categoryid : 5,
     },
 ]
