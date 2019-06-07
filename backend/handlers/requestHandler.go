@@ -37,13 +37,13 @@ type RequestResponse struct {
 
 // RequestInsertion contains the expected input from the frontend
 type RequestInsertion struct {
-	Name        string `json: Name`
-	Description string `json: Description`
-	ExtraInfo   string `json: ExtraInfo`
-	MaxPrice    int    `json: MaxPrice`
-	MinPrice    int    `json: MinPrice`
-	Userid      int    `json: Userid`
-	Categoryid  int    `json: Categoryid`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	ExtraInfo   string `json:"extraInfo"`
+	MaxPrice    int    `json:"maxPrice"`
+	MinPrice    int    `json:"minPrice"`
+	Userid      int    `json:"userid"`
+	Categoryid  int    `json:"categoryid"`
 }
 
 // GetLastRequests sends the last requests created in the unijobs service

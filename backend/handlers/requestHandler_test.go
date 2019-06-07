@@ -203,7 +203,14 @@ func TestInsertRequest(t *testing.T) {
 
 	handler := http.HandlerFunc(rh.InsertRequest)
 
-	jsonStr := fmt.Sprintf(`{"Name": "Aula de Teste", "Description": "Teste de Insercao","ExtraInfo": "Info extra","MaxPrice": 50,"MinPrice": 0,"Userid": %d,"Categoryid": %d}`, u.Userid, c.ID)
+	jsonStr := fmt.Sprintf(`{
+								"name": "Aula de Teste", 
+								"description": "Teste de Insercao",
+								"extraInfo": "Info extra",
+								"maxPrice": 50,
+								"minPrice": 0,
+								"userid": %d,
+								"categoryid": %d}`, u.Userid, c.ID)
 	jsonReq := []byte(jsonStr)
 
 	req, err := http.NewRequest("POST", "/requests", bytes.NewBuffer(jsonReq))
