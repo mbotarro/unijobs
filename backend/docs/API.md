@@ -148,6 +148,10 @@ You'll get
 
 ### POST
 
+```
+/requests
+```
+
 #### Expected Body
 ```
 {
