@@ -62,6 +62,86 @@
 
 ##### Invalid User
 
+## Get User Requests
+
+### GET
+
+```
+/users/<id>/requests?size=<int>
+```
+
+#### Expected Response
+
+For size = 2
+
+```
+{
+  "requests": [
+    {
+      "ID": 6,
+      "Name": "Aula",
+      "Description": "Present Perfect",
+      "ExtraInfo": "",
+      "MaxPrice": 40,
+      "MinPrice": 20,
+      "Userid": 1,
+      "Categoryid": 2,
+      "Timestamp": "2019-06-06T08:25:44.596591Z"
+    },
+    {
+      "ID": 5,
+      "Name": "Aula",
+      "Description": "Phrasal Verbs",
+      "ExtraInfo": "",
+      "MaxPrice": 40,
+      "MinPrice": 20,
+      "Userid": 1,
+      "Categoryid": 2,
+      "Timestamp": "2019-06-06T07:25:44.596591Z"
+    }
+  ],
+  "last": 1559805944
+}
+```
+
+The **last** parameter is a cursor used for pagination. If you want to get the next 2 requests, you can send
+
+```
+/users/<id>/requests?size=<int>&before=<last>
+```
+
+You'll get
+
+```
+{
+  "requests": [
+    {
+      "ID": 4,
+      "Name": "Aula",
+      "Description": "Calculo IV",
+      "ExtraInfo": "",
+      "MaxPrice": 40,
+      "MinPrice": 20,
+      "Userid": 1,
+      "Categoryid": 1,
+      "Timestamp": "2019-06-06T06:25:44.596591Z"
+    },
+    {
+      "ID": 3,
+      "Name": "Aula",
+      "Description": "Calculo III",
+      "ExtraInfo": "",
+      "MaxPrice": 40,
+      "MinPrice": 20,
+      "Userid": 1,
+      "Categoryid": 1,
+      "Timestamp": "2019-06-06T05:25:44.596591Z"
+    }
+  ],
+  "last": 1559798744
+}
+```
+
 # Request API
 
 ## Get all requests created in the platform
@@ -97,10 +177,12 @@ An invalid insertion returns the error message.
 One must provide the number of requests that should be sent.
 
 ```
-/requests?size=2
+/requests?size=<int>
 ```
 
 #### Expected Reponse
+
+For size = 2
 
 ```
 {
@@ -137,7 +219,7 @@ One must provide the number of requests that should be sent.
 The **last** parameter is a cursor used for pagination. If you want to get the next 2 requests, you can send
 
 ```
-/requests?size=2&before=1559318397
+/requests?size=<int>&before=<last>
 ```
 
 You'll get

@@ -6,9 +6,7 @@ import UniText from './UniText'
 const textInput = {
     backgroundColor: UniColors.light,
 
-    borderColor:    UniColors.white,
     borderRadius:   25,
-    borderWidth:    1,
 
     height:     45,
     width:      307,
@@ -28,7 +26,7 @@ const icons ={
     width: 20,
     height: 20,
     alignSelf: 'center',
-
+    margin: 20,
 }
 
 const container = {
@@ -41,15 +39,14 @@ const container = {
 const useravatar= {
     width: 60,
     height: 60,
-    borderRadius: 50,
+    borderRadius: 30,
     borderWidth: 2,
     borderColor: "white",
-    marginTop:10,
-    marginBottom:10,
+    margin:20,
 }
 
 const username={
-    fontSize:15,
+    fontSize: UniText.normal,
     color:UniColors.white,
     fontWeight:'100',
     

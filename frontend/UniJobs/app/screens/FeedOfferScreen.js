@@ -30,7 +30,8 @@ import UniStyles from '../constants/UniStyles'
 import UniData from '../constants/UniData'
 
 export default class FeedOfertasScreen extends React.Component {
-    static navigationOptions = { header: null };
+    static navigationOptions = { title: 'Ofertas' };
+    
 
     state = {
         username: '',
@@ -39,6 +40,7 @@ export default class FeedOfertasScreen extends React.Component {
     async componentDidMount() {
         try {
             const username = await AsyncStorage.getItem(UniData.username);
+            console.log("offer screen : " + username)
             if (username !== null)
                 this.setState({ username: username });
         } catch (error) {

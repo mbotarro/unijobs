@@ -1,6 +1,5 @@
 import React from 'react'
 import { StyleSheet, Text, View, Image,TouchableHighlight } from 'react-native'
-import { NavigationActions } from 'react-navigation'
 import UniStyles from '../constants/UniStyles'
 import UniColors from '../constants/UniColors'
 import UniData from '../constants/UniData'
@@ -26,19 +25,21 @@ export default class SideDrawer extends React.Component {
     onUserOptions(navigate){
         navigate('UserOptions')
     }
+
     onMinhasOfertas(navigate) {
-        navigate('MinhasOfertas')
+        navigate('MyOffers')
     }
+
     onMinhasSolicitacoes(navigate) {
-        navigate('MinhasSolicitacoes')
+        navigate('MyRequests')
     }
 
     onHistoricoInteresses(navigate) {
-        navigate('HistoricoInteresses')
+        navigate('MyInterests')
     }
 
     onConfiguracoes(navigate) {
-        navigate('Configuracoes')
+        navigate('Settings')
     }
 
     onSair(navigate) {
@@ -56,23 +57,23 @@ export default class SideDrawer extends React.Component {
                     onPress={() => this.onUserOptions(navigate)}
                     //underlayColor={UniColors.light}
                 >
-                    <View style={styles.headerContent}>
-                        
-                        <Image style={[UniStyles.useravatar,{marginLeft: 15}]} source={require('../assets/icons/user.png')}/>
-                        <Text style={[UniStyles.username,{marginLeft: 15}]}>
-                            usuário
-                        </Text>
-                        <Text style={[UniStyles.username,{marginLeft: 15}]}>
-                            {this.state.username}
-                        </Text>
-                        
+                    <View style={styles.headerContent}> 
+                        <Image style={[UniStyles.useravatar]} source={require('../assets/icons/user.png')}/>
+                        <View style={[{flexDirection: 'column',paddingTop:28}]}>
+                            <Text style={[UniStyles.username]}>
+                                usuário
+                            </Text>
+                            <Text style={[UniStyles.username]}>
+                                {this.state.username}
+                            </Text>
+                        </View>
                     </View>
                 </TouchableHighlight>
             )
-        };
+        }; 
         const MinhasOfertas = () => (
-            <View style={{flexDirection: 'row', flex: 1,marginTop :15 ,marginBottom:5,alignContent:'flex-start'}}>
-                <Image style={[UniStyles.icons,{marginLeft: 15}]} source={require('../assets/icons/gift.png')}/>
+            <View style={styles.DrawerItem}>
+                <Image style={[UniStyles.icons]} source={require('../assets/icons/gift.png')}/>
                 <Button
                     text='Minhas ofertas'
                     buttonStyle={[{backgroundColor:'transparent'}]}
@@ -81,8 +82,8 @@ export default class SideDrawer extends React.Component {
             </View>
         )
         const MinhasSolicitacoes = () => (
-            <View style={{flexDirection: 'row', flex: 1,marginTop :5 ,marginBottom:5}}>
-                <Image style={[UniStyles.icons,{marginLeft: 15}]} source={require('../assets/icons/clipboards.png')}/>
+            <View style={styles.DrawerItem}>
+                <Image style={UniStyles.icons} source={require('../assets/icons/clipboards.png')}/>
                 <Button
                     text='Minhas solicitações'
                     buttonStyle={[{backgroundColor:'transparent'}]}
@@ -91,8 +92,8 @@ export default class SideDrawer extends React.Component {
             </View>
         )
         const HistoricoInteresses = () => (
-            <View style={{flexDirection: 'row', flex: 1,marginTop :5 ,marginBottom:5}}>
-                <Image style={[UniStyles.icons,{marginLeft: 15}]} source={require('../assets/icons/history.png')}/>
+            <View style={styles.DrawerItem}>
+                <Image style={UniStyles.icons} source={require('../assets/icons/history.png')}/>
                 <Button
                     text='Histórico de interesses'
                     buttonStyle={[{backgroundColor:'transparent'}]}
@@ -103,21 +104,22 @@ export default class SideDrawer extends React.Component {
     
         )
         const Configuracoes = () => (
-            <View style={{flexDirection: 'row', flex: 1,marginTop :5 ,marginBottom:5}}>
-                <Image style={[UniStyles.icons,{marginLeft: 15}]} source={require('../assets/icons/settings.png')}/>
+            <View style={styles.DrawerItem}>
+                <Image style={UniStyles.icons} source={require('../assets/icons/settings.png')}/>
                 <Button
                     text='Configurações'
+                    textStyle = {{alignSelf:  'center'}}
                     buttonStyle={[{backgroundColor:'transparent'}]}
                     onPress={() => this.onConfiguracoes(navigate)}
                 />
             </View>
         )
         const Sair = () => (
-            <View style={{flexDirection: 'row', flex: 1,marginTop :180 ,marginBottom:10}}>
-                <Image style={[UniStyles.icons,{marginLeft: 15}]} source={require('../assets/icons/return.png')}/>
+            <View style={[styles.DrawerItem,{marginTop:260}]}>
+                <Image style={UniStyles.icons} source={require('../assets/icons/return.png')}/>
                 <Button
                     text='Sair'
-                    buttonStyle={[{ paddingHorizontal: 18, backgroundColor:'transparent' }]}
+                    buttonStyle={{backgroundColor:'transparent' }}
                     onPress={() => this.onSair(navigate)}
                 />
             </View>
@@ -141,19 +143,17 @@ const styles = StyleSheet.create({
       backgroundColor: UniColors.dark,
     },
     DrawerItem: {
-      fontSize: 18,
-      fontWeight: 'bold',
-      color: UniColors.dark_grey ,
-      padding: 15,
-      margin: 5,
-      borderRadius: 2,
-      borderColor: UniColors.dark,
-      borderWidth: 1,
-      textAlign: 'center'
+        height: 40,
+        flexDirection: 'row',
+        marginTop :15 ,
+        marginBottom:15,
+        alignContent:'flex-start', //pack flex itens from the start
+        alignItems:'center',
     },
     headerContent:{
+        flexDirection: 'row',
         backgroundColor: UniColors.main,
-        padding:18,
-        //alignItems: 'center',
+        paddingTop: 20,
+        alignItems:'flex-start', //set the alignSelf for all children
       },
   })
