@@ -27,6 +27,9 @@ export default class FeedRequestScreen extends React.Component {
         allFeedRequests: {},
         myFeedRequests: {},
         categories: {},
+
+        isRequestCardOpen: false,
+        openRequest: null,
     }
 
     textStrings = {
@@ -47,7 +50,6 @@ export default class FeedRequestScreen extends React.Component {
             loadRequests((requests) => {
                 this.setState({allFeedRequests: requests, myFeedRequests: myFeedTestRequests});
                 this.setState({isLoading: false});
-                // console.log(requests)
             })
         });
     }
@@ -188,23 +190,28 @@ export default class FeedRequestScreen extends React.Component {
             :
             populateRequestMiniCards(
                 this.state.isMyFeedOpen ? this.state.myFeedRequests : this.state.allFeedRequests,
-                this.state.categories
+                this.state.categories,
+                (request) => this.setState({isRequestCardOpen: true, openRequest: request})
             );
 
         const openCard = 
-            <View style = {styles.openCard}>
-            {
-                this.state.isLoading ?
-                <ActivityIndicator style={{ marginTop: 10 }} />
+            this.state.isRequestCardOpen ?
+                <View style = {styles.openCard}>
+                {
+                    this.state.isLoading ?
+                    <ActivityIndicator style={{ marginTop: 10 }} />
+                    :
+                    <FeedRequestCard
+                        request = {this.state.openRequest}
+                        categories = {this.state.categories}
+                        onCreateOfferPress = {() => {}}
+                        onShowRequester = {() => {}}
+                        onQuit = {() => this.setState({isRequestCardOpen: false})}
+                    />
+                }
+                </View>
                 :
-                <FeedRequestCard
-                    request = {this.state.isMyFeedOpen ? this.state.myFeedRequests[0] : this.state.allFeedRequests[0]}
-                    categories = {this.state.categories}
-                    onCreateOfferPress = {() => {}}
-                    onShowRequester = {() => {}}
-                />
-            }
-            </View>
+                null;
 
         return (
             <KeyboardAwareScrollView
@@ -353,7 +360,7 @@ const myFeedTestRequests = [
         MinPrice : 'XXXXX',
         MaxPrice: 'XXXXX',
         Userid : 0,
-        Categoryid : 0,
+        Categoryid : 5,
     },
     {
         ID : 1,

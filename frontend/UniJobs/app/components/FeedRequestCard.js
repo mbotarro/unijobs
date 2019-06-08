@@ -28,7 +28,7 @@ export default class FeedRequestCard extends React.Component {
     }
 
     render() {
-        const { request, categories, onCreateOfferPress, onShowRequester } = this.props;
+        const { request, categories, onCreateOfferPress, onShowRequester, onQuit } = this.props;
 
         const ActionButton = (text, onPress, color) => (
             <Button
@@ -46,16 +46,16 @@ export default class FeedRequestCard extends React.Component {
                 <View style={[containerStyles.cardsContainer]}>
                     <TouchableOpacity onPress={onShowRequester}>
                         <View style={{
-                            flexDirection: 'row', width: window.width, justifyContent: 'space-between', alignItems: 'center',
+                            flexDirection: 'row', width: window.width, alignItems: 'center',
                             marginHorizontal: 25
                         }}>
                             <View style={{ justifyContent: 'center' }}>
                                 <Image
-                                    source={{ uri: 'https://scontent.fbsb9-1.fna.fbcdn.net/v/t1.0-9/380610_3187067755653_628186151_n.jpg?_nc_cat=109&_nc_oc=AQlJxxAQwZVYqktXB7SGCnEli6fbB_jlBln5JziI8nIAfKwgDlJc_vS2qxly5TDDIlk&_nc_ht=scontent.fbsb9-1.fna&oh=f2eed9d5d1e213b414025bad0b4dac04&oe=5D8E1840' }}
+                                    source={require('../assets/_test_categories/rectangle.png')}
                                     style={[{ marginHorizontal: 15, width: 50, height: 50, alignSelf: 'center', borderRadius: 25 }]}
                                 />
                             </View>
-                            <Text numberOfLines={1} style={[textStyles.userName]}>Nome do usuário ridiculamente</Text>
+                            <Text numberOfLines={1} style={[textStyles.userName]}>{this.state.userdata.Username}</Text>
                         </View>
                     </TouchableOpacity>
                 </View>
@@ -76,6 +76,7 @@ export default class FeedRequestCard extends React.Component {
                 categories={categories}
                 ButtonWrapper={ButtonWrapper}
                 Cards={CardView}
+                onQuit = {onQuit}
             />
         )
     }

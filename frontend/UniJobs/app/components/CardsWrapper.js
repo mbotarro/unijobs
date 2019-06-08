@@ -9,29 +9,25 @@ import Button from '../components/Button'
 
 export default class CardsWrapper extends React.Component {
 
-    _onQuit() {
-        alert('Volta k bb')
-    }
-
     render() {
-        const { request, categories, ButtonWrapper, Cards } = this.props
+        const { request, categories, ButtonWrapper, Cards, onQuit } = this.props
 
         var price = 'R$' + request.MinPrice;
         if (request.MaxPrice > request.MinPrice)
             price += ' - ' + request.MaxPrice;
 
         const category = categories[request.Categoryid];
-        const categoryName = category ? category.Name : 'UNDEFINED';
+        const categoryName = category ? category.Name.replace('.', ' de ') : 'UNDEFINED';
 
         const Images = (name) => {
             switch (name) {
                 case 'exit': return require('../assets/icons/exit.png');
-                case 'profile': return {uri: 'https://scontent.fcgh26-1.fna.fbcdn.net/v/t1.0-9/11083590_812546692160411_9062729632029555370_n.jpg?_nc_cat=107&_nc_eui2=AeEjjtOMxbQTsNq72Zzt_Vvkfn6YPnTS2nayksH3Wtm1hVJBzKBgEzXM8hKKhqtCKYMi2IG_XP0zvxOEW7jCYWE5_BWsY5gQz9Gfc4IsxswSTA&_nc_oc=AQntkHn0DtIsoUU5ao7AUVdJBIlCuznYgIXxmYiWMS01ucnyIgZ4p8r1Vri7Xg4mNmk&_nc_ht=scontent.fcgh26-1.fna&oh=7a7631f35661b4c19933b29b717a3b6e&oe=5D86D0FD'};
+                case 'profile': return category.image;
             }
         };
 
         const QuitButton = () => (
-            <TouchableOpacity onPress={this._onQuit} style={{padding: iconStyles.exitIcon.width * 2.2, marginLeft: -25, marginTop: -25}}>
+            <TouchableOpacity onPress={onQuit} style={{padding: iconStyles.exitIcon.width * 2.2, marginLeft: -25, marginTop: -25}}>
                 <Image
                     source={Images('exit')}
                     style={[iconStyles.exitIcon]}
@@ -129,7 +125,6 @@ const iconStyles = StyleSheet.create({
         width: 85,
         height: 85,
         alignSelf: 'center',
-        borderRadius: 15,
     },
 })
 
