@@ -1,6 +1,8 @@
 package dal
 
 import (
+	"time"
+
 	"github.com/jmoiron/sqlx"
 	"github.com/mbotarro/unijobs/backend/models"
 )
@@ -18,28 +20,51 @@ func NewUserDAL(db *sqlx.DB) *UserDAL {
 }
 
 // AuthenticateUser returns if an user is a valid one
-func (dal *UserDAL) AuthenticateUser(email, password string) (bool, error) {
+// It also returns the user id if he's a valid user
+func (dal *UserDAL) AuthenticateUser(email, password string) (bool, int, error) {
 	var c int
 	err := dal.db.Get(&c, "SELECT COUNT(1) FROM userdata WHERE email = $1 AND password = $2", email, password)
 	if err != nil {
-		return false, err
+		return false, -1, err
 	}
 
-	return c == 1, nil
+	if c != 1 {
+		return false, -1, nil
+	}
+
+	var id int
+	err = dal.db.Get(&id,
+		`SELECT userid FROM userdata WHERE email = $1 AND password = $2`, email, password)
+	if err != nil {
+		return false, -1, err
+	}
+
+	return true, id, nil
 }
 
-// GetRequests get all of the requests of a certain user
-func (dal *UserDAL) GetRequests(userid int) ([]*models.Request, error) {
-	requests := make([]*models.Request, 0)
-	rows, err := dal.db.Query("select * from request where id = $1", userid)
-
-	for rows.Next() {
-		request := new(models.Request)
-		println(request)
-		if err := rows.Scan(&request.ID, &request.Name, &request.Description, &request.Price, &request.Userid, request.Categoryid); err != nil {
-			panic(err)
-		}
-		requests = append(requests, request)
+// GetUserInfo returns information about an user given his/her ID
+func (dal *UserDAL) GetUserInfo(id int) (models.User, error) {
+	var u models.User
+	err := dal.db.Get(&u, "SELECT * FROM userdata WHERE userid = $1", id)
+	if err != nil {
+		return models.User{}, err
 	}
-	return requests, err
+
+	return u, nil
+}
+
+// GetUserRequests get all requests created by a user
+// The before parameter is used for pagination. Only the requests created before the time passed by before are returned.
+// size limits the number of fetched requests
+func (dal *UserDAL) GetUserRequests(id int, before time.Time, size int) ([]models.Request, error) {
+	reqs := []models.Request{}
+	err := dal.db.Select(&reqs,
+		`SELECT * FROM request WHERE userid = $1 AND timestamp < $2
+			ORDER BY timestamp DESC
+			LIMIT $3`, id, before.UTC(), size)
+	if err != nil {
+		return nil, err
+	}
+
+	return reqs, nil
 }

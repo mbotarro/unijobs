@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS offer (
 	maxprice    integer,
 	userid      integer NOT NULL,
 	categoryid  integer,
-	timestamp	timestamp,
+	timestamp	timestamp NOT NULL,
 	CONSTRAINT pk_offer PRIMARY KEY (id),
     FOREIGN KEY (userid) REFERENCES userdata(userid),
     FOREIGN KEY (categoryid) REFERENCES category(id)

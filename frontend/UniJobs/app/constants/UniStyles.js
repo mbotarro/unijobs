@@ -4,12 +4,13 @@ import UniColors from './UniColors'
 import UniText from './UniText'
 
 const textInput = {
-    borderColor:    UniColors.dark_grey,
-    borderRadius:   25,
-    borderWidth:    1,
+    backgroundColor: UniColors.light,
 
-    height:     50,
-    width:      290,
+    borderRadius:   25,
+
+    height:     45,
+    width:      307,
+    marginHorizontal: 53,
 
     fontSize:   UniText.normal,
     color:      UniColors.dark,
@@ -17,11 +18,45 @@ const textInput = {
 };
 
 const text = {
-    fontSize:   20,
+    fontSize:   UniText.normal,
     color:      UniColors.dark_grey
+}
+
+const icons ={
+    width: 20,
+    height: 20,
+    alignSelf: 'center',
+    margin: 20,
+}
+
+const container = {
+    flex: 1,
+    alignContent: 'center',
+    alignSelf: 'center',
+    justifyContent: 'center',
+}
+
+const useravatar= {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    borderWidth: 2,
+    borderColor: "white",
+    margin:20,
+}
+
+const username={
+    fontSize: UniText.normal,
+    color:UniColors.white,
+    fontWeight:'100',
+    
 }
 
 module.exports = {
     textInput,
     text,
-};
+    container,
+    useravatar,
+    username,
+    icons,
+}

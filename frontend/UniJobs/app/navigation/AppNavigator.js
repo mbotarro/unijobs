@@ -1,15 +1,51 @@
-import { createStackNavigator, createAppContainer } from "react-navigation";
+import { createStackNavigator, createAppContainer, createDrawerNavigator, createBottomTabNavigator } from "react-navigation"
 
-import LoginScreen from "../screens/LoginScreen";
-import HomeScreen from "../screens/HomeScreen"
+import LoginScreen from "../screens/LoginScreen"
+import RegisterScreen from "../screens/RegisterScreen"
+import SideDrawer from "../screens/SideDrawer"
 
-const AppNavigator = createStackNavigator({
-    Login: {
-        screen: LoginScreen,
+import UserOptionScreen from "../screens/UserOptionScreen"
+import MyOfferScreen from "../screens/MyOfferScreen"
+import MyRequestScreen from "../screens/MyRequestScreen"
+import MyInterestScreen from "../screens/MyInterestScreen"
+import SettingScreen from "../screens/SettingScreen"
+
+import FeedNavigator from  "./FeedNavigator"
+
+
+
+const DrawerStack = createDrawerNavigator(
+{
+    //Screens that only contain drawer 
+    MyOffers: { screen: MyOfferScreen },
+    MyRequests: { screen: MyRequestScreen },
+    MyInterests: { screen: MyInterestScreen },
+    Settings: { screen:SettingScreen },
+    UserOptions: { screen:UserOptionScreen },
+    TabStack: {
+        screen: FeedNavigator,
+        navigationOptions: { header: null },
     },
-    Home: {
-        screen: HomeScreen,
-    }
-});
+},
+{
+    initialRouteName: 'TabStack',
+    contentComponent: SideDrawer,
+})
 
-export default createAppContainer(AppNavigator);
+const LoginStack = createStackNavigator({
+    Login: { screen: LoginScreen },
+    Register: { screen: RegisterScreen },
+})
+
+
+//Navigator of all the Screens of the App
+const AppNavigator = createStackNavigator({
+    loginStack: { screen: LoginStack },
+    drawerStack: { screen: DrawerStack }
+},{
+    //initialRouteName:'drawerStack',
+    //Default config for all screens
+    headerMode:'none', //remove blank header with return button
+})
+
+export default createAppContainer(AppNavigator)
