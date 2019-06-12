@@ -7,22 +7,22 @@ import UniData from '../constants/UniData'
 import UniColors from '../constants/UniColors'
 
 
-function populateRequestMiniCards(requests, categories) {
+function populateRequestMiniCards(requests, categories, onMiniCardOpen) {
     return (
         requests.map((req, index) => (
         <View key = {index} style = {{marginTop: 3}} >
-            {populateRequestMiniCard(req, categories)}
+            {populateRequestMiniCard(req, categories, onMiniCardOpen)}
         </View>
     )));
 }
 
-function populateRequestMiniCard(request, categories) {
+function populateRequestMiniCard(request, categories, onMiniCardOpen) {
     const category  = categories[request.Categoryid];
 
     const categoryName = category ? category.Name.replace('.', ' de ') : 'UNDEFINED';
     
     const image     =   <Image
-                            source = {getCategoryImage(request.Categoryid)}
+                            source = {category.image}
                             style={{ width: 80, height: 80}}
                         />;
 
@@ -38,18 +38,8 @@ function populateRequestMiniCard(request, categories) {
             contentText     = {request.Description}
             categoryText    = {categoryName}
             priceText       = {price}
-            onPress         = {() => { }}
+            onPress         = {() => onMiniCardOpen(request)}
         />);
-};
-
-function getCategoryImage(id) {
-    switch (id) {
-        case 1 : return require('../assets/_test_categories/the-sum-of.png');
-        case 2 : return require('../assets/_test_categories/piano.png');
-        case 3 : return require('../assets/_test_categories/translate.png');
-    }
-    
-    return require('../assets/_test_categories/rectangle.png');
 };
 
 
