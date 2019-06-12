@@ -64,7 +64,7 @@
 				
 				<option value="file4">github.com/mbotarro/unijobs/backend/handlers/offerHandler.go (0.0%)</option>
 				
-				<option value="file5">github.com/mbotarro/unijobs/backend/handlers/requestHandler.go (72.7%)</option>
+				<option value="file5">github.com/mbotarro/unijobs/backend/handlers/requestHandler.go (73.3%)</option>
 				
 				<option value="file6">github.com/mbotarro/unijobs/backend/handlers/router.go (100.0%)</option>
 				
@@ -303,7 +303,9 @@ func createOfferHandler(w http.ResponseWriter, r *http.Request) <span class="cov
 		<pre class="file" id="file5" style="display: none">package handlers
 
 import (
+        "encoding/json"
         "fmt"
+        "io/ioutil"
         "net/http"
         "strconv"
         "time"
@@ -333,6 +335,17 @@ type RequestResponse struct {
 
         // Last is the timestamp of the last request sent to the front. It can be used to get the requests created before it
         Last int64 `json:"last"`
+}
+
+// RequestInsertion contains the expected input from the frontend
+type RequestInsertion struct {
+        Name        string `json:"name"`
+        Description string `json:"description"`
+        ExtraInfo   string `json:"extraInfo"`
+        MaxPrice    int    `json:"maxPrice"`
+        MinPrice    int    `json:"minPrice"`
+        Userid      int    `json:"userid"`
+        Categoryid  int    `json:"categoryid"`
 }
 
 // GetLastRequests sends the last requests created in the unijobs service
@@ -371,6 +384,42 @@ func (handler *RequestHandler) GetLastRequests(w http.ResponseWriter, r *http.Re
         }</span>
 
         <span class="cov8" title="1">tools.WriteStructOnHTTPResponse(reqRes, w)</span>
+}
+
+// InsertRequest is a function that receives a post request with some parameters and calls the function to insert it in the database
+// The request is sent as a json file. It's fields are given in Models.Request
+func (handler *RequestHandler) InsertRequest(w http.ResponseWriter, r *http.Request) <span class="cov8" title="1">{
+        body, err := ioutil.ReadAll(r.Body)
+        if err != nil </span><span class="cov0" title="0">{
+                http.Error(w, fmt.Errorf("%s:%s", errors.ReadRequestBodyError, err.Error()).Error(), http.StatusBadRequest)
+                return
+        }</span>
+
+        <span class="cov8" title="1">var reqInserted RequestInsertion
+        err = json.Unmarshal(body, &amp;reqInserted)
+        if err != nil </span><span class="cov0" title="0">{
+                http.Error(w, fmt.Errorf("%s:%s", errors.JSONUnmarshalError, err.Error()).Error(), http.StatusInternalServerError)
+                return
+        }</span>
+
+        // Passes the received data into a request for it to be inserted
+        <span class="cov8" title="1">var req models.Request
+
+        req.Name = reqInserted.Name
+        req.Description = reqInserted.Description
+        req.ExtraInfo = reqInserted.ExtraInfo
+        req.MaxPrice = reqInserted.MaxPrice
+        req.MinPrice = reqInserted.MinPrice
+        req.Userid = reqInserted.Userid
+        req.Categoryid = reqInserted.Categoryid
+        req.Timestamp = time.Now()
+
+        err = handler.requestController.InsertRequest(req)
+        if err != nil </span><span class="cov0" title="0">{
+                http.Error(w, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error()).Error(), http.StatusInternalServerError)
+                return
+        }</span>
+        <span class="cov8" title="1">w.WriteHeader(http.StatusCreated)</span>
 }
 </pre>
 		
@@ -416,15 +465,22 @@ func NewRouter(ctrl *usecases.Controller) *mux.Router <span class="cov8" title="
                 Methods("GET")
 
         // Request APIs
+        // Get last requests
         route.r.Path("/requests").
                 Queries("size", "{size:[0-9]+}").
                 HandlerFunc(requestHandler.GetLastRequests).
                 Methods("GET")
 
+        // Get last requests with paging
         route.r.Path("/requests").
                 Queries("size", "{size:[0-9]+}", "before", "{before:[0-9]+}").
                 HandlerFunc(requestHandler.GetLastRequests).
                 Methods("GET")
+
+        // Send new request
+        route.r.Path("/requests").
+                HandlerFunc(requestHandler.InsertRequest).
+                Methods("POST")
 
         // Categories API
         route.r.HandleFunc("/categories", categoryHandler.getAllCategories).Methods("GET")
