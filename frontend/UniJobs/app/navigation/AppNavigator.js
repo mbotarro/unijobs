@@ -1,6 +1,4 @@
 import { createStackNavigator, createAppContainer, createDrawerNavigator, createBottomTabNavigator } from "react-navigation"
-import UniStyles from "../constants/UniStyles"
-import UniColors from "../constants/UniColors"
 
 import LoginScreen from "../screens/LoginScreen"
 import RegisterScreen from "../screens/RegisterScreen"
@@ -45,7 +43,7 @@ const AppNavigator = createStackNavigator({
     loginStack: { screen: LoginStack },
     drawerStack: { screen: DrawerStack }
 },{
-    //initialRouteName:'drawerStack',
+    initialRouteName:'drawerStack',
     //Default config for all screens
     headerMode:'none', //remove blank header with return button
 })
