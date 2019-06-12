@@ -7,6 +7,7 @@ type Controller struct {
 	User     *UserController
 	Category *CategoryController
 	Request  *RequestController
+	Offer    *OfferController
 }
 
 // NewController returns a new Controller
@@ -15,5 +16,6 @@ func NewController(db *sqlx.DB) *Controller {
 		User:     NewUserController(db),
 		Category: NewCategoryController(db),
 		Request:  NewRequestController(db),
+		Offer:    NewOfferController(db),
 	}
 }

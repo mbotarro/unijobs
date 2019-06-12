@@ -257,6 +257,94 @@ You'll get
 }
 ```
 
+
+# Offer API
+
+## Get all offers created in the platform
+
+### GET
+
+One must provide the number of offers that should be sent.
+
+```
+/offers?size=<int>
+```
+
+#### Expected Reponse
+
+For size = 2
+
+```
+{
+    {
+        "offers": [
+            {
+            "id": 6,
+            "name": "Aula",
+            "description": "Present Perfect",
+            "extraInfo": "",
+            "maxPrice": 40,
+            "minPrice": 20,
+            "userid": 1,
+            "categoryid": 2,
+            "timestamp": "2019-05-31T16:59:57.728024Z"
+            },
+            {
+            "id": 5,
+            "name": "Aula",
+            "description": "Phrasal Verbs",
+            "extraInfo": "",
+            "maxPrice": 40,
+            "minPrice": 20,
+            "userid": 1,
+            "categoryid": 2,
+            "timestamp": "2019-05-31T15:59:57.728024Z"
+            }
+        ],
+        "last": 1559318397
+    }
+}
+```
+
+The **last** parameter is a cursor used for pagination. If you want to get the next 2 offers, you can send
+
+```
+/offers?size=<int>&before=<last>
+```
+
+You'll get
+
+```{
+    "offers": [
+        {
+        "id": 4,
+        "name": "Aula",
+        "description": "Calculo IV",
+        "extraInfo": "",
+        "maxPrice": 40,
+        "minPrice": 20,
+        "userid": 1,
+        "categoryid": 1,
+        "timestamp": "2019-05-31T14:59:57.728024Z"
+        },
+        {
+        "id": 3,
+        "name": "Aula",
+        "description": "Calculo III",
+        "extraInfo": "",
+        "maxPrice": 40,
+        "minPrice": 20,
+        "userid": 1,
+        "categoryid": 1,
+        "timestamp": "2019-05-31T13:59:57.728024Z"
+        }
+    ],
+    "last": 1559311197
+}
+```
+
+
+
 # Category API
 
 ## Get All Categories
