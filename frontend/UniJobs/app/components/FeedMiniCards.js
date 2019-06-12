@@ -20,7 +20,7 @@ function populateRequestMiniCard(request, categories, onMiniCardOpen) {
     
     const image     =   <Image
                             source = {category.image}
-                            style={{ width: 80, height: 80}}
+                            style={{ width: 65, height: 65}}
                         />;
 
     var price     = 'R$' + request.minprice;
