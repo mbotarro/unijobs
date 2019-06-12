@@ -3,9 +3,11 @@
 import React from 'react';
 import { StyleSheet, Text, TextInput, View, Image, ScrollView, TouchableHighlight, ActivityIndicator } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { Dimensions } from "react-native";
 
 import { populateRequestMiniCards } from '../components/FeedMiniCards';
 import { loadRequests, loadCategories } from '../actions/FeedActions'
+import FeedRequestCard from '../components/FeedRequestCard'
 
 import UniStyles from '../constants/UniStyles'
 import UniColors from '../constants/UniColors'
@@ -25,6 +27,9 @@ export default class FeedRequestScreen extends React.Component {
         allFeedRequests: {},
         myFeedRequests: {},
         categories: {},
+
+        isRequestCardOpen: false,
+        openRequest: null,
     }
 
     textStrings = {
@@ -45,7 +50,6 @@ export default class FeedRequestScreen extends React.Component {
             loadRequests((requests) => {
                 this.setState({allFeedRequests: requests, myFeedRequests: myFeedTestRequests});
                 this.setState({isLoading: false});
-                // console.log(requests)
             })
         });
     }
@@ -186,9 +190,28 @@ export default class FeedRequestScreen extends React.Component {
             :
             populateRequestMiniCards(
                 this.state.isMyFeedOpen ? this.state.myFeedRequests : this.state.allFeedRequests,
-                this.state.categories
+                this.state.categories,
+                (request) => this.setState({isRequestCardOpen: true, openRequest: request})
             );
 
+        const openCard = 
+            this.state.isRequestCardOpen ?
+                <View style = {styles.openCard}>
+                {
+                    this.state.isLoading ?
+                    <ActivityIndicator style={{ marginTop: 10 }} />
+                    :
+                    <FeedRequestCard
+                        request = {this.state.openRequest}
+                        categories = {this.state.categories}
+                        onCreateOfferPress = {() => {}}
+                        onShowRequester = {() => {}}
+                        onQuit = {() => this.setState({isRequestCardOpen: false})}
+                    />
+                }
+                </View>
+                :
+                null;
 
         return (
             <KeyboardAwareScrollView
@@ -213,6 +236,7 @@ export default class FeedRequestScreen extends React.Component {
                         {feedView}
                     </ScrollView>
                 </View>
+                {openCard}
             </KeyboardAwareScrollView>
         );
     }
@@ -306,6 +330,16 @@ const styles = StyleSheet.create({
         fontSize:       UniText.big,
         color:          UniColors.dark,
         marginVertical: 10,
+    },
+
+    openCard: {
+        zIndex: 10,
+        position: 'absolute',
+        top: 0,
+        backgroundColor: '#65737E80',
+
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').height
     }
 });
 
@@ -326,7 +360,7 @@ const myFeedTestRequests = [
         MinPrice : 'XXXXX',
         MaxPrice: 'XXXXX',
         Userid : 0,
-        Categoryid : 0,
+        Categoryid : 5,
     },
     {
         ID : 1,
