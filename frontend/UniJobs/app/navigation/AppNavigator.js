@@ -43,7 +43,7 @@ const AppNavigator = createStackNavigator({
     loginStack: { screen: LoginStack },
     drawerStack: { screen: DrawerStack }
 },{
-    initialRouteName:'drawerStack',
+    //initialRouteName:'drawerStack',
     //Default config for all screens
     headerMode:'none', //remove blank header with return button
 })
