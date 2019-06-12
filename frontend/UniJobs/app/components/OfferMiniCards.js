@@ -14,11 +14,11 @@ function populateRequestOfferCards(requests) {
         requests.map((req, index) => (
                 <View key = {index} style = {{marginTop: 3, flex: 1}}>
                     <OfferMiniCard 
-                        image={req.Image}
+                        image={req.image}
                         title={req.Title}
-                        userId={req.ID}
+                        userId={req.id}
                         price={req.Price}
-                        description={req.Description}
+                        description={req.description}
                     />
                 </View>
             )

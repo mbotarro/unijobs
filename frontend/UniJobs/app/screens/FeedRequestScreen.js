@@ -44,7 +44,7 @@ export default class FeedRequestScreen extends React.Component {
         loadCategories((categories) => {
             var hash = {}
             for (var i = 0; i < categories.length; i++)
-                hash[categories[i].ID] = categories[i];
+                hash[categories[i].id] = categories[i];
             this.setState({categories: hash})
 
             loadRequests((requests) => {
