@@ -1,10 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from 'react-native';
 
-import UniStyles from '../constants/UniStyles'
-import UniData from '../constants/UniData'
 import UniText from '../constants/UniText'
-import Button from '../components/Button'
 
 
 export default class CardsWrapper extends React.Component {

@@ -2,18 +2,15 @@ import React, { Component } from 'react';
 import { View, Image } from 'react-native';
 import ItemMiniCard from './ItemMiniCard'
 
-import UniStyles from '../constants/UniStyles'
-import UniData from '../constants/UniData'
-import UniColors from '../constants/UniColors'
-
 
 function populateRequestMiniCards(requests, categories, onMiniCardOpen) {
     return (
         requests.map((req, index) => (
-        <View key = {index} style = {{marginTop: 3}} >
-            {populateRequestMiniCard(req, categories, onMiniCardOpen)}
-        </View>
-    )));
+            <View key = {index} style = {{marginTop: 3}} >
+                {populateRequestMiniCard(req, categories, onMiniCardOpen)}
+            </View>
+        ))
+    );
 }
 
 function populateRequestMiniCard(request, categories, onMiniCardOpen) {

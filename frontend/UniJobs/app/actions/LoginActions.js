@@ -31,7 +31,11 @@ async function getUserData (id, onResponse) {
     });
 };
 
+async function getUserPicture (id, onResponse) {
+    onResponse(require('../assets/_test_categories/rectangle.png'));
+}
 
 
 
-module.exports = { tryLogin, getUserData };
+
+module.exports = { tryLogin, getUserData, getUserPicture };
