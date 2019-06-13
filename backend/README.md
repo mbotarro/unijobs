@@ -5,7 +5,11 @@ PostgreSQL >= 11.3
 
 # Architecture
 
-To know more about the backend architecture, go to the Architecture doc!!
+The image below shows the backend architecture with its main packages:
+
+![Backend Architecture](docs/images/backend_architecture.png)
+
+To know more about the backend architecture, go to the [Architecture Documentation](docs/architecture.md)
 
 # Local Environment
 
