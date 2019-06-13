@@ -56,8 +56,9 @@ The tools package contains auxiliar functions that can be used by different clas
 
 This package centralizes all error messages that can be sent to the frontend by the Unijobs Server. It's am easy way to search for errors definition and change it, if it's necessary.
 
+## Migrations Package
 
-
+This package contains all SQL tables definitions used in the Unijobs service, organized by version. It also has a main file that runs a program to execute the SQL statements specified in the version files. By doing so, we can easily initialize the PostgreSQL database and control its state since we can set it to a specific version.
 
 
 
