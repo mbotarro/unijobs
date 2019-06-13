@@ -5,5 +5,16 @@ services:
     image: postgres:11.3
     ports:
       - "5432:5432"
+  es:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.1.1
+    environment:
+      - discovery.type=single-node
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
 
-
+volumes:
+  esdata: 
+    driver: local
