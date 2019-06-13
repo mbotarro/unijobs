@@ -28,7 +28,7 @@ export default class MenuButton extends Component {
 
     render() {
 
-        const { onPressRequest, onPressOffer } = this.props
+        const { onAddRequestPress, onAddOfferPress, topOffset } = this.props
 
         const bgStyle = {
             transform: [{
@@ -83,16 +83,16 @@ export default class MenuButton extends Component {
 
         return (
             <View style={StyleSheet.container}>
-                <Animated.View style={[styles.background, bgStyle]}/>
+                <Animated.View style={[styles.background, bgStyle, {top: topOffset}]}/>
                 
-                {AnimatedButtom(onPressRequest, [buttomPositionInterpolate(-140)], [styles.button, styles.other], 
+                {AnimatedButtom(onAddRequestPress, [buttomPositionInterpolate(-140)], [styles.button, styles.other, {top: topOffset}], 
                     [styles.label, labelStyle, {width:90}], require('../assets/icons/help.png'), 'Solicitação')}
 
-                {AnimatedButtom(onPressOffer, [buttomPositionInterpolate(-70)], [styles.button, styles.other], 
+                {AnimatedButtom(onAddOfferPress, [buttomPositionInterpolate(-70)], [styles.button, styles.other, {top: topOffset}], 
                     [styles.label, labelStyle, {width:90}], require('../assets/icons/shopping-label.png'), 'Oferta')}
 
                 <TouchableWithoutFeedback onPress={this.toggleOpen}>
-                    <View style={[styles.button, styles.pay]}>
+                    <View style={[styles.button, styles.pay, {top: topOffset}]}>
                         <Image 
                             source={require('../assets/icons/add.png')}
                             style={styles.ImageIconStyle}
@@ -105,14 +105,15 @@ export default class MenuButton extends Component {
 }
 
 MenuButton.propTypes = {
-    onPressOffer: PropTypes.func.isRequired,
-    onPressRequest: PropTypes.func.isRequired,
+    onAddOfferPress: PropTypes.func.isRequired,
+    onAddRequestPress: PropTypes.func.isRequired,
+    topOffset: PropTypes.number.isRequired
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        backgroundColor: "#000000"
+        backgroundColor: "transparent",
+        flex: 1
     },
     background: {
         backgroundColor: "rgba(0, 0, 0, 0.4)",
@@ -133,7 +134,6 @@ const styles = StyleSheet.create({
         shadowOffset: {x:2, y:0},
         shadowRadius: 2,
         borderRadius: 30,
-        elevation: 1,
         position: 'absolute',
         top: 510,
         right: 15,

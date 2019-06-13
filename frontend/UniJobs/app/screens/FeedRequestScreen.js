@@ -1,16 +1,19 @@
 "use strict";
 
 import React from 'react';
-import { StyleSheet, Text, TextInput, View, Image, ScrollView, TouchableHighlight, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, TextInput, View, Image, ScrollView, TouchableHighlight, ActivityIndicator, Animated } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import { populateRequestMiniCards } from '../components/FeedMiniCards';
+import MenuButton from '../components/MenuButton'
 import { loadRequests, loadCategories } from '../actions/FeedActions'
 
 import UniStyles from '../constants/UniStyles'
 import UniColors from '../constants/UniColors'
 import UniText from '../constants/UniText'
 
+import ActionButton from 'react-native-action-button';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 
 export default class FeedRequestScreen extends React.Component {
@@ -25,6 +28,8 @@ export default class FeedRequestScreen extends React.Component {
         allFeedRequests: {},
         myFeedRequests: {},
         categories: {},
+
+        animation: new Animated.Value(0),
     }
 
     textStrings = {
@@ -79,6 +84,13 @@ export default class FeedRequestScreen extends React.Component {
         alert('TODO: Filters');
     }
 
+    onAddOfferPress(self, navigation) {
+        alert('TODO: AddOffer')
+    }
+
+    onAddRequestPress(self, navigation) {
+        alert('TODO: AddRequest')
+    }
 
     render() {
         const navigation = this.props.navigation;
@@ -186,8 +198,26 @@ export default class FeedRequestScreen extends React.Component {
             :
             populateRequestMiniCards(
                 this.state.isMyFeedOpen ? this.state.myFeedRequests : this.state.allFeedRequests,
-                this.state.categories
+                // this.state.categories
+                false
             );
+
+        const FloatActionButton = () => (
+            <ActionButton buttonColor={UniColors.main} offsetX={20} offsetY={20} shadowStyle={styles.ActionButtonShadow}>
+                <ActionButton.Item buttonColor={UniColors.main} title="Oferta" onPress={() => this.onAddOfferPress()}>
+                    <Image 
+                        source={require('../assets/icons/shopping-label.png')}
+                        style={styles.ImageIconStyle}
+                    />
+                </ActionButton.Item>
+                <ActionButton.Item buttonColor={UniColors.main} title="Solicitação" onPress={() => this.onAddRequestPress()}>
+                    <Image 
+                        source={require('../assets/icons/help.png')}
+                        style={[styles.ImageIconStyle, {height: 25, width: 25}]}
+                    />
+                </ActionButton.Item>
+            </ActionButton>
+        )
 
 
         return (
@@ -213,6 +243,7 @@ export default class FeedRequestScreen extends React.Component {
                         {feedView}
                     </ScrollView>
                 </View>
+                <FloatActionButton/>
             </KeyboardAwareScrollView>
         );
     }
@@ -306,7 +337,28 @@ const styles = StyleSheet.create({
         fontSize:       UniText.big,
         color:          UniColors.dark,
         marginVertical: 10,
-    }
+    },
+
+    actionButtonIcon: {
+        fontSize: 20,
+        height: 22,
+        color: 'white',
+    },
+
+    ImageIconStyle: {
+        padding: 5,
+        height: 20,
+        width: 20,
+        resizeMode: 'stretch',
+    },
+
+    ActionButtonShadow: {
+        shadowColor: "#000",
+        shadowOpacity: 1,
+        shadowRadius: 100.00,
+
+        elevation: 20,
+    },
 });
 
 
