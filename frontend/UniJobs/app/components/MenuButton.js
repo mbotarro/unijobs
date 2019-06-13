@@ -5,7 +5,8 @@ import {
     TouchableWithoutFeedback,
     StyleSheet,
     Image,
-} from "react-native" 
+} from "react-native"
+import PropTypes from 'prop-types';
 
 import UniColors from '../constants/UniColors'
 import UniText from '../constants/UniText'
@@ -26,6 +27,9 @@ export default class MenuButton extends Component {
     }
 
     render() {
+
+        const { onPressRequest, onPressOffer } = this.props
+
         const bgStyle = {
             transform: [{
                 scale: this.state.animation.interpolate({
@@ -35,27 +39,16 @@ export default class MenuButton extends Component {
             }]
         }
 
-        const test2 = {
+        const buttomPositionInterpolate = (finalRelYPos) => ({
             transform: [{
                 scale: this.state.animation
             },{
                 translateY: this.state.animation.interpolate({
                     inputRange: [0, 1],
-                    outputRange: [0, -140],
+                    outputRange: [0, finalRelYPos],
                 })
             }]
-        }
-
-        const test1 = {
-            transform: [{
-                scale: this.state.animation
-            },{
-                translateY: this.state.animation.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [0, -70],
-                })
-            }]
-        }
+        })
 
         const labelPositionInterpolate = this.state.animation.interpolate({
             inputRange: [0, 1],
@@ -74,28 +67,29 @@ export default class MenuButton extends Component {
             }]
         }
 
+        const AnimatedButtom = (
+            onPressFunction, animatedMoveFunctionArray, stylesArray,
+            textStylesArray, imgRequire, descText) => (
+            <TouchableWithoutFeedback onPress={onPressFunction}>
+                <Animated.View style={stylesArray.concat(animatedMoveFunctionArray)}>
+                    <Animated.Text style={textStylesArray}>{descText}</Animated.Text>
+                    <Image 
+                        source={imgRequire}
+                        style={styles.ImageIconStyle}
+                    />
+                </Animated.View>
+            </TouchableWithoutFeedback>
+        )
+
         return (
             <View style={StyleSheet.container}>
                 <Animated.View style={[styles.background, bgStyle]}/>
-                <TouchableWithoutFeedback>
-                    <Animated.View style={[styles.button, styles.other, test2]}>
-                        <Animated.Text style={[styles.label, labelStyle, {width:90}]}>Solicitação</Animated.Text>
-                        <Image 
-                            source={require('../assets/icons/help.png')}
-                            style={styles.ImageIconStyle}
-                        />
-                    </Animated.View>
-                </TouchableWithoutFeedback>
+                
+                {AnimatedButtom(onPressRequest, [buttomPositionInterpolate(-140)], [styles.button, styles.other], 
+                    [styles.label, labelStyle, {width:90}], require('../assets/icons/help.png'), 'Solicitação')}
 
-                <TouchableWithoutFeedback>
-                    <Animated.View style={[styles.button, styles.other, test1]}>
-                        <Animated.Text style={[styles.label, labelStyle, {width:90}]}>Oferta</Animated.Text> 
-                        <Image 
-                            source={require('../assets/icons/shopping-label.png')}
-                            style={styles.ImageIconStyle}
-                        />
-                    </Animated.View>
-                </TouchableWithoutFeedback>
+                {AnimatedButtom(onPressOffer, [buttomPositionInterpolate(-70)], [styles.button, styles.other], 
+                    [styles.label, labelStyle, {width:90}], require('../assets/icons/shopping-label.png'), 'Oferta')}
 
                 <TouchableWithoutFeedback onPress={this.toggleOpen}>
                     <View style={[styles.button, styles.pay]}>
@@ -110,6 +104,11 @@ export default class MenuButton extends Component {
     }
 }
 
+MenuButton.propTypes = {
+    onPressOffer: PropTypes.func.isRequired,
+    onPressRequest: PropTypes.func.isRequired,
+}
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -120,7 +119,7 @@ const styles = StyleSheet.create({
         position: "absolute",
         width: 60,
         height: 60, 
-        top: 375,
+        top: 510,
         right: 15,
         borderRadius: 30,
     },
@@ -136,7 +135,7 @@ const styles = StyleSheet.create({
         borderRadius: 30,
         elevation: 1,
         position: 'absolute',
-        top: 375, 
+        top: 510,
         right: 15,
     },
     pay: {

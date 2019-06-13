@@ -2,14 +2,9 @@ import { createStackNavigator, createAppContainer, createDrawerNavigator, create
 import UniStyles from "../constants/UniStyles"
 import UniColors from "../constants/UniColors"
 
-<<<<<<< HEAD
-import LoginScreen from "../screens/LoginScreen";
-import TabsNav from "./TabsNav"
-=======
 import LoginScreen from "../screens/LoginScreen"
 import RegisterScreen from "../screens/RegisterScreen"
 import SideDrawer from "../screens/SideDrawer"
->>>>>>> origin/dev
 
 import UserOptionScreen from "../screens/UserOptionScreen"
 import MyOfferScreen from "../screens/MyOfferScreen"
