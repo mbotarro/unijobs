@@ -4,7 +4,7 @@ The backend code was divided in different packages to make it more modular and t
 
 The overview architecture can be seen in the figure below:
 
-![Backend Architecture](images/backend_architecture.png)
+![Backend Architecture](./images/backend_architecture.png)
 
 All UniJobs functionalities are implemented in 3 packages: UseCases, DAL and Models. To interact with the platform, we use a HTTP Server which uses Handlers to call the wanted use cases.
 
