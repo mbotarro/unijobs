@@ -4,7 +4,7 @@ The backend code was divided in different packages to make it more modular and t
 
 The overview architecture can be seen in the figure below:
 
-
+![Backend Architecture](images/backend_architecture.png)
 
 All UniJobs functionalities are implemented in 3 packages: UseCases, DAL and Models. To interact with the platform, we use a HTTP Server which uses Handlers to call the wanted use cases.
 
@@ -52,7 +52,7 @@ For example, if the server receives a (*/requests/, GET*) request, the router wi
 
 The tools package contains auxiliar functions that can be used by different classes and packages and it's not specific to a given Unijobs entity. For example, it has a function to write a go struct as a JSON in the HTTP Response and functions to create fake data in the DB for tests' sake. 
 
-## Errors package
+## Errors Package
 
 This package centralizes all error messages that can be sent to the frontend by the Unijobs Server. It's am easy way to search for errors definition and change it, if it's necessary.
 
