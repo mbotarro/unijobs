@@ -39,8 +39,8 @@ func (uc *UserController) GetUserRequests(id int, before time.Time, size int) ([
 }
 
 // GetUserOffers get all offers created by a user
-// The before parameter is used for pagination. Only the requests created before the time passed by before are returned.
-// size limits the number of fetched requests
+// The before parameter is used for pagination. Only the offers created before the time passed by before are returned.
+// size limits the number of fetched offers
 func (uc *UserController) GetUserOffers(id int, before time.Time, size int) ([]models.Offer, error) {
 	return uc.userDAL.GetUserOffers(id, before, size)
 }
