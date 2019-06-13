@@ -35,7 +35,7 @@ export default class LoginScreen extends React.Component {
     onLogin(navigate) {
         tryLogin(this.state.username.toLowerCase(), this.state.password,
             (email, id, valid) => {
-                if (true) {
+                if (valid) {
                     AsyncStorage.setItem(UniData.username, email)
                     .then(
                         AsyncStorage.setItem(UniData.userid, id.toString())

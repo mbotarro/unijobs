@@ -198,9 +198,8 @@ export default class FeedRequestScreen extends React.Component {
             :
             populateRequestMiniCards(
                 this.state.isMyFeedOpen ? this.state.myFeedRequests : this.state.allFeedRequests,
-                // this.state.categories
-                false
-            );
+                this.state.categories
+           );
 
         const FloatActionButton = () => (
             <ActionButton buttonColor={UniColors.main} offsetX={20} offsetY={20} shadowStyle={styles.ActionButtonShadow}>
