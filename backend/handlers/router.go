@@ -38,6 +38,14 @@ func NewRouter(ctrl *usecases.Controller) *mux.Router {
 		Queries("size", "{size:[0-9]+}").
 		HandlerFunc(userHandler.GetUserRequests).
 		Methods("GET")
+	route.r.Path("/users/{id:[0-9]+}/offers").
+		Queries("size", "{size:[0-9]+}", "before", "{before:[0-9]+}").
+		HandlerFunc(userHandler.GetUserOffers).
+		Methods("GET")
+	route.r.Path("/users/{id:[0-9]+}/offers").
+		Queries("size", "{size:[0-9]+}").
+		HandlerFunc(userHandler.GetUserOffers).
+		Methods("GET")
 
 	// Request APIs
 	// Get last requests

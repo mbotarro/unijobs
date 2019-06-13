@@ -68,3 +68,19 @@ func (dal *UserDAL) GetUserRequests(id int, before time.Time, size int) ([]model
 
 	return reqs, nil
 }
+
+// GetUserOffers get all offers created by a `user`
+// The `before` parameter is used for pagination. Only the requests created before the time passed by before are returned.
+// `size` limits the number of fetched requests
+func (dal *UserDAL) GetUserOffers(id int, before time.Time, size int) ([]models.Offer, error) {
+	offers := []models.Offer{}
+	err := dal.db.Select(&offers,
+		`SELECT * FROM offer WHERE userid = $1 AND timestamp < $2
+			ORDER BY timestamp DESC
+			LIMIT $3`, id, before.UTC(), size)
+	if err != nil {
+		return nil, err
+	}
+
+	return offers, nil
+}
