@@ -347,7 +347,26 @@ You'll get
 
 # Offer API
 
-## Get all offers created in the platform
+## Get and insert offers created in the platform
+
+### POST 
+
+```
+/requests
+```
+
+#### Expected Body
+```
+{
+    "name": <string>
+    "description": <string>
+    "extrainfo": <string>
+    "maxprice": <int>
+    "minprice": <int>
+    "userid": <int>
+    "categoryid": <int>
+}
+```
 
 ### GET
 
