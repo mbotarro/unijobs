@@ -20,13 +20,13 @@ func NewOfferController(db *sqlx.DB) *OfferController {
 	}
 }
 
-// GetLastOffers returns all created requests before a given time
-// It only returns a limited number of requests, indicated by the parameter size
+// GetLastOffers returns all created offers before a given time
+// It only returns a limited number of offers, indicated by the parameter size
 func (rc *OfferController) GetLastOffers(before time.Time, size int) ([]models.Offer, error) {
 	return rc.offerDAL.GetLastOffers(before, size)
 }
 
-// InsertOffer inserts the given request into the database, calling the DAL package function.
+// InsertOffer inserts the given offer into the database, calling the DAL package function.
 // It returns error != nil in case some error occured.
 func (rc *OfferController) InsertOffer(offer models.Offer) error {
 	return rc.offerDAL.InsertOffer(offer)

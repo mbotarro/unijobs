@@ -39,9 +39,9 @@ type RequestResponse struct {
 type RequestInsertion struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
-	ExtraInfo   string `json:"extraInfo"`
-	MaxPrice    int    `json:"maxPrice"`
-	MinPrice    int    `json:"minPrice"`
+	ExtraInfo   string `json:"extrainfo"`
+	MaxPrice    int    `json:"maxprice"`
+	MinPrice    int    `json:"minprice"`
 	Userid      int    `json:"userid"`
 	Categoryid  int    `json:"categoryid"`
 }

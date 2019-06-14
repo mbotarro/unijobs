@@ -25,7 +25,7 @@ func NewOfferHandler(offerCtrl *usecases.OfferController) *OfferHandler {
 	}
 }
 
-// OfferResponse contains the respons sent to the frontend
+// OfferResponse contains the response sent to the frontend
 type OfferResponse struct {
 	Offers []models.Offer `json:"offers"`
 
@@ -37,9 +37,9 @@ type OfferResponse struct {
 type OfferInsertion struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
-	ExtraInfo   string `json:"extraInfo"`
-	MaxPrice    int    `json:"maxPrice"`
-	MinPrice    int    `json:"minPrice"`
+	ExtraInfo   string `json:"extrainfo"`
+	MaxPrice    int    `json:"maxprice"`
+	MinPrice    int    `json:"minprice"`
 	Userid      int    `json:"userid"`
 	Categoryid  int    `json:"categoryid"`
 }
