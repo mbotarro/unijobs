@@ -10,7 +10,7 @@ import (
 	"github.com/mbotarro/unijobs/backend/models"
 )
 
-// OfferResponse contains the respons sent to the frontend
+// OfferResponse contains the response sent to the frontend
 type OfferResponse struct {
 	Offers []models.Offer `json:"offers"`
 
