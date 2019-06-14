@@ -5,15 +5,15 @@ import UniData from '../constants/UniData'
 // last: hash for next page of requests
 
 // * request:
-// ID
-// Name
-// Description
-// ExtraInfo
-// MaxPrice
-// MinPrice
-// Userid
-// Categoryid
-// Timestamp
+// id
+// name
+// description
+// extrainfo
+// maxprice
+// minprice
+// userid
+// categoryid
+// timestamp
 async function loadRequests (onResponse) {
     fetch(UniData.allRequestsApi(10), { method: 'GET' })
     .then((response) => response.json())
@@ -39,7 +39,7 @@ async function loadCategories (onResponse) {
     .then((response) => response.json())
     .then((response) => {
         for (var i = 0; i < response.length; i++)
-            response[i].image = getCategoryImage(response[i].ID)
+            response[i].image = getCategoryImage(response[i].id)
         onResponse(response)
     })
     .catch((error) => {

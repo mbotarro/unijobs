@@ -41,8 +41,9 @@ const (
 	getCategory    = `SELECT * FROM category WHERE name = $1`
 	insertRequest  = `INSERT INTO request (name, description, extrainfo, minprice, maxprice, userid, categoryid, timestamp) 
 						VALUES ($1, $2, '', $3, $4, $5, $6, $7)`
-	getRequest = `SELECT * FROM request WHERE (name, description, userid, categoryid) = ($1, $2, $3, $4)`
 
+	getRequest = `SELECT * FROM request WHERE (name, description, userid, categoryid) = ($1, $2, $3, $4)`
+  
 	insertOffer = `INSERT INTO offer (name, description, extrainfo, minprice, maxprice, userid, categoryid, timestamp) 
 						VALUES ($1, $2, '', $3, $4, $5, $6, $7)`
 	getOffer = `SELECT * FROM offer WHERE (name, description, userid, categoryid) = ($1, $2, $3, $4)`
@@ -100,4 +101,5 @@ func CreateFakeOffer(t *testing.T, db *sqlx.DB, name, description string, user, 
 	assert.Equal(t, nil, err)
 
 	return off
+
 }

@@ -1,10 +1,8 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 
-import { getUserData } from '../actions/LoginActions'
+import { getUserData, getUserPicture } from '../actions/LoginActions'
 
-import UniStyles from '../constants/UniStyles'
-import UniData from '../constants/UniData'
 import UniText from '../constants/UniText'
 import Button from './Button'
 
@@ -16,15 +14,20 @@ export default class FeedRequestCard extends React.Component {
         userid: null,
 
         userdata: null,
+        userpicture: null,
     }
 
     constructor (props) {
         super(props);
-        this.state.userid = this.props.request.Userid
+        this.state.userid = this.props.request.userid
     }
 
     async componentDidMount() {
-        getUserData (this.state.userid, (userdata) => this.setState({isLoading: false, userdata: userdata}))
+        getUserData (this.state.userid, (userdata) => {
+            getUserPicture(this.state.userid, (userpicture) => {
+                this.setState({isLoading: false, userdata: userdata, userpicture: userpicture});
+            });
+        });
     }
 
     render() {
@@ -51,11 +54,11 @@ export default class FeedRequestCard extends React.Component {
                         }}>
                             <View style={{ justifyContent: 'center' }}>
                                 <Image
-                                    source={require('../assets/_test_categories/rectangle.png')}
+                                    source={this.state.userpicture}
                                     style={[{ marginHorizontal: 15, width: 50, height: 50, alignSelf: 'center', borderRadius: 25 }]}
                                 />
                             </View>
-                            <Text numberOfLines={1} style={[textStyles.userName]}>{this.state.userdata.Username}</Text>
+                            <Text numberOfLines={1} style={[textStyles.username]}>{this.state.userdata.username}</Text>
                         </View>
                     </TouchableOpacity>
                 </View>
