@@ -1,7 +1,9 @@
 package dal
 
 import (
+	"github.com/mbotarro/unijobs/backend/tools"
 	"time"
+	"fmt"
 	"context"
 
 	"github.com/jmoiron/sqlx"
@@ -14,15 +16,6 @@ import (
 type RequestDAL struct {
 	db *sqlx.DB
 	es *elastic.Client
-}
-
-// RequestES represents a Request in the ES
-type RequestES struct{
-	ID          string    `json:"db_id"`
-	Name        string    `json:"name"`
-	Description string    `json:"description"`
-	Category  	int       `json:"category"`
-	Timestamp   time.Time `json:"timestamp"`
 }
 
 // NewRequestDAL returns a new RequestDAL
@@ -68,10 +61,9 @@ func (dal *RequestDAL) InsertRequest(request models.Request) error {
 	return nil
 }
 
-
-// InserRequestInES inserts a Request in the ES
+// InsertRequestInES inserts a Request in the ES
 func (dal *RequestDAL) InsertRequestInES(request models.Request) error{
-	rES := RequestES{
+	rES := models.RequestES{
 		ID: request.ID,
 		Name: request.Name,
 		Description: request.Description,
@@ -86,8 +78,38 @@ func (dal *RequestDAL) InsertRequestInES(request models.Request) error{
 				Refresh("true").
 				Do(context.Background())
 	if err != nil{
-		panic("ERRRROR INSERTING IN ES")
+		return err
 	}
 	return nil
+}
+
+// SearchInES searches for Requests in ES given a name and a description
+// A slice with the IDs of the matched queries are returned
+func (dal *RequestDAL) SearchInES(name, description string) ([]string, error){
+	query := elastic.NewMatchQuery("name", name)
+	searchResult, err := dal.es.Search().
+			Index("request").
+			Query(query).
+			Do(context.Background())
+	if err != nil{
+		return nil, err
+	}
+
+	// Get the matched Requests
+	reqs, err := tools.GetRequestFromSearchResult(searchResult)
+	if err != nil{
+		return nil, err
+	}
+
+	fmt.Printf("SEARCH: name:%s, description:%s\n", name, description)
+	fmt.Println("GOT FROM ES: ", reqs)
+
+	// Get the UUIDs of the matched requests
+	ids := make([]string, 0, len(reqs))
+	for _, req := range reqs{
+		ids = append(ids, req.ID)
+	}
+
+	return ids, nil;
 }
 

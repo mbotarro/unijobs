@@ -36,20 +36,18 @@ func GetTestES() *elastic.Client {
 		log.Panicf("Can't connect to ES %s", err.Error())
 	}
 
-	es.CreateIndex("request").Do(context.Background())
-
 	return es
 }
 
 // CleanES deletes all documents stored in ES
 func CleanES(es *elastic.Client){
+	// Delete in all documents in elasticSearch
 	query := elastic.NewMatchAllQuery()
 	es.DeleteByQuery().
 		Index("request").
 		Query(query).
 		Refresh("true").
 		Do(context.Background())
-	// es.DeleteIndex("request").Do(context.Background())
 }
 
 // CleanDB delete all rows from all DB tables

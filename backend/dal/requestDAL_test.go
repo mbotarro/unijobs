@@ -4,7 +4,6 @@ import (
 	"testing"
 	"time"
 	"context"
-	"fmt"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/mbotarro/unijobs/backend/dal"
@@ -205,8 +204,6 @@ func TestInserRequestInES(t *testing.T){
 		gotReqs, err := tools.GetRequestFromSearchResult(searchResult)
 		assert.Equal(t, nil, err)
 		assert.Equal(t, 1, len(gotReqs))
-
-		fmt.Println("GOT 1", gotReqs)
 	})
 
 	req2 := tools.CreateFakeRequest(t, db, "Algeling", "Help me, please", u.Userid, c.ID, time.Now())
@@ -226,7 +223,76 @@ func TestInserRequestInES(t *testing.T){
 		gotReqs, err := tools.GetRequestFromSearchResult(searchResult)
 		assert.Equal(t, nil, err)
 		assert.Equal(t, 2, len(gotReqs))
-
-		fmt.Println("GOT", gotReqs)	
 	})
+}
+
+func TestSearchRequestInES(t *testing.T){
+	db := tools.GetTestDB()
+	es := tools.GetTestES()
+	defer tools.CleanDB(db)
+	defer tools.CleanES(es)
+
+	requestDAL := getRequestDAL(db, es)
+
+	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234", "9999-1111")
+	c := tools.CreateFakeCategory(t, db, "Aula Matemática", "Matemática")
+
+	req := tools.CreateFakeRequest(t, db, "Aula de Cálculo I", "Procuro Aula de Cálculo I", u.Userid, c.ID, time.Now())
+	err := requestDAL.InsertRequestInES(req)
+	assert.Equal(t, nil, err)
+	
+	t.Run("one element in es", func(t *testing.T){
+		t.Run("match exact name", func(t *testing.T){
+			ids, err := requestDAL.SearchInES(req.Name, req.Description)
+			
+			// We expect to recover just the ID of the only request inserted
+			assert.Equal(t, nil, err)
+			assert.Equal(t, 1, len(ids))
+			assert.Equal(t, req.ID, ids[0])
+		})
+	
+		t.Run("match name without accent", func(t *testing.T){
+			ids, err := requestDAL.SearchInES("Aula de Calculo I", req.Description)
+			
+			assert.Equal(t, nil, err)
+			assert.Equal(t, 1, len(ids))
+			assert.Equal(t, req.ID, ids[0])
+		})
+
+		t.Run("match name with typo", func(t *testing.T){
+			ids, err := requestDAL.SearchInES("Aula de Clculo I", req.Description)
+			assert.Equal(t, nil, err)
+			assert.Equal(t, 1, len(ids))
+			assert.Equal(t, req.ID, ids[0])
+		})
+	
+		t.Run("match part of the name", func(t *testing.T){
+			ids, err := requestDAL.SearchInES("Calculo I", req.Description)
+			
+			assert.Equal(t, nil, err)
+			assert.Equal(t, 1, len(ids))
+			assert.Equal(t, req.ID, ids[0])
+		})
+	})
+
+	req2 := tools.CreateFakeRequest(t, db, "Aula de Cálculo II", "Procuro Aula de Cálculo II", u.Userid, c.ID, time.Now())
+	req3 := tools.CreateFakeRequest(t, db, "Aula de Cálculo III", "Procuro Aula de Cálculo III", u.Userid, c.ID, time.Now())
+
+	t.Run("3 elements in es", func(t *testing.T){		
+		for _, req := range []models.Request{req, req2, req3}{
+			err := requestDAL.InsertRequestInES(req)
+			assert.Equal(t, nil, err)
+		}
+		
+		t.Run("match exact name", func(t *testing.T){
+			ids, err := requestDAL.SearchInES(req.Name, req.Description)
+			
+			// We expect to recover the IDs of the 3 request but with the first one in the top
+			assert.Equal(t, nil, err)
+			assert.Equal(t, 3, len(ids))
+			assert.Equal(t, req.ID, ids[0])
+		})
+	})
+	
+
 }
