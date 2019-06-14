@@ -7,7 +7,7 @@ import (
 	"github.com/mbotarro/unijobs/backend/models"
 )
 
-// OfferDAL interacts with the DB to perform User related queries
+// OfferDAL interacts with the DB to perform Offer related queries
 type OfferDAL struct {
 	db *sqlx.DB
 }
@@ -20,10 +20,10 @@ func NewOfferDAL(db *sqlx.DB) *OfferDAL {
 }
 
 // GetLastOffers returns the offers inserted in the dabase before the time specified by timestamp
-// The parameter size limits the number of returned requests
+// The parameter size limits the number of returned offers
 func (dal *OfferDAL) GetLastOffers(before time.Time, size int) ([]models.Offer, error) {
-	reqs := []models.Offer{}
-	err := dal.db.Select(&reqs,
+	offs := []models.Offer{}
+	err := dal.db.Select(&offs,
 		`SELECT * FROM offer WHERE timestamp < $1
 			ORDER BY timestamp DESC
 			LIMIT $2`, before.UTC(), size)
@@ -31,10 +31,10 @@ func (dal *OfferDAL) GetLastOffers(before time.Time, size int) ([]models.Offer, 
 		return nil, err
 	}
 
-	return reqs, nil
+	return offs, nil
 }
 
-// InsertOffer Receives a offer as a parameter and inserts into the database
+// InsertOffer Receives an offer as a parameter and inserts into the database
 func (dal *OfferDAL) InsertOffer(offer models.Offer) error {
 	insertQuery := `INSERT INTO offer (name, description, extrainfo, minprice, maxprice, userid, categoryid, timestamp) 
 						VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`

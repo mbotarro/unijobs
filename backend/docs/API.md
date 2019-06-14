@@ -230,7 +230,7 @@ You'll get
 
 # Request API
 
-## Get all requests created in the platform
+## Get and insert requests created in the platform
 
 ### POST
 
@@ -261,6 +261,7 @@ Content-Length: 0
 
 ##### Invalid Insertion
 An invalid insertion returns the error message.
+
 
 ### GET
 
@@ -368,8 +369,8 @@ For size = 2
             "id": 6,
             "name": "Aula",
             "description": "Present Perfect",
-            "extraInfo": "",
-            "maxPrice": 40,
+            "extrainfo": "",
+            "maxprice": 40,
             "minPrice": 20,
             "userid": 1,
             "categoryid": 2,
@@ -379,8 +380,8 @@ For size = 2
             "id": 5,
             "name": "Aula",
             "description": "Phrasal Verbs",
-            "extraInfo": "",
-            "maxPrice": 40,
+            "extrainfo": "",
+            "maxprice": 40,
             "minPrice": 20,
             "userid": 1,
             "categoryid": 2,
@@ -406,8 +407,8 @@ You'll get
         "id": 4,
         "name": "Aula",
         "description": "Calculo IV",
-        "extraInfo": "",
-        "maxPrice": 40,
+        "extrainfo": "",
+        "maxprice": 40,
         "minPrice": 20,
         "userid": 1,
         "categoryid": 1,
@@ -417,8 +418,8 @@ You'll get
         "id": 3,
         "name": "Aula",
         "description": "Calculo III",
-        "extraInfo": "",
-        "maxPrice": 40,
+        "extrainfo": "",
+        "maxprice": 40,
         "minPrice": 20,
         "userid": 1,
         "categoryid": 1,
