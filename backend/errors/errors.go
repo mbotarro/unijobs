@@ -17,3 +17,9 @@ const (
 	DBConnectionError = "Can't connect to the DB"
 	DBQueryError      = "Error while querying the DB"
 )
+
+
+// Common ES errors
+const(
+	ESUnmarshallError = "Can't unmarshall ES response"
+)

@@ -1,6 +1,7 @@
 package tools
 
 import (
+	"context"
 	"log"
 	"testing"
 	"time"
@@ -10,6 +11,7 @@ import (
 	"github.com/mbotarro/unijobs/backend/models"
 	"gotest.tools/assert"
 	"github.com/google/uuid"
+	"github.com/olivere/elastic/v7"
 )
 
 // GetTestDB returns a connection to a DB used for test
@@ -23,6 +25,31 @@ func GetTestDB() *sqlx.DB {
 	CleanDB(db)
 
 	return db
+}
+
+// GetTestES returns a connection to a ES used for test
+func GetTestES() *elastic.Client {
+	es, err := elastic.NewClient(
+		elastic.SetURL("http://localhost:9200"),
+		elastic.SetSniff(false))
+	if err != nil {
+		log.Panicf("Can't connect to ES %s", err.Error())
+	}
+
+	es.CreateIndex("request").Do(context.Background())
+
+	return es
+}
+
+// CleanES deletes all documents stored in ES
+func CleanES(es *elastic.Client){
+	query := elastic.NewMatchAllQuery()
+	es.DeleteByQuery().
+		Index("request").
+		Query(query).
+		Refresh("true").
+		Do(context.Background())
+	// es.DeleteIndex("request").Do(context.Background())
 }
 
 // CleanDB delete all rows from all DB tables

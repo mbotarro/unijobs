@@ -17,9 +17,11 @@ import (
 
 func TestGetLastOffer(t *testing.T) {
 	db := tools.GetTestDB()
+	es := tools.GetTestES()
 	defer tools.CleanDB(db)
+	defer tools.CleanES(es)
 
-	ctrl := usecases.NewController(db)
+	ctrl := usecases.NewController(db, es)
 	rh := handlers.NewOfferHandler(ctrl.Offer)
 
 	handler := http.HandlerFunc(rh.GetLastOffers)

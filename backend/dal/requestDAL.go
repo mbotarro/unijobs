@@ -2,21 +2,34 @@ package dal
 
 import (
 	"time"
+	"context"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/mbotarro/unijobs/backend/models"
 	"github.com/google/uuid"
+	"github.com/olivere/elastic/v7"
 )
 
 // RequestDAL interacts with the DB to perform User related queries
 type RequestDAL struct {
 	db *sqlx.DB
+	es *elastic.Client
+}
+
+// RequestES represents a Request in the ES
+type RequestES struct{
+	ID          string    `json:"db_id"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	Category  	int       `json:"category"`
+	Timestamp   time.Time `json:"timestamp"`
 }
 
 // NewRequestDAL returns a new RequestDAL
-func NewRequestDAL(db *sqlx.DB) *RequestDAL {
+func NewRequestDAL(db *sqlx.DB, es *elastic.Client) *RequestDAL {
 	return &RequestDAL{
 		db: db,
+		es: es,
 	}
 }
 
@@ -54,3 +67,27 @@ func (dal *RequestDAL) InsertRequest(request models.Request) error {
 
 	return nil
 }
+
+
+// InserRequestInES inserts a Request in the ES
+func (dal *RequestDAL) InsertRequestInES(request models.Request) error{
+	rES := RequestES{
+		ID: request.ID,
+		Name: request.Name,
+		Description: request.Description,
+		Category: request.Categoryid,
+		Timestamp: request.Timestamp,
+	}
+
+	_, err := dal.es.Index().
+				Index("request").
+				Id(rES.ID).
+				BodyJson(rES).
+				Refresh("true").
+				Do(context.Background())
+	if err != nil{
+		panic("ERRRROR INSERTING IN ES")
+	}
+	return nil
+}
+

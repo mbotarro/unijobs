@@ -22,12 +22,7 @@ func main() {
 		log.Panicf("Can't connect to the db")
 	}
 
-	ctrl := usecases.NewController(db)
-
-	r := handlers.NewRouter(ctrl)
-	handlers.NewRouter(ctrl)
-
-	client, err := elastic.NewClient(
+	es, err := elastic.NewClient(
 		elastic.SetURL("http://localhost:9200"),
 		elastic.SetSniff(false))
 	if err != nil {
@@ -36,7 +31,7 @@ func main() {
 
 	// Get ES health status for test purposes
 	// TODO: delete it when actually using the client
-	res, err := client.ClusterHealth().Do(context.Background())
+	res, err := es.ClusterHealth().Do(context.Background())
 	if err != nil {
 		panic(err)
 	}
@@ -44,6 +39,10 @@ func main() {
 		panic(err)
 	}
 	fmt.Printf("ES cluster status is %q\n", res.Status)
+
+	ctrl := usecases.NewController(db, es)
+	r := handlers.NewRouter(ctrl)
+	handlers.NewRouter(ctrl)
 
 	srv := &http.Server{
 		Handler: r,

@@ -3,21 +3,26 @@ package dal_test
 import (
 	"testing"
 	"time"
+	"context"
+	"fmt"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/mbotarro/unijobs/backend/dal"
 	"github.com/mbotarro/unijobs/backend/models"
 	"github.com/mbotarro/unijobs/backend/tools"
 	"gotest.tools/assert"
+	"github.com/olivere/elastic/v7"
 )
 
-func getRequestDAL(db *sqlx.DB) *dal.RequestDAL {
-	return dal.NewRequestDAL(db)
+func getRequestDAL(db *sqlx.DB, es *elastic.Client) *dal.RequestDAL {
+	return dal.NewRequestDAL(db, es)
 }
 
 func TestGetLastRequests(t *testing.T) {
 	db := tools.GetTestDB()
+	es := tools.GetTestES()
 	defer tools.CleanDB(db)
+	defer tools.CleanES(es)
 
 	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234", "9999-1111")
 	c := tools.CreateFakeCategory(t, db, "Aula Matemática", "Matemática")
@@ -28,7 +33,7 @@ func TestGetLastRequests(t *testing.T) {
 		tools.CreateFakeRequest(t, db, "Aula Cálculo III", "", u.Userid, c.ID, time.Now()),
 	}
 
-	requestDAL := getRequestDAL(db)
+	requestDAL := getRequestDAL(db, es)
 
 	t.Run("without size limit", func(t *testing.T) {
 		gotReqs, err := requestDAL.GetLastRequests(time.Now(), 30)
@@ -63,7 +68,9 @@ func TestGetLastRequests(t *testing.T) {
 
 func TestGetLastRequestsBeforeTimestamp(t *testing.T) {
 	db := tools.GetTestDB()
+	es := tools.GetTestES()
 	defer tools.CleanDB(db)
+	defer tools.CleanES(es)
 
 	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234", "9999-1111")
 	c := tools.CreateFakeCategory(t, db, "Aula Matemática", "Matemática")
@@ -76,7 +83,7 @@ func TestGetLastRequestsBeforeTimestamp(t *testing.T) {
 		tools.CreateFakeRequest(t, db, "Aula Cálculo IV", "", u.Userid, c.ID, time.Now()),
 	}
 
-	requestDAL := getRequestDAL(db)
+	requestDAL := getRequestDAL(db, es)
 
 	t.Run("without size limit", func(t *testing.T) {
 		// Get only the requests created before 1 hour ago
@@ -127,8 +134,11 @@ func CompareRequests(req1, req2 models.Request) bool {
 func TestInsertRequest(t *testing.T) {
 	// Get connection to test database and cleans it
 	db := tools.GetTestDB()
+	es := tools.GetTestES()
 	defer tools.CleanDB(db)
-	requestDAL := getRequestDAL(db)
+	defer tools.CleanES(es)
+
+	requestDAL := getRequestDAL(db, es)
 
 	// Create the fake request
 	var req models.Request
@@ -156,5 +166,67 @@ func TestInsertRequest(t *testing.T) {
 
 		equalReqs := CompareRequests(gotReqs[0], req)
 		assert.Equal(t, equalReqs, true)
+	})
+}
+
+func TestInserRequestInES(t *testing.T){
+	db := tools.GetTestDB()
+	es := tools.GetTestES()
+	defer tools.CleanDB(db)
+	defer tools.CleanES(es)
+
+	requestDAL := getRequestDAL(db, es)
+
+	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234", "9999-1111")
+	c := tools.CreateFakeCategory(t, db, "Aula Matemática", "Matemática")
+
+	// Create fake request in db and insert the same request in ES
+	req := tools.CreateFakeRequest(t, db, "Aula de Cálculo I", "Procuro Aula de Cálculo I", u.Userid, c.ID, time.Now())
+
+	// Executes the test query
+	err := requestDAL.InsertRequestInES(req)
+
+	// We expect no error in the insertion
+	assert.Equal(t, nil, err)
+
+	// Checks if the request was inserted successfully
+	
+	t.Run("1 insertion", func(t *testing.T) {
+		termQuery := elastic.NewTermQuery("db_id",req.ID)
+		searchResult, err := es.Search().
+			Index("request").
+			Query(termQuery).
+			Do(context.Background())
+		
+		// We expect no error
+		assert.Equal(t, nil, err)
+		assert.Equal(t, 1, int(searchResult.TotalHits()))
+
+		gotReqs, err := tools.GetRequestFromSearchResult(searchResult)
+		assert.Equal(t, nil, err)
+		assert.Equal(t, 1, len(gotReqs))
+
+		fmt.Println("GOT 1", gotReqs)
+	})
+
+	req2 := tools.CreateFakeRequest(t, db, "Algeling", "Help me, please", u.Userid, c.ID, time.Now())
+	err = requestDAL.InsertRequestInES(req2)
+	assert.Equal(t, nil, err)
+
+	t.Run("2 insertions", func(t *testing.T){
+		termsQuery := elastic.NewTermsQuery("db_id", req.ID, req2.ID)
+		searchResult, err := es.Search().
+			Index("request").
+			Query(termsQuery).
+			Do(context.Background())
+		// We expect no error
+		assert.Equal(t, nil, err)
+		assert.Equal(t, 2, int(searchResult.TotalHits()))
+
+		gotReqs, err := tools.GetRequestFromSearchResult(searchResult)
+		assert.Equal(t, nil, err)
+		assert.Equal(t, 2, len(gotReqs))
+
+		fmt.Println("GOT", gotReqs)	
 	})
 }

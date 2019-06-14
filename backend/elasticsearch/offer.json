@@ -1,7 +1,7 @@
 {
     "mappings":{
         "properties":{
-            "id": {
+            "db_id": {
                 "type": "keyword"
             },
             "name":{
