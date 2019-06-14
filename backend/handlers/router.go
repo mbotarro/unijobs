@@ -19,9 +19,10 @@ func NewRouter(ctrl *usecases.Controller) *mux.Router {
 	userHandler := NewUserHandler(ctrl.User)
 	categoryHandler := NewCategoryHandler(ctrl.Category)
 	requestHandler := NewRequestHandler(ctrl.Request)
+	offerHandler := NewOfferHandler(ctrl.Offer)
 
 	route.r.HandleFunc("/createUser", createUserHandler).Methods("POST")
-	route.r.HandleFunc("/createOffer", createOfferHandler).Methods("POST")
+	//route.r.HandleFunc("/createOffer", createOfferHandler).Methods("POST")
 
 	// User APIs
 	route.r.Path("/users/authenticate").
@@ -67,6 +68,19 @@ func NewRouter(ctrl *usecases.Controller) *mux.Router {
 
 	// Categories API
 	route.r.HandleFunc("/categories", categoryHandler.getAllCategories).Methods("GET")
+
+	// Offers APIs
+	// Get last offers
+	route.r.Path("/offers").
+		Queries("size", "{size:[0-9]+}").
+		HandlerFunc(offerHandler.GetLastOffers).
+		Methods("GET")
+
+	// Get last offers with paging
+	route.r.Path("/offers").
+		Queries("size", "{size:[0-9]+}", "before", "{before:[0-9]+}").
+		HandlerFunc(offerHandler.GetLastOffers).
+		Methods("GET")
 
 	return &route.r
 }
