@@ -5,15 +5,15 @@ import UniData from '../constants/UniData'
 // last: hash for next page of requests
 
 // * request:
-// ID
-// Name
-// Description
-// ExtraInfo
-// MaxPrice
-// MinPrice
-// Userid
-// Categoryid
-// Timestamp
+// id
+// name
+// description
+// extrainfo
+// maxprice
+// minprice
+// userid
+// categoryid
+// timestamp
 async function loadRequests (onResponse) {
     fetch(UniData.allRequestsApi(10), { method: 'GET' })
     .then((response) => response.json())
@@ -37,12 +37,28 @@ async function loadMyRequests (id, onResponse) {
 async function loadCategories (onResponse) {
     fetch(UniData.categoriesApi, { method: 'GET' })
     .then((response) => response.json())
-    .then((response) => onResponse(response))
+    .then((response) => {
+        for (var i = 0; i < response.length; i++)
+            response[i].image = getCategoryImage(response[i].id)
+        onResponse(response)
+    })
     .catch((error) => {
         console.log(error.message);
         alert(error.message);
     });
 }
+
+
+function getCategoryImage(id) {
+    switch (id) {
+        case 1 : return require('../assets/_test_categories/genetics.png');
+        case 2 : return require('../assets/_test_categories/the-sum-of.png');
+        case 2 : return require('../assets/_test_categories/piano.png');
+        case 4 : return require('../assets/_test_categories/translate.png');
+    }
+    
+    return require('../assets/_test_categories/rectangle.png');
+};
 
 
 module.exports = { loadRequests, loadCategories, loadMyRequests };
