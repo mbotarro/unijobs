@@ -42,6 +42,8 @@
 
 ### GET
 
+One must provide the user id.
+
 ```
 /users/<id>
 ```
@@ -66,13 +68,15 @@
 
 ### GET
 
+One must provide the user `id` and the number of requests at `int`.
+
 ```
 /users/<id>/requests?size=<int>
 ```
 
 #### Expected Response
 
-For size = 2
+For `size` = 2
 
 ```
 {
@@ -104,7 +108,7 @@ For size = 2
 }
 ```
 
-The **last** parameter is a cursor used for pagination. If you want to get the next 2 requests, you can send
+The `last` parameter is a cursor used for pagination. If you want to get the next 2 requests, you can send
 
 ```
 /users/<id>/requests?size=<int>&before=<last>
@@ -139,6 +143,88 @@ You'll get
     }
   ],
   "last": 1559798744
+}
+```
+
+## Get User Offers
+
+### GET
+
+One must provide the user `id` and the number of offers at `int`.
+
+```
+/users/<id>/offers?size=<int>
+```
+
+#### Expected Response
+
+For `size` = 2
+
+```
+{
+  "offers": [
+    {
+      "id": 6,
+      "name": "Aula",
+      "description": "Verb To Be",
+      "extrainfo": "",
+      "maxprice": 40,
+      "minprice": 30,
+      "userid": 1,
+      "categoryid": 2,
+      "timestamp": "2019-06-13T10:28:42.411752Z"
+    },
+    {
+      "id": 5,
+      "name": "Aula",
+      "description": "False Friends",
+      "extrainfo": "",
+      "maxprice": 40,
+      "minprice": 30,
+      "userid": 1,
+      "categoryid": 2,
+      "timestamp": "2019-06-13T09:28:42.411752Z"
+    }
+  ],
+  "last": 1560418122
+}
+```
+
+The `last` parameter is a cursor used for pagination. If you want to get the next 2 offers, you can send
+
+```
+/users/<id>/offers?size=<int>&before=<last>
+```
+
+You'll get
+
+```
+{
+  "offers": [
+    {
+      "id": 4,
+      "name": "Aula",
+      "description": "Fisica IV",
+      "extrainfo": "",
+      "maxprice": 40,
+      "minprice": 30,
+      "userid": 1,
+      "categoryid": 1,
+      "timestamp": "2019-06-13T08:28:42.411752Z"
+    },
+    {
+      "id": 3,
+      "name": "Aula",
+      "description": "Fisica III",
+      "extrainfo": "",
+      "maxprice": 40,
+      "minprice": 30,
+      "userid": 1,
+      "categoryid": 1,
+      "timestamp": "2019-06-13T07:28:42.411752Z"
+    }
+  ],
+  "last": 1560410922
 }
 ```
 

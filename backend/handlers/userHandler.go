@@ -150,3 +150,49 @@ func (handler *UserHandler) GetUserRequests(w http.ResponseWriter, r *http.Reque
 
 	tools.WriteStructOnHTTPResponse(reqRes, w)
 }
+
+// GetUserOffers return Offers required by the user
+func (handler *UserHandler) GetUserOffers(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	idStr := vars["id"]
+	id, err := strconv.ParseInt(idStr, 10, 32)
+	if err != nil {
+		http.Error(w, fmt.Errorf("%s:%s", errors.QueryParameterError, err.Error()).Error(), http.StatusBadRequest)
+		return
+	}
+
+	sizeStr := r.FormValue("size")
+	size, err := strconv.ParseInt(sizeStr, 10, 32)
+	if err != nil {
+		http.Error(w, fmt.Errorf("%s:%s", errors.QueryParameterError, err.Error()).Error(), http.StatusBadRequest)
+		return
+	}
+
+	before := time.Now()
+	beforeStr := r.FormValue("before")
+	if beforeStr != "" {
+		beforeInt, err := strconv.ParseInt(beforeStr, 10, 64)
+		if err != nil {
+			http.Error(w, fmt.Errorf("%s:%s", errors.QueryParameterError, err.Error()).Error(), http.StatusBadRequest)
+			return
+		}
+
+		before = time.Unix(beforeInt, 0)
+	}
+
+	offers, err := handler.userController.GetUserOffers(int(id), before, int(size))
+	if err != nil {
+		http.Error(w, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error()).Error(), http.StatusInternalServerError)
+		return
+	}
+
+	offerRes := OfferResponse{
+		Offers: offers,
+	}
+
+	if l := len(offers); l > 0 {
+		offerRes.Last = offers[l-1].Timestamp.Unix()
+	}
+
+	tools.WriteStructOnHTTPResponse(offerRes, w)
+}

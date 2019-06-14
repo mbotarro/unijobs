@@ -41,7 +41,10 @@ const (
 	getCategory    = `SELECT * FROM category WHERE name = $1`
 	insertRequest  = `INSERT INTO request (name, description, extrainfo, minprice, maxprice, userid, categoryid, timestamp) 
 						VALUES ($1, $2, '', $3, $4, $5, $6, $7)`
-	getRequest = `SELECT * FROM request WHERE (name, description, userid, categoryid) = ($1, $2, $3, $4)`
+	getRequest  = `SELECT * FROM request WHERE (name, description, userid, categoryid) = ($1, $2, $3, $4)`
+	insertOffer = `INSERT INTO offer (name, description, extrainfo, minprice, maxprice, userid, categoryid, timestamp)
+						VALUES ($1, $2, '', $3, $4, $5, $6, $7)`
+	getOffer = `SELECT * FROM offer WHERE (name, description, userid, categoryid) = ($1, $2, $3, $4)`
 )
 
 // CreateFakeUser inserts a fake user in the db
@@ -84,5 +87,17 @@ func CreateFakeRequest(t *testing.T, db *sqlx.DB, name, description string, user
 	assert.Equal(t, nil, err)
 
 	return r
+
+}
+
+// CreateFakeOffer creates a fake offer in the db
+func CreateFakeOffer(t *testing.T, db *sqlx.DB, name, description string, user, category int, timestamp time.Time) models.Offer {
+	db.MustExec(insertOffer, name, description, 20, 30, user, category, timestamp.UTC())
+
+	o := models.Offer{}
+	err := db.Get(&o, getOffer, name, description, user, category)
+	assert.Equal(t, nil, err)
+
+	return o
 
 }
