@@ -27,6 +27,9 @@ export default class FeedRequestScreen extends React.Component {
         allFeedRequests: {},
         myFeedRequests: {},
         categories: {},
+
+        isRequestCardOpen: false,
+        openRequest: null,
     }
 
     textStrings = {
@@ -41,13 +44,12 @@ export default class FeedRequestScreen extends React.Component {
         loadCategories((categories) => {
             var hash = {}
             for (var i = 0; i < categories.length; i++)
-                hash[categories[i].ID] = categories[i];
+                hash[categories[i].id] = categories[i];
             this.setState({categories: hash})
 
             loadRequests((requests) => {
                 this.setState({allFeedRequests: requests, myFeedRequests: myFeedTestRequests});
                 this.setState({isLoading: false});
-                // console.log(requests)
             })
         });
     }
@@ -188,23 +190,28 @@ export default class FeedRequestScreen extends React.Component {
             :
             populateRequestMiniCards(
                 this.state.isMyFeedOpen ? this.state.myFeedRequests : this.state.allFeedRequests,
-                this.state.categories
+                this.state.categories,
+                (request) => this.setState({isRequestCardOpen: true, openRequest: request})
             );
 
         const openCard = 
-            <View style = {styles.openCard}>
-            {
-                this.state.isLoading ?
-                <ActivityIndicator style={{ marginTop: 10 }} />
+            this.state.isRequestCardOpen ?
+                <View style = {styles.openCard}>
+                {
+                    this.state.isLoading ?
+                    <ActivityIndicator style={{ marginTop: 10 }} />
+                    :
+                    <FeedRequestCard
+                        request = {this.state.openRequest}
+                        categories = {this.state.categories}
+                        onCreateOfferPress = {() => {}}
+                        onShowRequester = {() => {}}
+                        onQuit = {() => this.setState({isRequestCardOpen: false})}
+                    />
+                }
+                </View>
                 :
-                <FeedRequestCard
-                    request = {this.state.isMyFeedOpen ? this.state.myFeedRequests[0] : this.state.allFeedRequests[0]}
-                    categories = {this.state.categories}
-                    onCreateOfferPress = {() => {}}
-                    onShowRequester = {() => {}}
-                />
-            }
-            </View>
+                null;
 
         return (
             <KeyboardAwareScrollView
@@ -346,93 +353,93 @@ const styles = StyleSheet.create({
 // TEST !!! (TODO: REMOVE)
 const myFeedTestRequests = [
     {
-        ID : 0,
-        Name : 'Titulo Solicitação',
-        Description : 'Descrição bem grande o suficiente para usar todo o espaço disponível em preview limitado em espaço máximo e restrito!!!!!!!!!!!!!!!!!!!!!!!!!!',
-        ExtraInfo : '',
-        MinPrice : 'XXXXX',
-        MaxPrice: 'XXXXX',
-        Userid : 0,
-        Categoryid : 0,
+        id : 0,
+        name : 'Titulo Solicitação',
+        description : 'Descrição bem grande o suficiente para usar todo o espaço disponível em preview limitado em espaço máximo e restrito!!!!!!!!!!!!!!!!!!!!!!!!!!',
+        extrainfo : '',
+        minprice : 'XXXXX',
+        maxprice: 'XXXXX',
+        userid : 0,
+        categoryid : 5,
     },
     {
-        ID : 1,
-        Name : 'Aula de Cálculo Numérico',
-        Description : 'Correção de exercícios e revisão teórica. Aulas em grupos de 3 a 4 pessoas',
-        ExtraInfo : '',
-        MinPrice : '50',
-        MaxPrice: '50',
-        Userid : 0,
-        Categoryid : 1,
+        id : 1,
+        name : 'Aula de Cálculo Numérico',
+        description : 'Correção de exercícios e revisão teórica. Aulas em grupos de 3 a 4 pessoas',
+        extrainfo : '',
+        minprice : '50',
+        maxprice: '50',
+        userid : 0,
+        categoryid : 1,
     },
     {
-        ID : 2,
-        Name : 'Aula de Piano',
-        Description : 'Teoria da música, leitura de partituras e exercícios de dedo. Aprenda suas músicas favoritas!',
-        ExtraInfo : '',
-        MinPrice : '100',
-        MaxPrice: '100',
-        Userid : 0,
-        Categoryid : 2,
+        id : 2,
+        name : 'Aula de Piano',
+        description : 'Teoria da música, leitura de partituras e exercícios de dedo. Aprenda suas músicas favoritas!',
+        extrainfo : '',
+        minprice : '100',
+        maxprice: '100',
+        userid : 0,
+        categoryid : 2,
     },
     {
-        ID : 3,
-        Name : 'Tradução Chinês - Português',
-        Description : 'Tradução em chinês tradicional ou simplificado. Preço por página em português.',
-        ExtraInfo : '',
-        MinPrice : '30',
-        MaxPrice: '30',
-        Userid : 0,
-        Categoryid : 3,
+        id : 3,
+        name : 'Tradução Chinês - Português',
+        description : 'Tradução em chinês tradicional ou simplificado. Preço por página em português.',
+        extrainfo : '',
+        minprice : '30',
+        maxprice: '30',
+        userid : 0,
+        categoryid : 3,
     },
     {
-        ID : 4,
-        Name : 'Aula de Mandarim',
-        Description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
-        ExtraInfo : '',
-        MinPrice : '80',
-        MaxPrice: '80',
-        Userid : 0,
-        Categoryid : 2,
+        id : 4,
+        name : 'Aula de Mandarim',
+        description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
+        extrainfo : '',
+        minprice : '80',
+        maxprice: '80',
+        userid : 0,
+        categoryid : 2,
     },
     {
-        ID : 4,
-        Name : 'Aula de Mandarim',
-        Description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
-        ExtraInfo : '',
-        MinPrice : '80',
-        MaxPrice: '80',
-        Userid : 0,
-        Categoryid : 12,
+        id : 4,
+        name : 'Aula de Mandarim',
+        description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
+        extrainfo : '',
+        minprice : '80',
+        maxprice: '80',
+        userid : 0,
+        categoryid : 12,
     },
     {
-        ID : 4,
-        Name : 'Aula de Mandarim',
-        Description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
-        ExtraInfo : '',
-        MinPrice : '80',
-        MaxPrice: '80',
-        Userid : 0,
-        Categoryid : 8,
+        id : 4,
+        name : 'Aula de Mandarim',
+        description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
+        extrainfo : '',
+        minprice : '80',
+        maxprice: '80',
+        userid : 0,
+        categoryid : 8,
     },
     {
-        ID : 4,
-        Name : 'Aula de Mandarim',
-        Description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
-        ExtraInfo : '',
-        MinPrice : '80',
-        MaxPrice: '80',
-        Userid : 0,
-        Categoryid : 9,
+        id : 4,
+        name : 'Aula de Mandarim',
+        description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
+        extrainfo : '',
+        minprice : '80',
+        maxprice: '80',
+        userid : 0,
+        categoryid : 9,
     },
     {
-        ID : 4,
-        Name : 'Aula de Mandarim',
-        Description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
-        ExtraInfo : '',
-        MinPrice : '80',
-        MaxPrice: '80',
-        Userid : 0,
-        Categoryid : 7,
+        id : 4,
+        name : 'Aula de Mandarim',
+        description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
+        extrainfo : '',
+        minprice : '80',
+        maxprice: '80',
+        userid : 0,
+        categoryid : 7,
     },
 ]

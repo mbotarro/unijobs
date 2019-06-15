@@ -1,10 +1,8 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 
-import { getUserData } from '../actions/LoginActions'
+import { getUserData, getUserPicture } from '../actions/LoginActions'
 
-import UniStyles from '../constants/UniStyles'
-import UniData from '../constants/UniData'
 import UniText from '../constants/UniText'
 import Button from './Button'
 
@@ -16,19 +14,24 @@ export default class FeedRequestCard extends React.Component {
         userid: null,
 
         userdata: null,
+        userpicture: null,
     }
 
     constructor (props) {
         super(props);
-        this.state.userid = this.props.request.Userid
+        this.state.userid = this.props.request.userid
     }
 
     async componentDidMount() {
-        getUserData (this.state.userid, (userdata) => this.setState({isLoading: false, userdata: userdata}))
+        getUserData (this.state.userid, (userdata) => {
+            getUserPicture(this.state.userid, (userpicture) => {
+                this.setState({isLoading: false, userdata: userdata, userpicture: userpicture});
+            });
+        });
     }
 
     render() {
-        const { request, categories, onCreateOfferPress, onShowRequester } = this.props;
+        const { request, categories, onCreateOfferPress, onShowRequester, onQuit } = this.props;
 
         const ActionButton = (text, onPress, color) => (
             <Button
@@ -46,16 +49,16 @@ export default class FeedRequestCard extends React.Component {
                 <View style={[containerStyles.cardsContainer]}>
                     <TouchableOpacity onPress={onShowRequester}>
                         <View style={{
-                            flexDirection: 'row', width: window.width, justifyContent: 'space-between', alignItems: 'center',
+                            flexDirection: 'row', width: window.width, alignItems: 'center',
                             marginHorizontal: 25
                         }}>
                             <View style={{ justifyContent: 'center' }}>
                                 <Image
-                                    source={{ uri: 'https://scontent.fbsb9-1.fna.fbcdn.net/v/t1.0-9/380610_3187067755653_628186151_n.jpg?_nc_cat=109&_nc_oc=AQlJxxAQwZVYqktXB7SGCnEli6fbB_jlBln5JziI8nIAfKwgDlJc_vS2qxly5TDDIlk&_nc_ht=scontent.fbsb9-1.fna&oh=f2eed9d5d1e213b414025bad0b4dac04&oe=5D8E1840' }}
+                                    source={this.state.userpicture}
                                     style={[{ marginHorizontal: 15, width: 50, height: 50, alignSelf: 'center', borderRadius: 25 }]}
                                 />
                             </View>
-                            <Text numberOfLines={1} style={[textStyles.userName]}>Nome do usuário ridiculamente</Text>
+                            <Text numberOfLines={1} style={[textStyles.username]}>{this.state.userdata.username}</Text>
                         </View>
                     </TouchableOpacity>
                 </View>
@@ -76,6 +79,7 @@ export default class FeedRequestCard extends React.Component {
                 categories={categories}
                 ButtonWrapper={ButtonWrapper}
                 Cards={CardView}
+                onQuit = {onQuit}
             />
         )
     }

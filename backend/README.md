@@ -3,6 +3,14 @@
 Docker >= 
 PostgreSQL >= 11.3
 
+# Architecture
+
+The image below shows the backend architecture with its main packages:
+
+![Backend Architecture](docs/images/backend_architecture.png)
+
+To know more about the backend architecture, go to the [Architecture Documentation](docs/architecture.md)
+
 # Local Environment
 
 To start the local environment, use
@@ -29,6 +37,11 @@ To populate the database:
 make migration
 ```
 
+If you need to drop the db, you can use
+```
+make drop_db
+```
+
 # Unit Tests
 
 Before running the tests, you should create a database for test purposes and run the migration on it.
@@ -40,6 +53,11 @@ make migration_test
 ```
 
 You only need the create the test database and run the migration once.
+
+If you need to restart the db, you can drop the current one using
+```
+make drop_test_db
+```
 
 Then, to run the unit tests, use
 ```

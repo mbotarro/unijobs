@@ -45,7 +45,7 @@ export default class OfferCardScreen extends React.Component {
                                     style={[{marginHorizontal: 15, width: 50, height: 50, alignSelf: 'center', borderRadius: 25}]}
                                 />
                             </View>
-                            <Text numberOfLines={1} style={[textStyles.userName]}>Nome do usuário ridiculamente</Text>
+                            <Text numberOfLines={1} style={[textStyles.username]}>Nome do usuário ridiculamente</Text>
                         </View>
                     </TouchableOpacity>
                 </View>

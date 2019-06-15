@@ -11,15 +11,12 @@ import FeedOfferScreen from "../screens/FeedOfferScreen"
 
 
 export default FeedNavigator = createBottomTabNavigator({
-    FeedRequest : {
-        screen : FeedRequestScreen,
-    },
     FeedOffer : {
         screen : FeedOfferScreen,
     },
-    Test: {
-        screen: TestScreen,
-    },
+    FeedRequest : {
+        screen : FeedRequestScreen,
+    }
 },
 {
     tabBarOptions: {
