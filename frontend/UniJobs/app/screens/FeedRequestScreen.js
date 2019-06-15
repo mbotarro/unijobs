@@ -6,7 +6,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { Dimensions } from "react-native";
 
 import { populateRequestMiniCards } from '../components/FeedMiniCards';
-import MenuButton from '../components/MenuButton'
+import FloatActionButton from '../components/FloatActionButton'
 import { loadRequests, loadCategories } from '../actions/FeedActions'
 import FeedRequestCard from '../components/FeedRequestCard'
 
@@ -246,7 +246,7 @@ export default class FeedRequestScreen extends React.Component {
                     </ScrollView>
                 </View>
                 {openCard}
-                <MenuButton 
+                <FloatActionButton 
                     onAddOfferPress={() => this.onAddOfferPress(this, navigate)}
                     onAddRequestPress={() => this.onAddRequestPress(this, navigate)}
                 />

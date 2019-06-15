@@ -7,7 +7,7 @@ import UniColors from '../constants/UniColors'
 import ActionButton from 'react-native-action-button';
 
 
-export default class MenuButton extends Component {
+export default class FloatActionButton extends Component {
 
     render() {
 
@@ -32,7 +32,7 @@ export default class MenuButton extends Component {
     }
 }
 
-MenuButton.propTypes = {
+FloatActionButton.propTypes = {
     onAddOfferPress: PropTypes.func.isRequired,
     onAddRequestPress: PropTypes.func.isRequired,
 }
