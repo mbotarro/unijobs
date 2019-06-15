@@ -15,7 +15,6 @@ import UniColors from '../constants/UniColors'
 import UniText from '../constants/UniText'
 
 import ActionButton from 'react-native-action-button';
-import Icon from 'react-native-vector-icons/Ionicons';
 
 
 export default class FeedRequestScreen extends React.Component {
@@ -57,52 +56,52 @@ export default class FeedRequestScreen extends React.Component {
         });
     }
 
-    onMenuButtonPress(navigation) {
-        navigation.openDrawer();
+    onMenuButtonPress(navigate) {
+        navigate.openDrawer();
     }
 
-    onSearchBarChangeText(navigation, text) {
+    onSearchBarChangeText(navigate, text) {
         this.setState({searchBarText: text})
     }
 
-    onSearch (navigation) {
+    onSearch (navigate) {
         alert('TODO: Search');
     }
 
-    onMyFeedPress(self, navigation) {
+    onMyFeedPress(self, navigate) {
         // !! self here is because something is overriding 'this', and
         // I don't know why! (maybe the arrow function... :/)
         self.setState({isMyFeedOpen: !self.state.isMyFeedOpen})
     }
 
-    onMyFeedFilterPress(self, navigation) {
+    onMyFeedFilterPress(self, navigate) {
         alert('TODO: Filters');
     }
 
-    onAllFeedPress(self, navigation) {
+    onAllFeedPress(self, navigate) {
     }
 
-    onAllFeedFilterPress(self, navigation) {
+    onAllFeedFilterPress(self, navigate) {
         alert('TODO: Filters');
     }
 
-    onAddOfferPress(self, navigation) {
-        alert('TODO: AddOffer')
+    onAddOfferPress(self, navigate) {
+        navigate('AddOffer')
     }
 
-    onAddRequestPress(self, navigation) {
-        alert('TODO: AddRequest')
+    onAddRequestPress(self, navigate) {
+        navigate('AddRequest')
     }
 
     render() {
-        const navigation = this.props.navigation;
+        const { navigate } = this.props.navigation;
 
 
         // header
         const menuButton = (
             <TouchableHighlight
                 underlayColor={UniColors.main}
-                onPress={() => this.onMenuButtonPress(navigation)}
+                onPress={() => this.onMenuButtonPress(navigate)}
             >
                 <Image source={require('../assets/icons/line-menu.png')}  style={styles.menuButton} />
             </TouchableHighlight>
@@ -113,12 +112,12 @@ export default class FeedRequestScreen extends React.Component {
                 <TextInput
                     style={styles.searchBarText}
                     placeholder={this.textStrings.searchBarPlaceHolder}
-                    onChangeText={(text) => { this.onSearchBarChangeText(navigation, text) }}
-                    onSubmitEditing={(event) => this.onSearch(navigation)}
+                    onChangeText={(text) => { this.onSearchBarChangeText(navigate, text) }}
+                    onSubmitEditing={(event) => this.onSearch(navigate)}
                 />
                 <TouchableHighlight
                     underlayColor= {UniColors.transparent}
-                    onPress = {(event) => this.onSearch(navigation)}
+                    onPress = {(event) => this.onSearch(navigate)}
                 >
                     <Image
                         source={require('../assets/icons/search.png')}
@@ -142,7 +141,7 @@ export default class FeedRequestScreen extends React.Component {
             <View style = {styles.feedBar}>
                 <TouchableHighlight 
                     underlayColor = {UniColors.transparent}
-                    onPress = {() => onPress(this, navigation)}
+                    onPress = {() => onPress(this, navigate)}
                     style={{flexGrow: 1, alignSelf: 'stretch'}}
                 >
                     <View style={{flexDirection: 'row'}}>
@@ -164,7 +163,7 @@ export default class FeedRequestScreen extends React.Component {
                     showFilter ?
                         <TouchableHighlight
                             underlayColor = {UniColors.transparent}
-                            onPress = {() => onFilter(navigation)}
+                            onPress = {() => onFilter(navigate)}
                             style = {styles.feedBarRightIcon}
                         >
                             <Image
@@ -192,7 +191,7 @@ export default class FeedRequestScreen extends React.Component {
             !this.state.isMyFeedOpen,
             this.state.isMyFeedOpen
         );
-        
+
 
         // feed
         const feedView = this.state.isLoading ?
@@ -203,23 +202,6 @@ export default class FeedRequestScreen extends React.Component {
                 this.state.categories,
                 (request) => this.setState({isRequestCardOpen: true, openRequest: request})
            );
-
-        const FloatActionButton = () => (
-            <ActionButton buttonColor={UniColors.main} offsetX={20} offsetY={20} shadowStyle={styles.ActionButtonShadow}>
-                <ActionButton.Item buttonColor={UniColors.main} title="Oferta" onPress={() => this.onAddOfferPress()}>
-                    <Image 
-                        source={require('../assets/icons/shopping-label.png')}
-                        style={styles.ImageIconStyle}
-                    />
-                </ActionButton.Item>
-                <ActionButton.Item buttonColor={UniColors.main} title="Solicitação" onPress={() => this.onAddRequestPress()}>
-                    <Image 
-                        source={require('../assets/icons/help.png')}
-                        style={[styles.ImageIconStyle, {height: 25, width: 25}]}
-                    />
-                </ActionButton.Item>
-            </ActionButton>
-        )
 
         const openCard = 
             this.state.isRequestCardOpen ?
@@ -264,7 +246,10 @@ export default class FeedRequestScreen extends React.Component {
                     </ScrollView>
                 </View>
                 {openCard}
-                <FloatActionButton/>
+                <MenuButton 
+                    onAddOfferPress={() => this.onAddOfferPress(this, navigate)}
+                    onAddRequestPress={() => this.onAddRequestPress(this, navigate)}
+                />
             </KeyboardAwareScrollView>
         );
     }
@@ -373,13 +358,6 @@ const styles = StyleSheet.create({
         resizeMode: 'stretch',
     },
 
-    ActionButtonShadow: {
-        shadowColor: "#000",
-        shadowOpacity: 1,
-        shadowRadius: 100.00,
-
-        elevation: 20,
-    },
     openCard: {
         zIndex: 10,
         position: 'absolute',
@@ -390,12 +368,6 @@ const styles = StyleSheet.create({
         height: Dimensions.get('window').height
     }
 });
-
-
-
-
-
-
 
 
 // TEST !!! (TODO: REMOVE)
