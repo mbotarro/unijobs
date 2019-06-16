@@ -3,7 +3,6 @@ package dal_test
 import (
 	"testing"
 	"time"
-	"fmt"
 	"context"
 
 	"github.com/jmoiron/sqlx"
@@ -320,8 +319,6 @@ func TestSearchRequestInES(t *testing.T){
 	req10 := tools.CreateFakeRequest(t, db, "Limpeza", "Procuro alguém para me ajudar a limpar a casa", u.Userid, c5.ID, time.Now().Add(-time.Hour))
 
 	for _, req := range []models.Request{req4, req5, req6, req7, req8, req9, req10}{
-		fmt.Println("WILL INSERT ", req)
-		fmt.Println("WILL INSERT DESCRIPTION: ", req.Description)
 		err := requestDAL.InsertRequestInES(req)
 		assert.Equal(t, nil, err)
 	}
@@ -393,5 +390,69 @@ func TestSearchRequestInES(t *testing.T){
 			assert.Equal(t, req.ID, ids[2])
 			assert.Equal(t, req4.ID, ids[3])
 		})
+	})
+}
+
+func TestSearchRequestWithCategoryInES(t *testing.T){
+	db := tools.GetTestDB()
+	es := tools.GetTestES()
+	defer tools.CleanDB(db)
+	defer tools.CleanES(es)
+
+	requestDAL := getRequestDAL(db, es)
+
+	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234", "9999-1111")
+	c1 := tools.CreateFakeCategory(t, db, "Aula Matemática", "Matemática")
+	c2 := tools.CreateFakeCategory(t, db, "Aula Computação", "Ciência de Computação")
+	c4 := tools.CreateFakeCategory(t, db, "Extracurricular", "Extracurricular")
+
+	req1 := tools.CreateFakeRequest(t, db, "Aula de Cálculo I", "Procuro aula particular", u.Userid, c1.ID, time.Now().Add(-10*time.Hour))
+	req2 := tools.CreateFakeRequest(t, db, "Álgebra Linear", "Preciso de ajuda para prova", u.Userid, c1.ID, time.Now().Add(-9*time.Hour))
+	req3 := tools.CreateFakeRequest(t, db, "Aula de ICC I", "Ajuda para estudar para prova", u.Userid, c2.ID, time.Now().Add(-8*time.Hour))
+	req4 := tools.CreateFakeRequest(t, db, "Aula de ICC II", "Ajuda em prova", u.Userid, c2.ID, time.Now().Add(-7*time.Hour))
+	req5 := tools.CreateFakeRequest(t, db, "Aula de Piano", "Procuro aula para iniciantes", u.Userid, c4.ID, time.Now().Add(-6*time.Hour))
+
+	for _, req := range []models.Request{req1, req2, req3, req4, req5}{
+		err := requestDAL.InsertRequestInES(req)
+		assert.Equal(t, nil, err)
+	}
+
+	t.Run("Math filter", func(t *testing.T){
+		ids, err := requestDAL.SearchInES("prova", c1.ID)
+
+		// We expect to get only request belonging to the first category that has prova in description
+		assert.Equal(t, nil, err)
+		assert.Equal(t, 1, len(ids))
+		assert.Equal(t, req2.ID, ids[0])
+	})
+
+	t.Run("CS Filter", func(t *testing.T){
+		ids, err := requestDAL.SearchInES("prova", c2.ID)
+
+		// We expect to get Aula de ICC II and Aula de ICC I (in descending creation order)
+		assert.Equal(t, nil, err)
+		assert.Equal(t, 2, len(ids))
+		assert.Equal(t, req4.ID, ids[0])
+		assert.Equal(t, req3.ID, ids[1])
+	})
+
+	t.Run("Math and CS Filters", func(t *testing.T){
+		ids, err := requestDAL.SearchInES("prova", c1.ID, c2.ID)
+
+		// We expect to get request from both categories, sorted in descending order of creation time
+		assert.Equal(t, nil, err)
+		assert.Equal(t, 3, len(ids))
+		assert.Equal(t, req4.ID, ids[0])
+		assert.Equal(t, req3.ID, ids[1])
+		assert.Equal(t, req2.ID, ids[2])
+	})
+
+	t.Run("Extraclass Filter", func(t *testing.T){
+		ids, err := requestDAL.SearchInES("aula", c4.ID)
+
+		// We expect to get only Aula de Piano
+		assert.Equal(t, nil, err)
+		assert.Equal(t, 1, len(ids))
+		assert.Equal(t, req5.ID, ids[0])
 	})
 }

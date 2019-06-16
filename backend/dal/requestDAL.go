@@ -3,7 +3,6 @@ package dal
 import (
 	"github.com/mbotarro/unijobs/backend/tools"
 	"time"
-	"fmt"
 	"context"
 
 	"github.com/jmoiron/sqlx"
@@ -68,7 +67,7 @@ func (dal *RequestDAL) InsertRequestInES(request models.Request) error{
 		Name: request.Name,
 		Description: request.Description,
 		Category: request.Categoryid,
-		Timestamp: request.Timestamp,
+		Timestamp: request.Timestamp.Unix(),
 	}
 
 	_, err := dal.es.Index().
@@ -83,19 +82,34 @@ func (dal *RequestDAL) InsertRequestInES(request models.Request) error{
 	return nil
 }
 
-// SearchInES searches for Requests in ES given a query
+// SearchInES searches for Requests in ES given a query.
+// If one or more category ID is informed, the results are filtered to only contain requests beloging to them.
 // A slice with the IDs of the matched queries are returned
-func (dal *RequestDAL) SearchInES(query string) ([]string, error){
+func (dal *RequestDAL) SearchInES(query string, categoryIDs ...int) ([]string, error){
 	q := elastic.NewMultiMatchQuery(query).
 		Type("most_fields"). // The final score is the sum of the matched fields with their respective weight
-		FieldWithBoost("name", 2). // The match in the name should has a higher score than a match in the description
+		FieldWithBoost("name", 2.5). // The match in the name should has a higher score than a match in the description
 		FieldWithBoost("description", 1)
 	
-	js, err := q.Source()
-	fmt.Println("SOURCE: ", js.(map[string]interface{}))
+	b := elastic.NewBoolQuery() // A Bool query is needed to filter the results
+	b.Must(q)
+
+	// If any categoryID is passed by the variadic parameter
+	if len(categoryIDs) != 0{
+		// categoryIDs is an int slice. To use NewTermsQuery, we need an interface{} slice. We need to convert them!
+		ids := make([]interface{}, 0, len(categoryIDs))
+		for _, id := range categoryIDs{
+			ids = append(ids, id)
+		}
+
+		// Passes ids to a variadic function
+		b.Filter(elastic.NewTermsQuery("category", ids...))
+	}
+
 	searchResult, err := dal.es.Search().
 			Index("request").
-			Query(q).
+			Query(b).
+			Size(30). // TODO: enable pagination
 			Sort("_score", false). // Documents with higher score come first
 			Sort("timestamp", false). // Sort in descending order by timestamp for documents with same score
 			Do(context.Background())
@@ -108,9 +122,6 @@ func (dal *RequestDAL) SearchInES(query string) ([]string, error){
 	if err != nil{
 		return nil, err
 	}
-
-	fmt.Printf("SEARCH: query:%s\n", query)
-	fmt.Println("GOT FROM ES: ", reqs)
 
 	// Get the UUIDs of the matched requests
 	ids := make([]string, 0, len(reqs))

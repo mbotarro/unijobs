@@ -21,5 +21,5 @@ type RequestES struct{
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	Category  	int       `json:"category"`
-	Timestamp   time.Time `json:"timestamp"`
+	Timestamp   int64 	  `json:"timestamp"`
 }
