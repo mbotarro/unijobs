@@ -42,7 +42,6 @@ func main() {
 
 	ctrl := usecases.NewController(db, es)
 	r := handlers.NewRouter(ctrl)
-	handlers.NewRouter(ctrl)
 
 	srv := &http.Server{
 		Handler: r,
