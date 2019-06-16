@@ -83,13 +83,21 @@ func (dal *RequestDAL) InsertRequestInES(request models.Request) error{
 	return nil
 }
 
-// SearchInES searches for Requests in ES given a name and a description
+// SearchInES searches for Requests in ES given a query
 // A slice with the IDs of the matched queries are returned
-func (dal *RequestDAL) SearchInES(name, description string) ([]string, error){
-	query := elastic.NewMatchQuery("name", name)
+func (dal *RequestDAL) SearchInES(query string) ([]string, error){
+	q := elastic.NewMultiMatchQuery(query).
+		Type("most_fields"). // The final score is the sum of the matched fields with their respective weight
+		FieldWithBoost("name", 2). // The match in the name should has a higher score than a match in the description
+		FieldWithBoost("description", 1)
+	
+	js, err := q.Source()
+	fmt.Println("SOURCE: ", js.(map[string]interface{}))
 	searchResult, err := dal.es.Search().
 			Index("request").
-			Query(query).
+			Query(q).
+			Sort("_score", false). // Documents with higher score come first
+			Sort("timestamp", false). // Sort in descending order by timestamp for documents with same score
 			Do(context.Background())
 	if err != nil{
 		return nil, err
@@ -101,7 +109,7 @@ func (dal *RequestDAL) SearchInES(name, description string) ([]string, error){
 		return nil, err
 	}
 
-	fmt.Printf("SEARCH: name:%s, description:%s\n", name, description)
+	fmt.Printf("SEARCH: query:%s\n", query)
 	fmt.Println("GOT FROM ES: ", reqs)
 
 	// Get the UUIDs of the matched requests

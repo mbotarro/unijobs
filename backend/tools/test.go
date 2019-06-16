@@ -66,7 +66,7 @@ const (
 	insertCategory = `INSERT INTO category (name, description) VALUES ($1, $2)`
 	getCategory    = `SELECT * FROM category WHERE name = $1`
 	insertRequest  = `INSERT INTO request (id, name, description, extrainfo, minprice, maxprice, userid, categoryid, timestamp) 
-						VALUES ($1, $2, '', $3, $4, $5, $6, $7, $8)`
+						VALUES ($1, $2, $3, '', $4, $5, $6, $7, $8)`
 
 	getRequest = `SELECT * FROM request WHERE id = $1`
   
