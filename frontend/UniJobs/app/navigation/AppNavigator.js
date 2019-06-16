@@ -11,6 +11,7 @@ import MyInterestScreen from "../screens/MyInterestScreen"
 import SettingScreen from "../screens/SettingScreen"
 
 import FeedNavigator from  "./FeedNavigator"
+import TestScreen from "../screens/TestScreen";
 
 
 
@@ -33,6 +34,7 @@ const DrawerStack = createDrawerNavigator(
 })
 
 const LoginStack = createStackNavigator({
+    Test: { screen: TestScreen },
     Login: { screen: LoginScreen },
     Register: { screen: RegisterScreen },
 })

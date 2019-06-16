@@ -42,20 +42,6 @@ export default class FeedCard extends React.Component {
             />
         )
 
-        const RoundButton = (image, onPress, color, imageStyle) => (
-            <TouchableOpacity style={{backgroundColor: color, borderRadius: 30, heigh: 60, width: 60, justifyContent: 'center', alingItems: 'center'}}>
-                <Image
-                    source={image}
-                    style={[imageStyle]}
-                />
-            </TouchableOpacity>
-            // <ButtonWithIcon
-            //     Image={image}
-            //     onPress={() => onPress()}
-            //     buttonStyle={{ backgroundColor: color, borderRadius: 30, heigh: 60, width: 60}}
-            // />
-        )
-
         const CardView = () => (
             this.state.isLoading ?
                 null
