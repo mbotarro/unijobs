@@ -7,7 +7,7 @@ import { Dimensions } from "react-native";
 
 import { populateRequestMiniCards } from '../components/FeedMiniCards';
 import { loadRequests, loadCategories } from '../actions/FeedActions'
-import FeedRequestCard from '../components/FeedRequestCard'
+import FeedCard from '../components/FeedCard'
 
 import UniStyles from '../constants/UniStyles'
 import UniColors from '../constants/UniColors'
@@ -38,6 +38,7 @@ export default class FeedRequestScreen extends React.Component {
         allFeedHeader: 'Últimas Solicitações'
     }
 
+    isOffer = false
 
     async componentDidMount() {
         // use for fetching data to show
@@ -201,12 +202,13 @@ export default class FeedRequestScreen extends React.Component {
                     this.state.isLoading ?
                     <ActivityIndicator style={{ marginTop: 10 }} />
                     :
-                    <FeedRequestCard
+                    <FeedCard
                         request = {this.state.openRequest}
                         categories = {this.state.categories}
                         onCreateOfferPress = {() => {}}
                         onShowRequester = {() => {}}
                         onQuit = {() => this.setState({isRequestCardOpen: false})}
+                        isOffer = {this.isOffer}
                     />
                 }
                 </View>

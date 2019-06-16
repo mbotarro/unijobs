@@ -5,10 +5,11 @@ import { getUserData, getUserPicture } from '../actions/LoginActions'
 
 import UniText from '../constants/UniText'
 import Button from './Button'
+import ButtonWithIcon from './ButtonWithIcon'
 
 import CardsWrapper from './CardsWrapper'
 
-export default class FeedRequestCard extends React.Component {
+export default class FeedCard extends React.Component {
     state = {
         isLoading: true,
         userid: null,
@@ -31,7 +32,7 @@ export default class FeedRequestCard extends React.Component {
     }
 
     render() {
-        const { request, categories, onCreateOfferPress, onShowRequester, onQuit } = this.props;
+        const { request, categories, onCreateOfferPress, onShowRequester, onQuit, isOffer } = this.props;
 
         const ActionButton = (text, onPress, color) => (
             <Button
@@ -41,6 +42,19 @@ export default class FeedRequestCard extends React.Component {
             />
         )
 
+        const RoundButton = (image, onPress, color, imageStyle) => (
+            <TouchableOpacity style={{backgroundColor: color, borderRadius: 30, heigh: 60, width: 60, justifyContent: 'center', alingItems: 'center'}}>
+                <Image
+                    source={image}
+                    style={[imageStyle]}
+                />
+            </TouchableOpacity>
+            // <ButtonWithIcon
+            //     Image={image}
+            //     onPress={() => onPress()}
+            //     buttonStyle={{ backgroundColor: color, borderRadius: 30, heigh: 60, width: 60}}
+            // />
+        )
 
         const CardView = () => (
             this.state.isLoading ?
@@ -64,14 +78,47 @@ export default class FeedRequestCard extends React.Component {
                 </View>
         )
 
-        ButtonWrapper = () => (
-            <View style={{ flexDirection: 'column', marginBottom: 30 }}>
-                {CreateOfferButtom}
-            </View>
-        )
-
-
         const CreateOfferButtom = ActionButton('Criar Oferta', onCreateOfferPress, '#0BA5F2');
+        const createRoundButton = (isCheck, onPress) => {
+            if(isCheck){
+                imageSource = require('../assets/icons/check-mark.png')
+                color = '#4ED124'
+            } else {
+                imageSource = require('../assets/icons/exit_white.png')
+                color = '#FF431B'
+            }
+            return (
+                <TouchableOpacity onPress={onPress} style={{backgroundColor: color, borderRadius: 35}}>
+                    <View style={{justifyContent: 'center', alingItems: 'center', height: 70, width: 70}}>
+                        <Image
+                            source={imageSource}
+                            style={[{height: 20, width: 20, alignSelf: 'center'}]}
+                        />
+                    </View>
+                </TouchableOpacity>
+            )
+        }
+        const ButtonWrapper = () => {
+            if (isOffer) {
+                return (
+                    <View 
+                        style={{
+                            flexDirection: 'row', marginHorizontal: 15, alignItems: 'center', 
+                            justifyContent: 'space-evenly', marginBottom: 30, marginTop: 10
+                        }}
+                    >
+                        {createRoundButton(false, () => {alert('NOP')})}
+                        {createRoundButton(true, () => {alert('YEP')})}
+                    </View>
+                )
+            } else {
+                return (
+                    <View style={{ flexDirection: 'column', marginBottom: 30 }}>
+                        {CreateOfferButtom}
+                    </View>
+                )
+            }
+        }
 
         return (
             <CardsWrapper
@@ -80,6 +127,7 @@ export default class FeedRequestCard extends React.Component {
                 ButtonWrapper={ButtonWrapper}
                 Cards={CardView}
                 onQuit = {onQuit}
+                isOffer = {isOffer}
             />
         )
     }
