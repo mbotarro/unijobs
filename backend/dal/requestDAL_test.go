@@ -158,3 +158,31 @@ func TestInsertRequest(t *testing.T) {
 		assert.Equal(t, equalReqs, true)
 	})
 }
+
+
+func TestGetRequestsByID(t *testing.T) {
+	db := tools.GetTestDB()
+	defer tools.CleanDB(db)
+	requestDAL := getRequestDAL(db)
+
+	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234", "9999-1111")
+	c := tools.CreateFakeCategory(t, db, "Aula Matemática", "Matemática")
+
+	reqs := []models.Request{
+		tools.CreateFakeRequest(t, db, "Aula Cálculo I", "", u.Userid, c.ID, time.Now().Add(-25*time.Hour)),
+		tools.CreateFakeRequest(t, db, "Aula Cálculo II", "", u.Userid, c.ID, time.Now().Add(-24*time.Hour)),
+		tools.CreateFakeRequest(t, db, "Aula Álgebra Linear", "", u.Userid, c.ID, time.Now().Add(-23*time.Hour)),
+	}
+
+	ids := []int{reqs[0].ID, reqs[1].ID}
+
+	t.Run("Testing", func(t *testing.T){
+		gotReqs, err := requestDAL.GetRequestsByID(ids)
+		assert.Equal(t, nil, err)
+
+		assert.Equal(t, 2, len(gotReqs))
+		assert.Equal(t, reqs[1], gotReqs[0])
+		assert.Equal(t, reqs[0], gotReqs[1])
+	})
+
+}

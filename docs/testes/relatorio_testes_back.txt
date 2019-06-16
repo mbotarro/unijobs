@@ -1,7 +1,12 @@
 ?   	github.com/mbotarro/unijobs/backend	[no test files]
-ok  	github.com/mbotarro/unijobs/backend/dal	(cached)	coverage: 81.8% of statements
+--- FAIL: TestGetRequestsByID (0.05s)
+    --- FAIL: TestGetRequestsByID/Testing (0.00s)
+        requestDAL_test.go:181: assertion failed: <no value> (nil <nil>) != sql: converting argument $1 type: unsupported type []int, a slice of int (err *errors.errorString)
+FAIL
+coverage: 75.0% of statements
+FAIL	github.com/mbotarro/unijobs/backend/dal	0.766s
 ?   	github.com/mbotarro/unijobs/backend/errors	[no test files]
-ok  	github.com/mbotarro/unijobs/backend/handlers	(cached)	coverage: 53.9% of statements
+ok  	github.com/mbotarro/unijobs/backend/handlers	0.387s	coverage: 59.3% of statements
 ?   	github.com/mbotarro/unijobs/backend/migrations	[no test files]
 ?   	github.com/mbotarro/unijobs/backend/models	[no test files]
 ?   	github.com/mbotarro/unijobs/backend/tools	[no test files]

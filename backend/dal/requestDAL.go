@@ -49,3 +49,24 @@ func (dal *RequestDAL) InsertRequest(request models.Request) error {
 
 	return nil
 }
+
+
+// GetRequestsByID return the requests based on the ID passsed
+func (dal *RequestDAL) GetRequestsByID(ids []int) ([]models.Request, error) {
+	// reqs := []models.Request{}
+	query, args, err := sqlx.In(`SELECT * FROM request WHERE id IN (?)`, ids)
+
+	query = dal.db.Rebind(query)
+	reqs, err := dal.db.Query(query, args...)
+
+	// reqs := []models.Request{}
+	// err := dal.db.Select(&reqs,
+	//	`SELECT * FROM request WHERE id IN (?)
+	//		ORDER BY timestamp DESC`, ids)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return reqs, nil
+}
