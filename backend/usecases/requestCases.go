@@ -32,3 +32,18 @@ func (rc *RequestController) GetLastRequests(before time.Time, size int) ([]mode
 func (rc *RequestController) InsertRequest(req models.Request) error {
 	return rc.requestDAL.InsertRequest(req)
 }
+
+// SearchRequests searches for requests based on a query sent by the user. It can be filter by one or more categories whose
+// ids is passed by parameter
+func (rc *RequestController) SearchRequests(query string, categoryIDs ...int) ([]models.Request, error){
+	// Search for the requests ids in ES
+	_, err := rc.requestDAL.SearchInES(query, categoryIDs...)
+	if (err != nil){
+		return nil, err
+	}
+
+	// Get the complete documents in Postgres
+
+
+	return nil, nil
+}
