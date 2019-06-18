@@ -1,6 +1,7 @@
 package tools
 
 import (
+	"context"
 	"log"
 	"testing"
 	"time"
@@ -10,6 +11,7 @@ import (
 	"github.com/mbotarro/unijobs/backend/models"
 	"gotest.tools/assert"
 	"github.com/google/uuid"
+	"github.com/olivere/elastic/v7"
 )
 
 // GetTestDB returns a connection to a DB used for test
@@ -23,6 +25,29 @@ func GetTestDB() *sqlx.DB {
 	CleanDB(db)
 
 	return db
+}
+
+// GetTestES returns a connection to a ES used for test
+func GetTestES() *elastic.Client {
+	es, err := elastic.NewClient(
+		elastic.SetURL("http://localhost:9200"),
+		elastic.SetSniff(false))
+	if err != nil {
+		log.Panicf("Can't connect to ES %s", err.Error())
+	}
+
+	return es
+}
+
+// CleanES deletes all documents stored in ES
+func CleanES(es *elastic.Client){
+	// Delete in all documents in elasticSearch
+	query := elastic.NewMatchAllQuery()
+	es.DeleteByQuery().
+		Index("request").
+		Query(query).
+		Refresh("true").
+		Do(context.Background())
 }
 
 // CleanDB delete all rows from all DB tables
@@ -41,7 +66,7 @@ const (
 	insertCategory = `INSERT INTO category (name, description) VALUES ($1, $2)`
 	getCategory    = `SELECT * FROM category WHERE name = $1`
 	insertRequest  = `INSERT INTO request (id, name, description, extrainfo, minprice, maxprice, userid, categoryid, timestamp) 
-						VALUES ($1, $2, '', $3, $4, $5, $6, $7, $8)`
+						VALUES ($1, $2, $3, '', $4, $5, $6, $7, $8)`
 
 	getRequest = `SELECT * FROM request WHERE id = $1`
   

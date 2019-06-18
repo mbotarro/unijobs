@@ -1,6 +1,7 @@
 package usecases
 
 import (
+	"github.com/olivere/elastic/v7"
 	"time"
 
 	"github.com/jmoiron/sqlx"
@@ -14,9 +15,9 @@ type RequestController struct {
 }
 
 // NewRequestController returns a new RequestController
-func NewRequestController(db *sqlx.DB) *RequestController {
+func NewRequestController(db *sqlx.DB, es *elastic.Client) *RequestController {
 	return &RequestController{
-		requestDAL: dal.NewRequestDAL(db),
+		requestDAL: dal.NewRequestDAL(db,es),
 	}
 }
 

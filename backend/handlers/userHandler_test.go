@@ -18,9 +18,11 @@ import (
 
 func TestGetUserRequests(t *testing.T) {
 	db := tools.GetTestDB()
+	es := tools.GetTestES()
 	defer tools.CleanDB(db)
+	defer tools.CleanES(es)
 
-	ctrl := usecases.NewController(db)
+	ctrl := usecases.NewController(db, es)
 	router := handlers.NewRouter(ctrl)
 
 	t.Run("Get no request", func(t *testing.T) {
@@ -309,9 +311,11 @@ func TestGetUserRequests(t *testing.T) {
 
 func TestGetUserOffers(t *testing.T) {
 	db := tools.GetTestDB()
+	es := tools.GetTestES()
 	defer tools.CleanDB(db)
+	defer tools.CleanES(es)
 
-	ctrl := usecases.NewController(db)
+	ctrl := usecases.NewController(db, es)
 	router := handlers.NewRouter(ctrl)
 
 	t.Run("Get no offer", func(t *testing.T) {
