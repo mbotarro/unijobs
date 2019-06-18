@@ -4,9 +4,11 @@ import (
 	"github.com/mbotarro/unijobs/backend/tools"
 	"time"
 	"context"
+	"fmt"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/mbotarro/unijobs/backend/models"
+	"github.com/mbotarro/unijobs/backend/errors"
 	"github.com/google/uuid"
 	"github.com/olivere/elastic/v7"
 )
@@ -77,8 +79,9 @@ func (dal *RequestDAL) InsertRequestInES(request models.Request) error{
 				Refresh("true").
 				Do(context.Background())
 	if err != nil{
-		return err
+		return fmt.Errorf("%s:%s", errors.ESInsertError, err.Error())
 	}
+
 	return nil
 }
 
@@ -114,7 +117,7 @@ func (dal *RequestDAL) SearchInES(query string, categoryIDs ...int) ([]string, e
 			Sort("timestamp", false). // Sort in descending order by timestamp for documents with same score
 			Do(context.Background())
 	if err != nil{
-		return nil, err
+		return nil, fmt.Errorf("%s:%s", errors.ESSearchError, err.Error())
 	}
 
 	// Get the matched Requests

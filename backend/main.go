@@ -11,6 +11,7 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/mbotarro/unijobs/backend/handlers"
 	"github.com/mbotarro/unijobs/backend/usecases"
+	"github.com/mbotarro/unijobs/backend/errors"
 	"github.com/olivere/elastic/v7"
 )
 
@@ -19,14 +20,14 @@ func main() {
 	// Should import a driver to interact with the db: _ "github.com/lib/pq"
 	db, err := sqlx.Connect("postgres", "user=postgres dbname=unijobs sslmode=disable")
 	if err != nil {
-		log.Panicf("Can't connect to the db")
+		log.Panicf("%s:%s", errors.DBConnectionError, err.Error())
 	}
 
 	es, err := elastic.NewClient(
 		elastic.SetURL("http://localhost:9200"),
 		elastic.SetSniff(false))
 	if err != nil {
-		log.Panicf("Can't connect to ES %s", err.Error())
+		log.Panicf("%s:%s", errors.ESConnectionError,err.Error())
 	}
 
 	// Get ES health status for test purposes

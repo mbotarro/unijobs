@@ -21,5 +21,8 @@ const (
 
 // Common ES errors
 const(
+	ESConnectionError = "Can't connect to ES"
 	ESUnmarshallError = "Can't unmarshall ES response"
+	ESInsertError = "Can't insert document in ES"
+	ESSearchError = "Can't search for documento in ES"
 )
