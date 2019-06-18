@@ -37,13 +37,16 @@ func (rc *RequestController) InsertRequest(req models.Request) error {
 // ids is passed by parameter
 func (rc *RequestController) SearchRequests(query string, categoryIDs ...int) ([]models.Request, error){
 	// Search for the requests ids in ES
-	_, err := rc.requestDAL.SearchInES(query, categoryIDs...)
+	ids, err := rc.requestDAL.SearchInES(query, categoryIDs...)
 	if (err != nil){
 		return nil, err
 	}
 
 	// Get the complete documents in Postgres
+	reqs, err := rc.requestDAL.GetRequestsByID(ids)
+	if (err != nil){
+		return nil, err
+	}
 
-
-	return nil, nil
+	return reqs, nil
 }
