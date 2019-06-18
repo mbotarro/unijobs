@@ -1,11 +1,11 @@
 insert into userdata(username, password, email, address, telephone, student) values ('Estevam', 'senhateste','estevam@estevam', '', '3258', TRUE);
 insert into userdata(username, password, email, address, telephone, student) values ('user', '1234','user@gmail.com', '', '1234-1234', TRUE);
-insert into request (name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp ) values ('Aula', 'Calculo I', '', 20, 40, 2, 1, NOW() - INTERVAL '10 HOUR');
-insert into request (name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp ) values ('Aula', 'Calculo II', '', 20, 40, 2, 1, NOW() - INTERVAL '9 HOUR');
-insert into request (name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp ) values ('Aula', 'Calculo III', '', 20, 40, 2, 1, NOW() - INTERVAL '8 HOUR');
-insert into request (name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp ) values ('Aula', 'Calculo IV', '', 20, 40, 2, 1, NOW() - INTERVAL '7 HOUR');
-insert into request (name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp ) values ('Aula', 'Phrasal Verbs', '', 20, 40, 2, 2, NOW() - INTERVAL '6 HOUR');
-insert into request (name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp ) values ('Aula', 'Present Perfect', '', 20, 40, 2, 2, NOW() - INTERVAL '5 HOUR');
+insert into request (id, name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp ) values ('a74c4694-8eb2-11e9-bc42-526af7764f64', 'Aula', 'Calculo I', '', 20, 40, 2, 1, NOW() - INTERVAL '10 HOUR');
+insert into request (id, name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp ) values ('a74c4900-8eb2-11e9-bc42-526af7764f64', 'Aula', 'Calculo II', '', 20, 40, 2, 1, NOW() - INTERVAL '9 HOUR');
+insert into request (id, name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp ) values ('a74c4a40-8eb2-11e9-bc42-526af7764f64', 'Aula', 'Calculo III', '', 20, 40, 2, 1, NOW() - INTERVAL '8 HOUR');
+insert into request (id, name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp ) values ('a74c4b6c-8eb2-11e9-bc42-526af7764f64', 'Aula', 'Calculo IV', '', 20, 40, 2, 1, NOW() - INTERVAL '7 HOUR');
+insert into request (id, name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp ) values ('a74c4c98-8eb2-11e9-bc42-526af7764f64', 'Aula', 'Phrasal Verbs', '', 20, 40, 2, 2, NOW() - INTERVAL '6 HOUR');
+insert into request (id, name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp ) values ('a74c506c-8eb2-11e9-bc42-526af7764f64', 'Aula', 'Present Perfect', '', 20, 40, 2, 2, NOW() - INTERVAL '5 HOUR');
 insert into offer (name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp) values ('Aula', 'Fisica I', '', 30, 40, 1, 1, NOW() - INTERVAL '10 HOUR');
 insert into offer (name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp) values ('Aula', 'Fisica II', '', 30, 40, 1, 1, NOW() - INTERVAL '9 HOUR');
 insert into offer (name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp) values ('Aula', 'Fisica III', '', 30, 40, 1, 1, NOW() - INTERVAL '8 HOUR');

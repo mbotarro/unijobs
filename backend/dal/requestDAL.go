@@ -5,6 +5,7 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	"github.com/mbotarro/unijobs/backend/models"
+	"github.com/google/uuid"
 )
 
 // RequestDAL interacts with the DB to perform User related queries
@@ -36,11 +37,15 @@ func (dal *RequestDAL) GetLastRequests(before time.Time, size int) ([]models.Req
 
 // InsertRequest Receives a request as a parameter and inserts into the database
 func (dal *RequestDAL) InsertRequest(request models.Request) error {
-	insertQuery := `INSERT INTO request (name, description, extrainfo, minprice, maxprice, userid, categoryid, timestamp) 
-						VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`
+	// Generate an uuid for the request
+	request.ID = uuid.New().String()
+
+	insertQuery := `INSERT INTO request (id, name, description, extrainfo, minprice, maxprice, userid, categoryid, timestamp) 
+						VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`
 
 	// Gets the controller of the database and executes the query
-	_, err := dal.db.Exec(insertQuery, request.Name, request.Description, request.ExtraInfo, request.MinPrice, request.MaxPrice, request.Userid, request.Categoryid, request.Timestamp)
+	_, err := dal.db.Exec(insertQuery, request.ID, request.Name, request.Description, request.ExtraInfo, 
+		request.MinPrice, request.MaxPrice, request.Userid, request.Categoryid, request.Timestamp)
 
 	// Checks if any error happened during the query execution
 	if err != nil {
