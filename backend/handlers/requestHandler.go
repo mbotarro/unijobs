@@ -49,7 +49,6 @@ type RequestInsertion struct {
 
 // GetLastRequests sends the last requests created in the unijobs service
 func (handler *RequestHandler) GetLastRequests(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("CALLED GET LAST REQUESTS")
 	sizeStr := r.FormValue("size")
 	size, err := strconv.ParseInt(sizeStr, 10, 32)
 	if err != nil {
@@ -123,7 +122,7 @@ func (handler *RequestHandler) InsertRequest(w http.ResponseWriter, r *http.Requ
 }
 
 // SearchRequests searched for Requests based on a query sent by the user
-// The results can be filtered one or more by categories ids 
+// The results can be filtered by one or more by categories ids 
 func (handler *RequestHandler) SearchRequests(w http.ResponseWriter, r *http.Request){
 	// Query
 	query := r.FormValue("q") 

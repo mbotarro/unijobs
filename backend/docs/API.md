@@ -344,6 +344,66 @@ You'll get
 }
 ```
 
+## Search for Requests in the platform
+
+### GET
+
+To search for requests based on a query, use the following URL:
+
+```
+/requests?q=<string>
+```
+
+The query parameter is used to match requests based in their name and their description. Name match has a higher score
+than description match.
+
+You might want to filter the fetched requests by one or more categories IDs. The categories ID must be separed by comma.
+
+```
+/requests?q=<string>&cat=<catID1>,<catID2>,...
+```
+
+#### Expected Reponse
+
+For the following request
+
+```
+/requests?q=prova
+```
+
+the server returns:
+
+```
+{
+  "requests": [
+    {
+      "id": "a74c4694-8eb2-11e9-bc42-526af7764f67",
+      "name": "Álgebra Linear",
+      "description": "Preciso de ajuda para prova",
+      "extrainfo": "",
+      "maxprice": 40,
+      "minprice": 20,
+      "userid": 2,
+      "categoryid": 2,
+      "timestamp": "2019-06-18T10:09:45.881559Z"
+    },
+    {
+      "id": "a74c4694-8eb2-11e9-bc42-526af7764f65",
+      "name": "Calculo II",
+      "description": "Tenho prova semana que vem",
+      "extrainfo": "",
+      "maxprice": 40,
+      "minprice": 20,
+      "userid": 2,
+      "categoryid": 2,
+      "timestamp": "2019-06-18T08:09:45.881559Z"
+    }
+  ],
+  "last": 0
+}
+```
+
+So far, the search endpoint doesn't accept pagination, always returning all matched requests.
 
 # Offer API
 
