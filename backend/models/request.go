@@ -20,6 +20,6 @@ type RequestES struct{
 	ID          string    `json:"db_id"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
-	Category  	int       `json:"category"`
+	Category  	string       `json:"category"`
 	Timestamp   int64 	  `json:"timestamp"`
 }
