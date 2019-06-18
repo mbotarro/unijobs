@@ -65,7 +65,7 @@ func (dal *RequestDAL) InsertRequest(request models.Request) error {
 // GetRequestsByID fetch from postgreSQL the requests whose ids are passed in parameter
 func (dal *RequestDAL) GetRequestsByID(ids []string) ([]models.Request, error){
 	reqs := []models.Request{}
-	query, args, err := sqlx.In(`SELECT * FROM request WHERE id IN (?)`,ids)
+	query, args, err := sqlx.In(`SELECT * FROM request WHERE id IN (?) ORDER BY timestamp DESC`,ids)
 	if err != nil{
 		return nil, err
 	}

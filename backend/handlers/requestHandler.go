@@ -130,9 +130,6 @@ func (handler *RequestHandler) SearchRequests(w http.ResponseWriter, r *http.Req
 
 	// Categories ID. The frontend sends them separed by , . We should split them
 	catStr := r.FormValue("cat")
-
-	fmt.Println("q = ", query)
-	fmt.Println("cat = ", catStr)
 	
 	// We should convert categories ID to int
 	categoryIDs := make([]int, 0, len(catStr))

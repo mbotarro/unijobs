@@ -472,9 +472,9 @@ func TestGetRequestsByID(t *testing.T){
 	req1 := tools.CreateFakeRequest(t, db, "Aula de Cálculo I", "Procuro aula particular", u.Userid, c1.ID, time.Now().Add(-10*time.Hour))
 	req2 := tools.CreateFakeRequest(t, db, "Aula de Cálculo II", "Tenho prova semana que vem", u.Userid, c1.ID, time.Now().Add(-9*time.Hour))
 	req3 := tools.CreateFakeRequest(t, db, "Aula de Cálculo III", "Teorema de Green", u.Userid, c1.ID, time.Now().Add(-8*time.Hour))
-	req4 := tools.CreateFakeRequest(t, db, "Álgebra Linear", "Preciso de ajuda para prova", u.Userid, c1.ID, time.Now().Add(-9*time.Hour))
-	req5 := tools.CreateFakeRequest(t, db, "Aula de ICC I", "Ajuda para estudar para prova", u.Userid, c2.ID, time.Now().Add(-8*time.Hour))
-	req6 := tools.CreateFakeRequest(t, db, "Aula de ICC II", "Ajuda em prova", u.Userid, c2.ID, time.Now().Add(-7*time.Hour))
+	req4 := tools.CreateFakeRequest(t, db, "Álgebra Linear", "Preciso de ajuda para prova", u.Userid, c1.ID, time.Now().Add(-7*time.Hour))
+	req5 := tools.CreateFakeRequest(t, db, "Aula de ICC I", "Ajuda para estudar para prova", u.Userid, c2.ID, time.Now().Add(-6*time.Hour))
+	req6 := tools.CreateFakeRequest(t, db, "Aula de ICC II", "Ajuda em prova", u.Userid, c2.ID, time.Now().Add(-5*time.Hour))
 
 	t.Run("Get request with 1 ID", func(t *testing.T){
 		reqs, err := requestDAL.GetRequestsByID([]string{req1.ID})
@@ -485,19 +485,19 @@ func TestGetRequestsByID(t *testing.T){
 	t.Run("Get requests with 3 IDs", func(t *testing.T){
 		reqs, err := requestDAL.GetRequestsByID([]string{req1.ID, req2.ID, req3.ID})
 		assert.Equal(t, nil, err)
-		assert.Equal(t, req1, reqs[0])
+		assert.Equal(t, req3, reqs[0])
 		assert.Equal(t, req2, reqs[1])
-		assert.Equal(t, req3, reqs[2])
+		assert.Equal(t, req1, reqs[2])
 	})
 
 	t.Run("Get request with 6 IDs", func(t *testing.T){
 		reqs, err := requestDAL.GetRequestsByID([]string{req1.ID, req2.ID, req3.ID, req4.ID, req5.ID, req6.ID})
 		assert.Equal(t, nil, err)
-		assert.Equal(t, req1, reqs[0])
-		assert.Equal(t, req2, reqs[1])
-		assert.Equal(t, req3, reqs[2])
-		assert.Equal(t, req4, reqs[3])
-		assert.Equal(t, req5, reqs[4])
-		assert.Equal(t, req6, reqs[5])
+		assert.Equal(t, req6, reqs[0])
+		assert.Equal(t, req5, reqs[1])
+		assert.Equal(t, req4, reqs[2])
+		assert.Equal(t, req3, reqs[3])
+		assert.Equal(t, req2, reqs[4])
+		assert.Equal(t, req1, reqs[5])
 	})
 }
