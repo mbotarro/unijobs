@@ -41,6 +41,9 @@ es_create_indices:
 	curl -X PUT localhost:9200/request -H "Content-Type:application/json" -d @elasticsearch/request.json
 	curl -X PUT localhost:9200/offer -H "Content-Type:application/json" -d @elasticsearch/offer.json
 
+es_insert_examples:
+	curl -s -H "Content-Type: application/x-ndjson" -XPOST localhost:9200/_bulk --data-binary "@elasticsearch/requests_examples.json";
+
 es_drop_indices:
 	curl -X DELETE localhost:9200/request
 	curl -X DELETE localhost:9200/offer
