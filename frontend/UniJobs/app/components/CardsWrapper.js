@@ -64,7 +64,7 @@ export default class CardsWrapper extends React.Component {
                                 Informações Adicionais
                             </Text>
                             <Text numberOfLines={1} style={{fontSize: UniText.small}}>
-                                Informações adicionais que não podem passar de 1 linha!!
+                                {request.extrainfo}
                             </Text>
                         </View>
                     </View>

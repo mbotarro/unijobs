@@ -17,11 +17,11 @@ function populateROCards(requests, isOffer) {
                     <View key = {index} style = {{marginTop: 3, flex: 1}}>
                         <ORMiniCard 
                             image={req.image}
-                            mainText={req.Name}
+                            firstText={req.username}
                             secondText={req.telephone}
                             thirdText={req.email}
-                            userId={req.id}
-                            isOffer={isOffer}
+                            userId={req.userid}
+                            isOffer={true}
                         />
                     </View>
                 )
@@ -30,11 +30,11 @@ function populateROCards(requests, isOffer) {
                     <View key = {index} style = {{marginTop: 3, flex: 1}}>
                         <ORMiniCard 
                             image={req.image}
-                            title={req.Title}
-                            userId={req.id}
-                            price={req.Price}
-                            description={req.description}
-                            isOffer={isOffer}
+                            firstText={req.name}
+                            secondText={req.description}
+                            thirdText={req.maxprice}
+                            userId={req.userid}
+                            isOffer={false}
                         />
                     </View>
                 )
@@ -51,7 +51,7 @@ class ORMiniCard extends React.Component {
 
     render() {
 
-        const {image, mainText, secondText, thirdText, userId, isOffer} = this.props
+        const {image, firstText, secondText, thirdText, userId, isOffer} = this.props
 
         
         const imgBorderRadius = isOffer ? 25 : 10
@@ -66,9 +66,9 @@ class ORMiniCard extends React.Component {
                         style={[{marginHorizontal: 15, marginVertical: 10, width: 50, height: 50, alignSelf: 'center', borderRadius: imgBorderRadius}]}
                     />
                     <View style={{flexDirection: 'column', flex: 1, justifyContent: 'flex-start'}}>
-                        <Text style={{marginHorizontal: 12, textAlign: 'left', marginTop: 8, color: '#00A5F2', fontSize: UniText.small, fontWeight: '600'}}>Aulas de Cálculo 1</Text>
-                        <Text style={{marginHorizontal: 12, textAlign: 'left', fontSize: UniText.small}} numberOfLines = {1}>Tem medo do Guidorizzi? Eu também ...</Text>
-                        <Text style={{marginHorizontal: 12, textAlign: 'left', fontSize: UniText.small, fontWeight: '600'}}>R$ 100</Text>
+                        <Text style={{marginHorizontal: 12, textAlign: 'left', marginTop: 8, color: '#00A5F2', fontSize: UniText.small, fontWeight: '600'}}>{firstText}</Text>
+                        <Text style={{marginHorizontal: 12, textAlign: 'left', fontSize: UniText.small}} numberOfLines = {1}>{secondText}</Text>
+                        <Text style={{marginHorizontal: 12, textAlign: 'left', fontSize: UniText.small, fontWeight: '600'}}>{thirdText}</Text>
                     </View>
                 </View>
             </TouchableOpacity>

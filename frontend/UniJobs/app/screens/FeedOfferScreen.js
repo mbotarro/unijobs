@@ -381,7 +381,7 @@ const myFeedTestRequests = [
         id : 0,
         name : 'Titulo Solicitação',
         description : 'Descrição bem grande o suficiente para usar todo o espaço disponível em preview limitado em espaço máximo e restrito!!!!!!!!!!!!!!!!!!!!!!!!!!',
-        extrainfo : '',
+        extrainfo : 'some extrasasijhdjfashdfiusjhfdjkasdhfajklsdfhakjdfhaskjdfhaskdjfhaskjdfhasjkdfhasdjkfh',
         minprice : 'XXXXX',
         maxprice: 'XXXXX',
         userid : 0,
