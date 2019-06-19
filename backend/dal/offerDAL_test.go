@@ -224,3 +224,87 @@ func TestInsertOfferInES(t *testing.T) {
 		assert.Equal(t, 2, len(gotOffs))
 	})
 }
+
+func TestSearchOfferInES(t *testing.T) {
+	db := tools.GetTestDB()
+	es := tools.GetTestES()
+	defer tools.CleanDB(db)
+	defer tools.CleanES(es)
+
+	offerDAL := getOfferDAL(db, es)
+
+	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234", "9999-1111")
+	c1 := tools.CreateFakeCategory(t, db, "Aula Matemática", "Matemática")
+	c2 := tools.CreateFakeCategory(t, db, "Aula Física", "Física")
+	c3 := tools.CreateFakeCategory(t, db, "Aula Computação", "Ciência de Computação")
+	c4 := tools.CreateFakeCategory(t, db, "Extracurricular", "Extracurricular")
+	c5 := tools.CreateFakeCategory(t, db, "Serviços Gerais", "Serviços Gerais")
+
+	off1 := tools.CreateFakeOffer(t, db, "Aula de Cálculo I", "Dou aula de cálculo I", u.Userid, c1.ID, time.Now().Add(-10*time.Hour))
+	off2 := tools.CreateFakeOffer(t, db, "Aula de Cálculo II", "Ajudo em provas e listas", u.Userid, c1.ID, time.Now().Add(-9*time.Hour))
+	off3 := tools.CreateFakeOffer(t, db, "Aula de Cálculo III", "Dou aula de cálculo III", u.Userid, c1.ID, time.Now().Add(-8*time.Hour))
+	off4 := tools.CreateFakeOffer(t, db, "Álgebra Linear", "Sou mestrando em Matemática no ICMC", u.Userid, c1.ID, time.Now().Add(-7*time.Hour))
+	off5 := tools.CreateFakeOffer(t, db, "Aula de ICC I", "Posso ajudar em provas e trabalhos", u.Userid, c3.ID, time.Now().Add(-6*time.Hour))
+	off6 := tools.CreateFakeOffer(t, db, "Aula de ICC II", "Posso ajudar em todos os tópicos da matéria", u.Userid, c3.ID, time.Now().Add(-5*time.Hour))
+	off7 := tools.CreateFakeOffer(t, db, "Aulas de Física", "Dou aula de Física I, II, III, e IV", u.Userid, c2.ID, time.Now().Add(-4*time.Hour))
+	off8 := tools.CreateFakeOffer(t, db, "Aula de Piano", "Dou aula de piano para todos os níveis", u.Userid, c4.ID, time.Now().Add(-3*time.Hour))
+	off9 := tools.CreateFakeOffer(t, db, "Pet Care", "Posso passear com seu cachorro!!", u.Userid, c5.ID, time.Now().Add(-2*time.Hour))
+	off10 := tools.CreateFakeOffer(t, db, "Limpeza", "Ajudo na limpeza de casas e apartamentos", u.Userid, c5.ID, time.Now().Add(-time.Hour))
+
+	for _, off := range []models.Offer{off1, off2, off3, off4, off5, off6, off7, off8, off9, off10} {
+		err := offerDAL.InsertOfferInES(off)
+		assert.Equal(t, nil, err)
+	}
+
+	t.Run("get offers in es without category", func(t *testing.T) {
+		t.Run("get only one offer", func(t *testing.T) {
+			ids, err := offerDAL.SearchInES("limpeza")
+
+			// We expect to get documents that matches aula or calculo. A higher score is given to docs that matches both name and description
+			assert.Equal(t, nil, err)
+			assert.Equal(t, 1, len(ids))
+			assert.Equal(t, off10.ID, ids[0])
+		})
+
+		t.Run("get lot of offers", func(t *testing.T) {
+			ids, err := offerDAL.SearchInES("aula calculo")
+
+			// We expect to get documents that matches aula or calculo. A higher score is given to docs that matches both name and description
+			assert.Equal(t, nil, err)
+			assert.Equal(t, 7, len(ids))
+			assert.Equal(t, off3.ID, ids[0])
+			assert.Equal(t, off1.ID, ids[1])
+			assert.Equal(t, off2.ID, ids[2])
+			assert.Equal(t, off8.ID, ids[3])
+			assert.Equal(t, off7.ID, ids[4])
+			assert.Equal(t, off6.ID, ids[5])
+			assert.Equal(t, off5.ID, ids[6])
+		})
+
+	})
+
+	t.Run("get offers in es with categories", func(t *testing.T) {
+		t.Run("only math offers", func(t *testing.T) {
+			ids, err := offerDAL.SearchInES("aula calculo", c1.ID)
+
+			// We expect get documents that matches aula or calculo but only belonging to the Math category
+			assert.Equal(t, nil, err)
+			assert.Equal(t, 3, len(ids))
+			assert.Equal(t, off3.ID, ids[0])
+			assert.Equal(t, off1.ID, ids[1])
+			assert.Equal(t, off2.ID, ids[2])
+		})
+
+		t.Run("only math and extraclass offers", func(t *testing.T) {
+			ids, err := offerDAL.SearchInES("aula calculo", c1.ID, c4.ID)
+
+			// We expect get documents that matches aula or calculo but only belonging to the Math or Extraclass categories
+			assert.Equal(t, nil, err)
+			assert.Equal(t, 4, len(ids))
+			assert.Equal(t, off3.ID, ids[0])
+			assert.Equal(t, off1.ID, ids[1])
+			assert.Equal(t, off2.ID, ids[2])
+			assert.Equal(t, off8.ID, ids[3])
+		})
+	})
+}
