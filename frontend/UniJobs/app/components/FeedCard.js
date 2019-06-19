@@ -43,6 +43,22 @@ export default class FeedCard extends React.Component {
             />
         )
 
+        const CardViewText = () => {
+            if (isOffer) {
+                return(
+                    <View style={{flexDirection: 'column', flex: 1}}>
+                        <Text numberOfLines={1} style={[textStyles.userOfferName]}>{this.state.userdata.username}</Text>
+                        <Text numberOfLines={1} style={{fontSize: UniText.small}}>{this.state.userdata.telephone}</Text>
+                        <Text numberOfLines={1} style={{fontSize: UniText.small}}>{this.state.userdata.email}</Text>
+                    </View>
+                )
+            }
+
+            return (
+                <Text numberOfLines={1} style={[textStyles.userRequestName]}>{this.state.userdata.username}</Text>
+            )
+        }
+
         const CardView = () => {
             if (((isOffer && this.state.isInterested) || isOffer === false) && this.state.isLoading === false){
                 return(
@@ -58,7 +74,7 @@ export default class FeedCard extends React.Component {
                                         style={[{ marginHorizontal: 15, width: 50, height: 50, alignSelf: 'center', borderRadius: 25 }]}
                                     />
                                 </View>
-                                <Text numberOfLines={1} style={[textStyles.username]}>{this.state.userdata.username}</Text>
+                                <CardViewText/>
                             </View>
                         </TouchableOpacity>
                     </View>
@@ -136,7 +152,7 @@ const containerStyles = StyleSheet.create({
 });
 
 const textStyles = StyleSheet.create({
-    userName: {
+    userRequestName: {
         marginBottom: 5,
         alignSelf: 'center',
         marginHorizontal: 12,
@@ -145,6 +161,13 @@ const textStyles = StyleSheet.create({
         color: '#00A5F2',
         fontSize: UniText.normal,
         fontWeight: '600'
+    },
+    userOfferName: {
+        alignSelf: 'flex-start',
+        textAlign: 'left',
+        color: '#00A5F2',
+        fontSize: UniText.small,
+        fontWeight: '400'
     }
 })
 

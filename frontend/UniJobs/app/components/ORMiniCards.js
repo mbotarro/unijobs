@@ -18,8 +18,8 @@ function populateROCards(requests, isOffer) {
                         <ORMiniCard 
                             image={req.image}
                             mainText={req.Name}
-                            secondText={req.Telefone}
-                            thirdText={req.Email}
+                            secondText={req.telephone}
+                            thirdText={req.email}
                             userId={req.id}
                             isOffer={isOffer}
                         />
