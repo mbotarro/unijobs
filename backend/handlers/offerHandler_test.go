@@ -1,6 +1,7 @@
 package handlers_test
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -189,4 +190,38 @@ func TestGetLastOffer(t *testing.T) {
 
 		assert.Equal(t, string(expectedJs), rr.Body.String())
 	})
+}
+
+func TestInsertOffer(t *testing.T) {
+	db := tools.GetTestDB()
+	defer tools.CleanDB(db)
+
+	ctrl := usecases.NewController(db)
+	rh := handlers.NewOfferHandler(ctrl.Offer)
+
+	// Creates fake user and category to be used at the offer
+	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234", "9999-1111")
+	c := tools.CreateFakeCategory(t, db, "Aula Matemática", "Matemática")
+
+	handler := http.HandlerFunc(rh.InsertOffer)
+
+	jsonStr := fmt.Sprintf(`{
+								"name": "Aula de Teste", 
+								"description": "Teste de Insercao",
+								"extraInfo": "Info extra",
+								"maxPrice": 50,
+								"minPrice": 0,
+								"userid": %d,
+								"categoryid": %d}`, u.Userid, c.ID)
+	jsonOff := []byte(jsonStr)
+
+	req, err := http.NewRequest("POST", "/offers", bytes.NewBuffer(jsonOff))
+	assert.Equal(t, nil, err)
+	req.Header.Set("Content-Type", "application/json")
+
+	reqRecord := httptest.NewRecorder()
+	handler.ServeHTTP(reqRecord, req)
+
+	status := reqRecord.Code
+	assert.Equal(t, 201, status)
 }

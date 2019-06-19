@@ -1,7 +1,9 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"strconv"
 	"time"
@@ -80,4 +82,40 @@ func (handler *OfferHandler) GetLastOffers(w http.ResponseWriter, r *http.Reques
 	}
 
 	tools.WriteStructOnHTTPResponse(reqRes, w)
+}
+
+// InsertOffer is a function that receives a post request with some parameters and calls the function to insert it in the database
+// The offer is sent as a json file. It's fields are given in Models.Offer
+func (handler *OfferHandler) InsertOffer(w http.ResponseWriter, r *http.Request) {
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, fmt.Errorf("%s:%s", errors.ReadRequestBodyError, err.Error()).Error(), http.StatusBadRequest)
+		return
+	}
+
+	var offInserted OfferInsertion
+	err = json.Unmarshal(body, &offInserted)
+	if err != nil {
+		http.Error(w, fmt.Errorf("%s:%s", errors.JSONUnmarshalError, err.Error()).Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Passes the received data into a offer for it to be inserted
+	var off models.Offer
+
+	off.Name = offInserted.Name
+	off.Description = offInserted.Description
+	off.ExtraInfo = offInserted.ExtraInfo
+	off.MaxPrice = offInserted.MaxPrice
+	off.MinPrice = offInserted.MinPrice
+	off.Userid = offInserted.Userid
+	off.Categoryid = offInserted.Categoryid
+	off.Timestamp = time.Now()
+
+	err = handler.offerController.InsertOffer(off)
+	if err != nil {
+		http.Error(w, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error()).Error(), http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusCreated)
 }
