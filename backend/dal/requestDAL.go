@@ -94,7 +94,7 @@ func (dal *RequestDAL) InsertRequestInES(request models.Request) error{
 		ID: request.ID,
 		Name: request.Name,
 		Description: request.Description,
-		Category: fmt.Sprintf("%d", request.Categoryid),
+		Category: request.Categoryid,
 		Timestamp: request.Timestamp.Unix(),
 	}
 
