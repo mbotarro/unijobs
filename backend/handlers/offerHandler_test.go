@@ -194,9 +194,11 @@ func TestGetLastOffer(t *testing.T) {
 
 func TestInsertOffer(t *testing.T) {
 	db := tools.GetTestDB()
+	es := tools.GetTestES()
 	defer tools.CleanDB(db)
+	defer tools.CleanES(es)
 
-	ctrl := usecases.NewController(db)
+	ctrl := usecases.NewController(db, es)
 	rh := handlers.NewOfferHandler(ctrl.Offer)
 
 	// Creates fake user and category to be used at the offer
