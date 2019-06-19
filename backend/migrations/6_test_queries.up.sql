@@ -6,9 +6,9 @@ insert into request (name, description, extrainfo, minprice, maxprice,  userid, 
 insert into request (name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp ) values ('Aula', 'Calculo IV', '', 20, 40, 2, 1, NOW() - INTERVAL '7 HOUR');
 insert into request (name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp ) values ('Aula', 'Phrasal Verbs', '', 20, 40, 2, 2, NOW() - INTERVAL '6 HOUR');
 insert into request (name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp ) values ('Aula', 'Present Perfect', '', 20, 40, 2, 2, NOW() - INTERVAL '5 HOUR');
-insert into offer (name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp) values ('Aula', 'Fisica I', '', 30, 40, 1, 1, NOW() - INTERVAL '10 HOUR');
-insert into offer (name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp) values ('Aula', 'Fisica II', '', 30, 40, 1, 1, NOW() - INTERVAL '9 HOUR');
-insert into offer (name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp) values ('Aula', 'Fisica III', '', 30, 40, 1, 1, NOW() - INTERVAL '8 HOUR');
-insert into offer (name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp) values ('Aula', 'Fisica IV', '', 30, 40, 1, 1, NOW() - INTERVAL '7 HOUR');
-insert into offer (name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp) values ('Aula', 'False Friends', '', 30, 40, 1, 2, NOW() - INTERVAL '6 HOUR');
-insert into offer (name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp) values ('Aula', 'Verb To Be', '', 30, 40, 1, 2, NOW() - INTERVAL '5 HOUR');
+insert into offer (id, name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp) values ('c60b2baa-0e43-4e77-9071-8e44dd57cf82' ,'Aula', 'Fisica I', '', 30, 40, 1, 1, NOW() - INTERVAL '10 HOUR');
+insert into offer (id, name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp) values ('ecc9898e-faa3-459f-9d11-bad9f1fcd9d3' ,'Aula', 'Fisica II', '', 30, 40, 1, 1, NOW() - INTERVAL '9 HOUR');
+insert into offer (id, name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp) values ('42fb79e8-e74c-46f7-b029-8615817e131b' ,'Aula', 'Fisica III', '', 30, 40, 1, 1, NOW() - INTERVAL '8 HOUR');
+insert into offer (id, name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp) values ('c79628bc-a3fc-45e2-b4cc-373cc79fce4b' ,'Aula', 'Fisica IV', '', 30, 40, 1, 1, NOW() - INTERVAL '7 HOUR');
+insert into offer (id, name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp) values ('22e3a368-d273-4943-9701-5eaee4ab6db8' ,'Aula', 'False Friends', '', 30, 40, 1, 2, NOW() - INTERVAL '6 HOUR');
+insert into offer (id, name, description, extrainfo, minprice, maxprice,  userid, categoryid, timestamp) values ('dddeaca6-085c-4d0f-b23c-7b2d9a64e3c0' ,'Aula', 'Verb To Be', '', 30, 40, 1, 2, NOW() - INTERVAL '5 HOUR');
