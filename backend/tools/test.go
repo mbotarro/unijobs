@@ -10,9 +10,8 @@ import (
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"github.com/mbotarro/unijobs/backend/models"
-	"gotest.tools/assert"
-	"github.com/google/uuid"
 	"github.com/olivere/elastic/v7"
+	"gotest.tools/assert"
 )
 
 // GetTestDB returns a connection to a DB used for test
@@ -41,7 +40,7 @@ func GetTestES() *elastic.Client {
 }
 
 // CleanES deletes all documents stored in ES
-func CleanES(es *elastic.Client){
+func CleanES(es *elastic.Client) {
 	// Delete in all documents in elasticSearch
 	query := elastic.NewMatchAllQuery()
 	es.DeleteByQuery().
@@ -72,7 +71,7 @@ const (
 	getRequest = `SELECT * FROM request WHERE id = $1`
 
 	insertOffer = `INSERT INTO offer (id, name, description, extrainfo, minprice, maxprice, userid, categoryid, timestamp) 
-						VALUES ($1, $2, '', $3, $4, $5, $6, $7, $8)`
+						VALUES ($1, $2, $3, '', $4, $5, $6, $7, $8)`
 	getOffer = `SELECT * FROM offer WHERE id = $1`
 )
 
