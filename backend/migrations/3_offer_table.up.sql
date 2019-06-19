@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS offer (
-	id         	serial,
+	id         	text NOT NULL,
 	name       	text NOT NULL,
 	description text, 
 	extrainfo	text,

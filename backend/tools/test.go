@@ -6,12 +6,12 @@ import (
 	"testing"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"github.com/mbotarro/unijobs/backend/models"
-	"gotest.tools/assert"
-	"github.com/google/uuid"
 	"github.com/olivere/elastic/v7"
+	"gotest.tools/assert"
 )
 
 // GetTestDB returns a connection to a DB used for test
@@ -40,7 +40,7 @@ func GetTestES() *elastic.Client {
 }
 
 // CleanES deletes all documents stored in ES
-func CleanES(es *elastic.Client){
+func CleanES(es *elastic.Client) {
 	// Delete in all documents in elasticSearch
 	query := elastic.NewMatchAllQuery()
 	es.DeleteByQuery().
@@ -69,10 +69,10 @@ const (
 						VALUES ($1, $2, $3, '', $4, $5, $6, $7, $8)`
 
 	getRequest = `SELECT * FROM request WHERE id = $1`
-  
-	insertOffer = `INSERT INTO offer (name, description, extrainfo, minprice, maxprice, userid, categoryid, timestamp) 
-						VALUES ($1, $2, '', $3, $4, $5, $6, $7)`
-	getOffer = `SELECT * FROM offer WHERE (name, description, userid, categoryid) = ($1, $2, $3, $4)`
+
+	insertOffer = `INSERT INTO offer (id, name, description, extrainfo, minprice, maxprice, userid, categoryid, timestamp) 
+						VALUES ($1, $2, $3, '', $4, $5, $6, $7, $8)`
+	getOffer = `SELECT * FROM offer WHERE id = $1`
 )
 
 // CreateFakeUser inserts a fake user in the db
@@ -120,10 +120,12 @@ func CreateFakeRequest(t *testing.T, db *sqlx.DB, name, description string, user
 
 // CreateFakeOffer creates a fake request in the db
 func CreateFakeOffer(t *testing.T, db *sqlx.DB, name, description string, user, category int, timestamp time.Time) models.Offer {
-	db.MustExec(insertOffer, name, description, 20, 30, user, category, timestamp.UTC())
+	id := uuid.New().String()
+
+	db.MustExec(insertOffer, id, name, description, 20, 30, user, category, timestamp.UTC())
 
 	off := models.Offer{}
-	err := db.Get(&off, getOffer, name, description, user, category)
+	err := db.Get(&off, getOffer, id)
 	assert.Equal(t, nil, err)
 
 	return off

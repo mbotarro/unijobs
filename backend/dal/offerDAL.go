@@ -3,6 +3,7 @@ package dal
 import (
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/mbotarro/unijobs/backend/models"
 )
@@ -36,11 +37,14 @@ func (dal *OfferDAL) GetLastOffers(before time.Time, size int) ([]models.Offer, 
 
 // InsertOffer Receives an offer as a parameter and inserts into the database
 func (dal *OfferDAL) InsertOffer(offer models.Offer) error {
-	insertQuery := `INSERT INTO offer (name, description, extrainfo, minprice, maxprice, userid, categoryid, timestamp) 
-						VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`
+	// Generates an uuid for the offer
+	offer.ID = uuid.New().String()
+
+	insertQuery := `INSERT INTO offer (id, name, description, extrainfo, minprice, maxprice, userid, categoryid, timestamp) 
+						VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`
 
 	// Gets the controller of the database and executes the query
-	_, err := dal.db.Exec(insertQuery, offer.Name, offer.Description, offer.ExtraInfo, offer.MinPrice, offer.MaxPrice, offer.Userid, offer.Categoryid, offer.Timestamp)
+	_, err := dal.db.Exec(insertQuery, offer.ID, offer.Name, offer.Description, offer.ExtraInfo, offer.MinPrice, offer.MaxPrice, offer.Userid, offer.Categoryid, offer.Timestamp)
 
 	// Checks if any error happened during the query execution
 	if err != nil {

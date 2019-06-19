@@ -407,7 +407,26 @@ So far, the search endpoint doesn't accept pagination, always returning all matc
 
 # Offer API
 
-## Get all offers created in the platform
+## Get and insert offers created in the platform
+
+### POST 
+
+```
+/requests
+```
+
+#### Expected Body
+```
+{
+    "name": <string>
+    "description": <string>
+    "extrainfo": <string>
+    "maxprice": <int>
+    "minprice": <int>
+    "userid": <int>
+    "categoryid": <int>
+}
+```
 
 ### GET
 
