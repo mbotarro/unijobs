@@ -69,16 +69,18 @@ export default class FeedCard extends React.Component {
             if(isCheck){
                 imageSource = require('../assets/icons/check-mark.png')
                 color = '#4ED124'
+                imageSize = 25
             } else {
                 imageSource = require('../assets/icons/exit_white.png')
                 color = '#FF431B'
+                imageSize = 20
             }
             return (
                 <TouchableOpacity onPress={onPress} style={{backgroundColor: color, borderRadius: 35}}>
                     <View style={{justifyContent: 'center', alingItems: 'center', height: 70, width: 70}}>
                         <Image
                             source={imageSource}
-                            style={[{height: 20, width: 20, alignSelf: 'center'}]}
+                            style={[{height: imageSize, width: imageSize, alignSelf: 'center'}]}
                         />
                     </View>
                 </TouchableOpacity>
