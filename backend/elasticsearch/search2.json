@@ -1,0 +1,9 @@
+{
+    "query": {
+        "multi_match" : {
+            "query": "prova",
+            "type":  "most_fields",
+            "fields": [ "name^2", "description" ]
+        }
+    }
+}
