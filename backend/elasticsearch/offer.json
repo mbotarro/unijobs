@@ -13,7 +13,7 @@
                 "analyzer": "portuguese"
             },
             "category":{
-                "type": "keyword"
+                "type": "integer"
             },
             "timestamp":{
                 "type": "date",

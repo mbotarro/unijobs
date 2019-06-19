@@ -61,7 +61,19 @@ func NewRouter(ctrl *usecases.Controller) *mux.Router {
 		HandlerFunc(requestHandler.GetLastRequests).
 		Methods("GET")
 
-	// Send new request
+	// Search for requests with filter by category
+	route.r.Path("/requests").
+		Queries("q", "", "cat", "{cat:[0-9,]+}").
+		HandlerFunc(requestHandler.SearchRequests).
+		Methods("GET")
+
+	// Search for requests
+	route.r.Path("/requests").
+		Queries("q", "").
+		HandlerFunc(requestHandler.SearchRequests).
+		Methods("GET")
+
+	// Insert a new request
 	route.r.Path("/requests").
 		HandlerFunc(requestHandler.InsertRequest).
 		Methods("POST")

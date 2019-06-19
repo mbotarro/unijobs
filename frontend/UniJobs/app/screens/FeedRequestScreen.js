@@ -6,6 +6,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { Dimensions } from "react-native";
 
 import { populateRequestMiniCards } from '../components/FeedMiniCards';
+import FloatActionButton from '../components/FloatActionButton'
 import { loadRequests, loadCategories } from '../actions/FeedActions'
 import FeedRequestCard from '../components/FeedRequestCard'
 
@@ -13,6 +14,7 @@ import UniStyles from '../constants/UniStyles'
 import UniColors from '../constants/UniColors'
 import UniText from '../constants/UniText'
 
+import ActionButton from 'react-native-action-button';
 
 
 export default class FeedRequestScreen extends React.Component {
@@ -54,45 +56,52 @@ export default class FeedRequestScreen extends React.Component {
         });
     }
 
-    onMenuButtonPress(navigation) {
-        navigation.openDrawer();
+    onMenuButtonPress(navigate) {
+        navigate.openDrawer();
     }
 
-    onSearchBarChangeText(navigation, text) {
+    onSearchBarChangeText(navigate, text) {
         this.setState({searchBarText: text})
     }
 
-    onSearch (navigation) {
+    onSearch (navigate) {
         alert('TODO: Search');
     }
 
-    onMyFeedPress(self, navigation) {
+    onMyFeedPress(self, navigate) {
         // !! self here is because something is overriding 'this', and
         // I don't know why! (maybe the arrow function... :/)
         self.setState({isMyFeedOpen: !self.state.isMyFeedOpen})
     }
 
-    onMyFeedFilterPress(self, navigation) {
+    onMyFeedFilterPress(self, navigate) {
         alert('TODO: Filters');
     }
 
-    onAllFeedPress(self, navigation) {
+    onAllFeedPress(self, navigate) {
     }
 
-    onAllFeedFilterPress(self, navigation) {
+    onAllFeedFilterPress(self, navigate) {
         alert('TODO: Filters');
     }
 
+    onAddOfferPress(self, navigate) {
+        navigate('AddOffer')
+    }
+
+    onAddRequestPress(self, navigate) {
+        navigate('AddRequest')
+    }
 
     render() {
-        const navigation = this.props.navigation;
+        const { navigate } = this.props.navigation;
 
 
         // header
         const menuButton = (
             <TouchableHighlight
                 underlayColor={UniColors.main}
-                onPress={() => this.onMenuButtonPress(navigation)}
+                onPress={() => this.onMenuButtonPress(navigate)}
             >
                 <Image source={require('../assets/icons/line-menu.png')}  style={styles.menuButton} />
             </TouchableHighlight>
@@ -103,12 +112,12 @@ export default class FeedRequestScreen extends React.Component {
                 <TextInput
                     style={styles.searchBarText}
                     placeholder={this.textStrings.searchBarPlaceHolder}
-                    onChangeText={(text) => { this.onSearchBarChangeText(navigation, text) }}
-                    onSubmitEditing={(event) => this.onSearch(navigation)}
+                    onChangeText={(text) => { this.onSearchBarChangeText(navigate, text) }}
+                    onSubmitEditing={(event) => this.onSearch(navigate)}
                 />
                 <TouchableHighlight
                     underlayColor= {UniColors.transparent}
-                    onPress = {(event) => this.onSearch(navigation)}
+                    onPress = {(event) => this.onSearch(navigate)}
                 >
                     <Image
                         source={require('../assets/icons/search.png')}
@@ -132,7 +141,7 @@ export default class FeedRequestScreen extends React.Component {
             <View style = {styles.feedBar}>
                 <TouchableHighlight 
                     underlayColor = {UniColors.transparent}
-                    onPress = {() => onPress(this, navigation)}
+                    onPress = {() => onPress(this, navigate)}
                     style={{flexGrow: 1, alignSelf: 'stretch'}}
                 >
                     <View style={{flexDirection: 'row'}}>
@@ -154,7 +163,7 @@ export default class FeedRequestScreen extends React.Component {
                     showFilter ?
                         <TouchableHighlight
                             underlayColor = {UniColors.transparent}
-                            onPress = {() => onFilter(navigation)}
+                            onPress = {() => onFilter(navigate)}
                             style = {styles.feedBarRightIcon}
                         >
                             <Image
@@ -182,7 +191,7 @@ export default class FeedRequestScreen extends React.Component {
             !this.state.isMyFeedOpen,
             this.state.isMyFeedOpen
         );
-        
+
 
         // feed
         const feedView = this.state.isLoading ?
@@ -192,7 +201,7 @@ export default class FeedRequestScreen extends React.Component {
                 this.state.isMyFeedOpen ? this.state.myFeedRequests : this.state.allFeedRequests,
                 this.state.categories,
                 (request) => this.setState({isRequestCardOpen: true, openRequest: request})
-            );
+           );
 
         const openCard = 
             this.state.isRequestCardOpen ?
@@ -237,6 +246,10 @@ export default class FeedRequestScreen extends React.Component {
                     </ScrollView>
                 </View>
                 {openCard}
+                <FloatActionButton 
+                    onAddOfferPress={() => this.onAddOfferPress(this, navigate)}
+                    onAddRequestPress={() => this.onAddRequestPress(this, navigate)}
+                />
             </KeyboardAwareScrollView>
         );
     }
@@ -344,6 +357,19 @@ const styles = StyleSheet.create({
         marginVertical: 10,
     },
 
+    actionButtonIcon: {
+        fontSize: 20,
+        height: 22,
+        color: 'white',
+    },
+
+    ImageIconStyle: {
+        padding: 5,
+        height: 20,
+        width: 20,
+        resizeMode: 'stretch',
+    },
+
     openCard: {
         zIndex: 10,
         position: 'absolute',
@@ -354,12 +380,6 @@ const styles = StyleSheet.create({
         height: Dimensions.get('window').height
     }
 });
-
-
-
-
-
-
 
 
 // TEST !!! (TODO: REMOVE)
