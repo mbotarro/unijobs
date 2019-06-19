@@ -18,7 +18,6 @@ const (
 	DBQueryError      = "Error while querying the DB"
 )
 
-
 // Common ES errors
 const(
 	ESConnectionError = "Can't connect to ES"

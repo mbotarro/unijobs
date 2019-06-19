@@ -62,6 +62,32 @@ func (dal *RequestDAL) InsertRequest(request models.Request) error {
 	return nil
 }
 
+// GetRequestsByID fetch from postgreSQL the requests whose ids are passed in parameter
+func (dal *RequestDAL) GetRequestsByID(ids []string) ([]models.Request, error){
+	reqs := []models.Request{}
+	query, args, err := sqlx.In(`SELECT * FROM request WHERE id IN (?) ORDER BY timestamp DESC`,ids)
+	if err != nil{
+		return nil, err
+	}
+	
+	// Transform (?, ?, ...) in postgres specific ($1, $2, $3) 
+	query = dal.db.Rebind(query)
+
+	rows, err := dal.db.Queryx(query, args...)
+	if err != nil {
+		return nil, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error())
+	}
+
+	// Transform the fecthed rows into request struct
+	for rows.Next() {
+		var r models.Request
+		err = rows.StructScan(&r)
+		reqs = append(reqs, r)
+	}
+	
+	return reqs, nil
+}
+
 // InsertRequestInES inserts a Request in the ES
 func (dal *RequestDAL) InsertRequestInES(request models.Request) error{
 	rES := models.RequestES{
