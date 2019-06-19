@@ -16,10 +16,10 @@ type Request struct {
 }
 
 // RequestES represents a Request in the ES
-type RequestES struct{
-	ID          string    `json:"db_id"`
-	Name        string    `json:"name"`
-	Description string    `json:"description"`
-	Category  	int    `json:"category"`
-	Timestamp   int64 	  `json:"timestamp"`
+type RequestES struct {
+	ID          string `json:"db_id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Category    int    `json:"category"`
+	Timestamp   int64  `json:"timestamp"`
 }
