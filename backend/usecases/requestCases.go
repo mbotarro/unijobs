@@ -1,8 +1,9 @@
 package usecases
 
 import (
-	"github.com/olivere/elastic/v7"
 	"time"
+
+	"github.com/olivere/elastic/v7"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/mbotarro/unijobs/backend/dal"
@@ -17,7 +18,7 @@ type RequestController struct {
 // NewRequestController returns a new RequestController
 func NewRequestController(db *sqlx.DB, es *elastic.Client) *RequestController {
 	return &RequestController{
-		requestDAL: dal.NewRequestDAL(db,es),
+		requestDAL: dal.NewRequestDAL(db, es),
 	}
 }
 
@@ -41,17 +42,20 @@ func (rc *RequestController) InsertRequestInES(req models.Request) error {
 
 // SearchRequests searches for requests based on a query sent by the user. It can be filtered by one or more categories whose
 // ids are passed by parameter
-func (rc *RequestController) SearchRequests(query string, categoryIDs ...int) ([]models.Request, error){
+func (rc *RequestController) SearchRequests(query string, categoryIDs ...int) ([]models.Request, error) {
 	// Search for the requests ids in ES
 	ids, err := rc.requestDAL.SearchInES(query, categoryIDs...)
-	if (err != nil){
+	if err != nil {
 		return nil, err
 	}
 
-	// Get the complete documents in Postgres
-	reqs, err := rc.requestDAL.GetRequestsByID(ids)
-	if (err != nil){
-		return nil, err
+	// Get the complete documents in Postgres iff ES returned some requests
+	reqs := make([]models.Request, 0, len(ids))
+	if len(ids) > 0 {
+		reqs, err = rc.requestDAL.GetRequestsByID(ids)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return reqs, nil

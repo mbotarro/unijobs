@@ -391,6 +391,14 @@ func TestSearchRequestInES(t *testing.T){
 			assert.Equal(t, req4.ID, ids[3])
 		})
 	})
+
+	t.Run("No matched requests", func(t *testing.T){
+		ids, err := requestDAL.SearchInES("eps")
+
+			// We expect to get just Pet Care: it's the only one with passear in either name or description
+			assert.Equal(t, nil, err)
+			assert.Equal(t, 0, len(ids))
+	})
 }
 
 func TestSearchRequestWithCategoryInES(t *testing.T){
