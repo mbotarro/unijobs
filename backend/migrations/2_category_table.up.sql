@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS category (
 	id         serial,
 	name       text NOT NULL,
-	decription text,
+	description text,
 	CONSTRAINT pk_category PRIMARY KEY (id)
 );

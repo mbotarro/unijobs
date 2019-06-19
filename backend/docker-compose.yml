@@ -3,7 +3,48 @@ version: '3'
 services:
   postgres:
     image: postgres:11.3
+    container_name: postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+  
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.1.1
+    container_name: es01
+    environment:
+      - node.name=es01
+      - discovery.seed_hosts=es02
+      - cluster.initial_master_nodes=es01,es02
+      - cluster.name=docker-cluster
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    volumes:
+      - esdata01:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - esnet
+  es02:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.1.1
+    container_name: es02
+    environment:
+      - node.name=es02
+      - discovery.seed_hosts=es01
+      - cluster.initial_master_nodes=es01,es02
+      - cluster.name=docker-cluster
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    volumes:
+      - esdata02:/usr/share/elasticsearch/data
+    networks:
+      - esnet
 
+volumes:
+  db-data:
+    driver: local
+  esdata01:
+    driver: local
+  esdata02:
+    driver: local
 
+networks:
+  esnet:
