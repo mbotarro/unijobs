@@ -1,6 +1,7 @@
 package dal_test
 
 import (
+	"context"
 	"testing"
 	"time"
 
@@ -8,16 +9,19 @@ import (
 	"github.com/mbotarro/unijobs/backend/dal"
 	"github.com/mbotarro/unijobs/backend/models"
 	"github.com/mbotarro/unijobs/backend/tools"
+	"github.com/olivere/elastic/v7"
 	"gotest.tools/assert"
 )
 
-func getOfferDAL(db *sqlx.DB) *dal.OfferDAL {
-	return dal.NewOfferDAL(db)
+func getOfferDAL(db *sqlx.DB, es *elastic.Client) *dal.OfferDAL {
+	return dal.NewOfferDAL(db, es)
 }
 
 func TestGetLastOffers(t *testing.T) {
 	db := tools.GetTestDB()
+	es := tools.GetTestES()
 	defer tools.CleanDB(db)
+	defer tools.CleanES(es)
 
 	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234", "9999-1111")
 	c := tools.CreateFakeCategory(t, db, "Aula Matemática Avancada", "Matemática")
@@ -28,7 +32,7 @@ func TestGetLastOffers(t *testing.T) {
 		tools.CreateFakeOffer(t, db, "Aula Cálculo 6", "", u.Userid, c.ID, time.Now()),
 	}
 
-	offerDAL := getOfferDAL(db)
+	offerDAL := getOfferDAL(db, es)
 
 	t.Run("without size limit", func(t *testing.T) {
 		gotOffers, err := offerDAL.GetLastOffers(time.Now(), 30)
@@ -62,7 +66,9 @@ func TestGetLastOffers(t *testing.T) {
 
 func TestGetLastOffersBeforeTimestamp(t *testing.T) {
 	db := tools.GetTestDB()
+	es := tools.GetTestES()
 	defer tools.CleanDB(db)
+	defer tools.CleanES(es)
 
 	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234", "9999-1111")
 	c := tools.CreateFakeCategory(t, db, "Aula Matemática Avancada", "Matemática")
@@ -75,7 +81,7 @@ func TestGetLastOffersBeforeTimestamp(t *testing.T) {
 		tools.CreateFakeOffer(t, db, "Aula Cálculo 7", "", u.Userid, c.ID, time.Now()),
 	}
 
-	offerDAL := getOfferDAL(db)
+	offerDAL := getOfferDAL(db, es)
 
 	t.Run("without size limit", func(t *testing.T) {
 		// Get only the offers created before 1 hour ago
@@ -126,8 +132,11 @@ func CompareOffers(off1, off2 models.Offer) bool {
 func TestInsertOffer(t *testing.T) {
 	// Get connection to test database and cleans it
 	db := tools.GetTestDB()
+	es := tools.GetTestES()
 	defer tools.CleanDB(db)
-	offerDAL := getOfferDAL(db)
+	defer tools.CleanES(es)
+
+	offerDAL := getOfferDAL(db, es)
 
 	// Create the fake offer
 	var off models.Offer
@@ -155,5 +164,63 @@ func TestInsertOffer(t *testing.T) {
 
 		equalReqs := CompareOffers(gotReqs[0], off)
 		assert.Equal(t, equalReqs, true)
+	})
+}
+
+func TestInsertOfferInES(t *testing.T) {
+	db := tools.GetTestDB()
+	es := tools.GetTestES()
+	defer tools.CleanDB(db)
+	defer tools.CleanES(es)
+
+	offerDAL := getOfferDAL(db, es)
+
+	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234", "9999-1111")
+	c := tools.CreateFakeCategory(t, db, "Aula Matemática", "Matemática")
+
+	// Create fake offer in db and insert the same offer in ES
+	off := tools.CreateFakeOffer(t, db, "Aula de Cálculo I", "Dou aulas particulares de Cálculo I", u.Userid, c.ID, time.Now())
+
+	// Executes the test query
+	err := offerDAL.InsertOfferInES(off)
+
+	// We expect no error in the insertion
+	assert.Equal(t, nil, err)
+
+	// Checks if the offer was inserted successfully
+	t.Run("1 insertion", func(t *testing.T) {
+		termQuery := elastic.NewTermQuery("db_id", off.ID)
+		searchResult, err := es.Search().
+			Index("offer").
+			Query(termQuery).
+			Do(context.Background())
+
+		// We expect no error
+		assert.Equal(t, nil, err)
+		assert.Equal(t, 1, int(searchResult.TotalHits()))
+
+		gotOffs, err := tools.GetOfferFromSearchResult(searchResult)
+		assert.Equal(t, nil, err)
+		assert.Equal(t, 1, len(gotOffs))
+	})
+
+	off2 := tools.CreateFakeOffer(t, db, "Algebra Linear", "Sou mestrando no ICMC", u.Userid, c.ID, time.Now())
+	err = offerDAL.InsertOfferInES(off2)
+	assert.Equal(t, nil, err)
+
+	t.Run("2 insertions", func(t *testing.T) {
+		termsQuery := elastic.NewTermsQuery("db_id", off.ID, off2.ID)
+		searchResult, err := es.Search().
+			Index("offer").
+			Query(termsQuery).
+			Do(context.Background())
+
+		// We expect no error
+		assert.Equal(t, nil, err)
+		assert.Equal(t, 2, int(searchResult.TotalHits()))
+
+		gotOffs, err := tools.GetOfferFromSearchResult(searchResult)
+		assert.Equal(t, nil, err)
+		assert.Equal(t, 2, len(gotOffs))
 	})
 }

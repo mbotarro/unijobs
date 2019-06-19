@@ -6,6 +6,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/mbotarro/unijobs/backend/dal"
 	"github.com/mbotarro/unijobs/backend/models"
+	"github.com/olivere/elastic/v7"
 )
 
 // OfferController wraps all Offers' usecases
@@ -14,9 +15,9 @@ type OfferController struct {
 }
 
 // NewOfferController returns a new OfferController
-func NewOfferController(db *sqlx.DB) *OfferController {
+func NewOfferController(db *sqlx.DB, es *elastic.Client) *OfferController {
 	return &OfferController{
-		offerDAL: dal.NewOfferDAL(db),
+		offerDAL: dal.NewOfferDAL(db, es),
 	}
 }
 
