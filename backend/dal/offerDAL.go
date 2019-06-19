@@ -1,22 +1,28 @@
 package dal
 
 import (
+	"context"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
+	"github.com/mbotarro/unijobs/backend/errors"
 	"github.com/mbotarro/unijobs/backend/models"
+	"github.com/olivere/elastic/v7"
 )
 
 // OfferDAL interacts with the DB to perform Offer related queries
 type OfferDAL struct {
 	db *sqlx.DB
+	es *elastic.Client
 }
 
 // NewOfferDAL returns a new OfferDAL
-func NewOfferDAL(db *sqlx.DB) *OfferDAL {
+func NewOfferDAL(db *sqlx.DB, es *elastic.Client) *OfferDAL {
 	return &OfferDAL{
 		db: db,
+		es: es,
 	}
 }
 
@@ -49,6 +55,29 @@ func (dal *OfferDAL) InsertOffer(offer models.Offer) error {
 	// Checks if any error happened during the query execution
 	if err != nil {
 		return err
+	}
+
+	return nil
+}
+
+// InsertOfferInES inserts an Offer in ES
+func (dal *OfferDAL) InsertOfferInES(offer models.Offer) error {
+	oES := models.OfferES{
+		ID:          offer.ID,
+		Name:        offer.Name,
+		Description: offer.Description,
+		Category:    offer.Categoryid,
+		Timestamp:   offer.Timestamp.Unix(),
+	}
+
+	_, err := dal.es.Index().
+		Index("offer").
+		Id(oES.ID).
+		BodyJson(oES).
+		Refresh("true").
+		Do(context.Background())
+	if err != nil {
+		return fmt.Errorf("%s:%s", errors.ESInsertError, err.Error())
 	}
 
 	return nil
