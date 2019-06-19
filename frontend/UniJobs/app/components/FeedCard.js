@@ -13,6 +13,7 @@ export default class FeedCard extends React.Component {
     state = {
         isLoading: true,
         userid: null,
+        isInterested: false,
 
         userdata: null,
         userpicture: null,
@@ -42,27 +43,30 @@ export default class FeedCard extends React.Component {
             />
         )
 
-        const CardView = () => (
-            this.state.isLoading ?
-                null
-                :
-                <View style={[containerStyles.cardsContainer]}>
-                    <TouchableOpacity onPress={onShowRequester}>
-                        <View style={{
-                            flexDirection: 'row', width: window.width, alignItems: 'center',
-                            marginHorizontal: 25
-                        }}>
-                            <View style={{ justifyContent: 'center' }}>
-                                <Image
-                                    source={this.state.userpicture}
-                                    style={[{ marginHorizontal: 15, width: 50, height: 50, alignSelf: 'center', borderRadius: 25 }]}
-                                />
+        const CardView = () => {
+            if (((isOffer && this.state.isInterested) || isOffer === false) && this.state.isLoading === false){
+                return(
+                    <View style={[containerStyles.cardsContainer]}>
+                        <TouchableOpacity onPress={onShowRequester}>
+                            <View style={{
+                                flexDirection: 'row', width: window.width, alignItems: 'center',
+                                marginHorizontal: 25
+                            }}>
+                                <View style={{ justifyContent: 'center' }}>
+                                    <Image
+                                        source={this.state.userpicture}
+                                        style={[{ marginHorizontal: 15, width: 50, height: 50, alignSelf: 'center', borderRadius: 25 }]}
+                                    />
+                                </View>
+                                <Text numberOfLines={1} style={[textStyles.username]}>{this.state.userdata.username}</Text>
                             </View>
-                            <Text numberOfLines={1} style={[textStyles.username]}>{this.state.userdata.username}</Text>
-                        </View>
-                    </TouchableOpacity>
-                </View>
-        )
+                        </TouchableOpacity>
+                    </View>
+                )
+            }
+
+            return(null)
+        }
 
         const CreateOfferButtom = ActionButton('Criar Oferta', onCreateOfferPress, '#0BA5F2');
         const createRoundButton = (isCheck, onPress) => {
@@ -95,8 +99,8 @@ export default class FeedCard extends React.Component {
                             justifyContent: 'space-evenly', marginBottom: 30, marginTop: 10
                         }}
                     >
-                        {createRoundButton(false, () => {alert('NOP')})}
-                        {createRoundButton(true, () => {alert('YEP')})}
+                        {createRoundButton(false, () => {this.setState({isInterested: true})})}
+                        {createRoundButton(true, () => {this.setState({isInterested: true})})}
                     </View>
                 )
             } else {
