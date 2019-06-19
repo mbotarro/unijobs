@@ -1,7 +1,7 @@
 "use strict";
 
 import React from 'react';
-import { StyleSheet, Text, TextInput, View, Image, ScrollView, TouchableHighlight, ActivityIndicator } from 'react-native';
+import { Platform, StyleSheet, Text, TextInput, View, Image, ScrollView, TouchableHighlight, ActivityIndicator } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { Dimensions } from "react-native";
 
@@ -257,6 +257,11 @@ const styles = StyleSheet.create({
         paddingTop:      2,
         paddingBottom:   5,
         alignSelf:      'stretch',
+        ...Platform.select({
+            android: {   
+                backgroundColor: '#dfdfdf',
+            }
+        }),
     },
 
     searchHeader : {
@@ -307,10 +312,17 @@ const styles = StyleSheet.create({
         backgroundColor:UniColors.white,
         alignSelf:      'stretch', 
         
-        shadowOffset:   { width: 0, height: 2 },
-        shadowRadius :  2,
-        shadowColor:    UniColors.black,
-        shadowOpacity:  0.16,
+        ...Platform.select({
+            ios: {
+                shadowOffset:   { width: 0, height: 2 },
+                shadowRadius :  2,
+                shadowColor:    UniColors.black,
+                shadowOpacity:  0.16,
+            },
+            android: {   
+                elevation: 2,
+            },
+          }),
     },
 
     feedBarLeftIcon: {

@@ -18,9 +18,11 @@ import (
 
 func TestGetLastRequest(t *testing.T) {
 	db := tools.GetTestDB()
+	es := tools.GetTestES()
 	defer tools.CleanDB(db)
+	defer tools.CleanES(es)
 
-	ctrl := usecases.NewController(db)
+	ctrl := usecases.NewController(db, es)
 	rh := handlers.NewRequestHandler(ctrl.Request)
 
 	handler := http.HandlerFunc(rh.GetLastRequests)
@@ -192,9 +194,11 @@ func TestGetLastRequest(t *testing.T) {
 
 func TestInsertRequest(t *testing.T) {
 	db := tools.GetTestDB()
+	es := tools.GetTestES()
 	defer tools.CleanDB(db)
+	defer tools.CleanES(es)
 
-	ctrl := usecases.NewController(db)
+	ctrl := usecases.NewController(db, es)
 	rh := handlers.NewRequestHandler(ctrl.Request)
 
 	// Creates fake user and category to be used at the request

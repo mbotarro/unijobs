@@ -1,17 +1,23 @@
 {
     "mappings":{
         "properties":{
-            "id": {
+            "db_id": {
                 "type": "keyword"
             },
             "name":{
-                "type": "text"
+                "type": "text",
+                "analyzer": "portuguese"
             }, 
             "description":{
-                "type": "text"
+                "type": "text",
+                "analyzer": "portuguese"
             },
             "category":{
                 "type": "keyword"
+            },
+            "timestamp":{
+                "type": "date",
+                "format": "epoch_second"
             }
         }
     }
