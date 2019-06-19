@@ -199,7 +199,7 @@ func TestInsertOfferInES(t *testing.T) {
 		assert.Equal(t, nil, err)
 		assert.Equal(t, 1, int(searchResult.TotalHits()))
 
-		gotOffs, err := tools.GetOfferFromSearchResult(searchResult)
+		gotOffs, err := tools.GetOffersFromSearchResult(searchResult)
 		assert.Equal(t, nil, err)
 		assert.Equal(t, 1, len(gotOffs))
 	})
@@ -219,7 +219,7 @@ func TestInsertOfferInES(t *testing.T) {
 		assert.Equal(t, nil, err)
 		assert.Equal(t, 2, int(searchResult.TotalHits()))
 
-		gotOffs, err := tools.GetOfferFromSearchResult(searchResult)
+		gotOffs, err := tools.GetOffersFromSearchResult(searchResult)
 		assert.Equal(t, nil, err)
 		assert.Equal(t, 2, len(gotOffs))
 	})

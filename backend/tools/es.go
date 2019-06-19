@@ -9,8 +9,8 @@ import (
 	"github.com/olivere/elastic/v7"
 )
 
-// GetRequestFromSearchResult unmarshalls all Requests from an ES Search Hits
-func GetRequestFromSearchResult(searchResult *elastic.SearchResult) ([]models.RequestES, error) {
+// GetRequestsFromSearchResult unmarshalls all Requests from an ES Search Hits
+func GetRequestsFromSearchResult(searchResult *elastic.SearchResult) ([]models.RequestES, error) {
 	reqs := make([]models.RequestES, 0, int(searchResult.TotalHits()))
 	for _, hit := range searchResult.Hits.Hits {
 		// Deserialize hit.Source into a Request
@@ -25,8 +25,8 @@ func GetRequestFromSearchResult(searchResult *elastic.SearchResult) ([]models.Re
 	return reqs, nil
 }
 
-// GetOfferFromSearchResult unmarshalls all Offers from an ES Search Hits
-func GetOfferFromSearchResult(searchResult *elastic.SearchResult) ([]models.OfferES, error) {
+// GetOffersFromSearchResult unmarshalls all Offers from an ES Search Hits
+func GetOffersFromSearchResult(searchResult *elastic.SearchResult) ([]models.OfferES, error) {
 	offs := make([]models.OfferES, 0, int(searchResult.TotalHits()))
 	for _, hit := range searchResult.Hits.Hits {
 		// Deserialize hit.Source into a Request

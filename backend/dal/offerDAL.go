@@ -9,6 +9,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/mbotarro/unijobs/backend/errors"
 	"github.com/mbotarro/unijobs/backend/models"
+	"github.com/mbotarro/unijobs/backend/tools"
 	"github.com/olivere/elastic/v7"
 )
 
@@ -81,4 +82,28 @@ func (dal *OfferDAL) InsertOfferInES(offer models.Offer) error {
 	}
 
 	return nil
+}
+
+// SearchInES searches for Offers in ES given a query.
+// If one or more category ID is informed, the results are filtered to only contain offers beloging to them.
+// A slice with the IDs of the matched offers are returned
+func (dal *OfferDAL) SearchInES(query string, categoryIDs ...int) ([]string, error) {
+	searchResult, err := searchDocumentInES(dal.es, "offer", query, categoryIDs...)
+	if err != nil {
+		return nil, err
+	}
+
+	// Get the matched Offers
+	offs, err := tools.GetOffersFromSearchResult(searchResult)
+	if err != nil {
+		return nil, err
+	}
+
+	// Get the UUIDs of the matched offers
+	ids := make([]string, 0, len(offs))
+	for _, off := range offs {
+		ids = append(ids, off.ID)
+	}
+
+	return ids, nil
 }

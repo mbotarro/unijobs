@@ -114,7 +114,7 @@ func (dal *RequestDAL) InsertRequestInES(request models.Request) error {
 
 // SearchInES searches for Requests in ES given a query.
 // If one or more category ID is informed, the results are filtered to only contain requests beloging to them.
-// A slice with the IDs of the matched queries are returned
+// A slice with the IDs of the matched requests are returned
 func (dal *RequestDAL) SearchInES(query string, categoryIDs ...int) ([]string, error) {
 	searchResult, err := searchDocumentInES(dal.es, "request", query, categoryIDs...)
 	if err != nil {
@@ -122,7 +122,7 @@ func (dal *RequestDAL) SearchInES(query string, categoryIDs ...int) ([]string, e
 	}
 
 	// Get the matched Requests
-	reqs, err := tools.GetRequestFromSearchResult(searchResult)
+	reqs, err := tools.GetRequestsFromSearchResult(searchResult)
 	if err != nil {
 		return nil, err
 	}
