@@ -70,8 +70,8 @@ const (
 
 	getRequest = `SELECT * FROM request WHERE id = $1`
 
-	insertOffer = `INSERT INTO offer (id, name, description, extrainfo, minprice, maxprice, userid, categoryid, timestamp) 
-						VALUES ($1, $2, $3, '', $4, $5, $6, $7, $8)`
+	insertOffer = `INSERT INTO offer (id, name, description, extrainfo, minprice, maxprice, expiration, userid, categoryid, timestamp) 
+						VALUES ($1, $2, $3, '', $4, $5, $6, $7, $8, $9)`
 	getOffer = `SELECT * FROM offer WHERE id = $1`
 )
 
@@ -122,7 +122,7 @@ func CreateFakeRequest(t *testing.T, db *sqlx.DB, name, description string, user
 func CreateFakeOffer(t *testing.T, db *sqlx.DB, name, description string, user, category int, timestamp time.Time) models.Offer {
 	id := uuid.New().String()
 
-	db.MustExec(insertOffer, id, name, description, 20, 30, user, category, timestamp.UTC())
+	db.MustExec(insertOffer, id, name, description, 20, 30, time.Now().Add(8760*time.Hour).UTC(), user, category, timestamp.UTC())
 
 	off := models.Offer{}
 	err := db.Get(&off, getOffer, id)

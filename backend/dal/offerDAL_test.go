@@ -145,6 +145,7 @@ func TestInsertOffer(t *testing.T) {
 	off.ExtraInfo = "Informacao X"
 	off.MinPrice = 20
 	off.MaxPrice = 50
+	off.Expiration = time.Now().Add(8760 * time.Hour)
 
 	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234", "9999-1111")
 	c := tools.CreateFakeCategory(t, db, "Aula Matemática", "Matemática")

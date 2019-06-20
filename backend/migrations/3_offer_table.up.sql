@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS offer (
 	extrainfo	text,
 	minprice    integer,
 	maxprice    integer,
+	expiration  timestamp NOT NULL,
 	userid      integer NOT NULL,
 	categoryid  integer,
 	timestamp	timestamp NOT NULL,
