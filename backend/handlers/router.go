@@ -94,5 +94,10 @@ func NewRouter(ctrl *usecases.Controller) *mux.Router {
 		HandlerFunc(offerHandler.GetLastOffers).
 		Methods("GET")
 
+	// Send new offer
+	route.r.Path("/offers").
+		HandlerFunc(offerHandler.InsertOffer).
+		Methods("POST")
+
 	return &route.r
 }

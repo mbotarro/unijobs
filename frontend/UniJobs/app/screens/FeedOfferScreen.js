@@ -56,8 +56,8 @@ export default class FeedRequestScreen extends React.Component {
         });
     }
 
-    onMenuButtonPress(navigate) {
-        navigate.openDrawer();
+    onMenuButtonPress(navigation) {
+        navigation.openDrawer();
     }
 
     onSearchBarChangeText(navigate, text) {
@@ -101,7 +101,7 @@ export default class FeedRequestScreen extends React.Component {
         const menuButton = (
             <TouchableHighlight
                 underlayColor={UniColors.main}
-                onPress={() => this.onMenuButtonPress(navigate)}
+                onPress={() => this.onMenuButtonPress(this.props.navigation)}
             >
                 <Image source={require('../assets/icons/line-menu.png')}  style={styles.menuButton} />
             </TouchableHighlight>
