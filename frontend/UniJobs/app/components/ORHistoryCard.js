@@ -24,7 +24,7 @@ export default class ORHistoryCard extends React.Component {
 
     async componentDidMount() {
         this.setState({isLoading: false})
-        this.setState({allOffersRequests: testRequests})
+        this.setState({allOffersRequests: myFeedTestRequests})
     }
 
     render() {
@@ -61,7 +61,7 @@ export default class ORHistoryCard extends React.Component {
         }
 
         const cards = this.state.isLoading ? <ActivityIndicator style = {{marginTop: 10}}/> :
-            populateRequestOfferCards(this.state.allOffersRequests);
+            populateRequestOfferCards(this.state.allOffersRequests, isOffer);
         const CardsView = () => {
             titleText = isOffer ? this.textStrings.interestCardsHeader : this.textStrings.offerCardsHeader
             return (
@@ -146,91 +146,92 @@ const myFeedCategoriesTest = [
 const myFeedTestRequests = [
     {
         ID : 0,
-        name : 'Titulo Solicitação',
-        description : 'Descrição bem grande o suficiente para usar todo o espaço disponível em preview limitado em espaço máximo e restrito!!!!!!!!!!!!!!!!!!!!!!!!!!',
+        username : 'Titulo Solicitação',
+        telephone : 'Descrição bem grande o suficiente para usar todo o espaço disponível em preview limitado em espaço máximo e restrito!!!!!!!!!!!!!!!!!!!!!!!!!!',
         ExtraInfo : '',
-        minprice : 'XXXXX',
+        description: 'asdfsadfasdfasdf',
+        email : 'XXXXX',
         maxprice: 'XXXXX',
         Userid : 0,
         Categoryid : 0,
     },
     {
         ID : 1,
-        Name : 'Aula de Cálculo Numérico',
+        name : 'Aula de Cálculo Numérico',
         description : 'Correção de exercícios e revisão teórica. Aulas em grupos de 3 a 4 pessoas',
         ExtraInfo : '',
-        MinPrice : '50',
-        MaxPrice: '50',
+        minprice : '50',
+        maxprice: '50',
         Userid : 0,
         categoryid : 1,
     },
     {
         ID : 2,
-        Name : 'Aula de Piano',
+        name : 'Aula de Piano',
         description : 'Teoria da música, leitura de partituras e exercícios de dedo. Aprenda suas músicas favoritas!',
         ExtraInfo : '',
-        MinPrice : '100',
-        MaxPrice: '100',
+        minprice : '100',
+        maxprice: '100',
         Userid : 0,
         Categoryid : 2,
     },
     {
         ID : 3,
-        Name : 'Tradução Chinês - Português',
+        name : 'Tradução Chinês - Português',
         description : 'Tradução em chinês tradicional ou simplificado. Preço por página em português.',
         ExtraInfo : '',
-        MinPrice : '30',
-        MaxPrice: '30',
+        minprice : '30',
+        maxprice: '30',
         Userid : 0,
         Categoryid : 3,
     },
     {
         ID : 4,
-        Name : 'Aula de Mandarim',
+        name : 'Aula de Mandarim',
         description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
         ExtraInfo : '',
-        MinPrice : '80',
-        MaxPrice: '80',
+        minprice : '80',
+        maxprice: '80',
         Userid : 0,
         Categoryid : 2,
     },
     {
         ID : 4,
-        Name : 'Aula de Mandarim',
+        name : 'Aula de Mandarim',
         description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
         ExtraInfo : '',
-        MinPrice : '80',
-        MaxPrice: '80',
+        minprice : '80',
+        maxprice: '80',
         Userid : 0,
         Categoryid : 1,
     },
     {
         ID : 4,
-        Name : 'Aula de Mandarim',
+        name : 'Aula de Mandarim',
         description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
         ExtraInfo : '',
-        MinPrice : '80',
-        MaxPrice: '80',
+        minprice : '80',
+        maxprice: '80',
         Userid : 0,
         Categoryid : 3,
     },
     {
         ID : 4,
-        Name : 'Aula de Mandarim',
+        name : 'Aula de Mandarim',
         description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
         ExtraInfo : '',
-        MinPrice : '80',
-        MaxPrice: '80',
+        minprice : '80',
+        maxprice: '80',
         Userid : 0,
         Categoryid : 2,
     },
     {
         ID : 4,
-        Name : 'Aula de Mandarim',
+        name : 'Aula de Mandarim',
         description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
         ExtraInfo : '',
-        MinPrice : '80',
-        MaxPrice: '80',
+        minprice : '80',
+        maxprice: '80',
         Userid : 0,
         Categoryid : 5,
     },

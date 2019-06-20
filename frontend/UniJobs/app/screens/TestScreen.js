@@ -22,7 +22,7 @@ export default class TestScreen extends React.Component {
         // use for fetching data to show
     }
 
-    isOffer = false
+    isOffer = true
 
     render() {
         const { navigate } = this.props.navigation;
