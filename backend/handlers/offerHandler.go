@@ -37,13 +37,16 @@ type OfferResponse struct {
 
 // OfferInsertion contains the expected input from the frontend
 type OfferInsertion struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	ExtraInfo   string `json:"extrainfo"`
-	MaxPrice    int    `json:"maxprice"`
-	MinPrice    int    `json:"minprice"`
-	Userid      int    `json:"userid"`
-	Categoryid  int    `json:"categoryid"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	ExtraInfo   string    `json:"extrainfo"`
+	MaxPrice    int       `json:"maxprice"`
+	MinPrice    int       `json:"minprice"`
+	Expiration  time.Time `json:"expiration"`
+	Userid      int       `json:"userid"`
+	Categoryid  int       `json:"categoryid"`
+	Telephone   bool      `db:"telephone" json:"telephone"`
+	Email       bool      `db:"email" json:"email"`
 }
 
 // GetLastOffers sends the last offers created in the unijobs service
@@ -112,7 +115,7 @@ func (handler *OfferHandler) InsertOffer(w http.ResponseWriter, r *http.Request)
 	off.Categoryid = offInserted.Categoryid
 	off.Timestamp = time.Now()
 
-	err = handler.offerController.InsertOffer(off)
+	err = handler.offerController.InsertOffer(off, offInserted.Telephone, offInserted.Email)
 	if err != nil {
 		http.Error(w, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error()).Error(), http.StatusInternalServerError)
 		return

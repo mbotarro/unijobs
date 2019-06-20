@@ -10,9 +10,12 @@ type Offer struct {
 	ExtraInfo   string    `db:"extrainfo" json:"extrainfo"`
 	MaxPrice    int       `db:"maxprice" json:"maxprice"`
 	MinPrice    int       `db:"minprice" json:"minprice"`
+	Expiration  time.Time `db:"expiration" json:"expiration"`
 	Userid      int       `db:"userid" json:"userid"`
 	Categoryid  int       `db:"categoryid" json:"categoryid"`
 	Timestamp   time.Time `db:"timestamp" json:"timestamp"`
+	Telephone   string    `db:"telephone" json:"telephone"`
+	Email       string    `db:"email" json:"email"`
 }
 
 // MatchedOffer represents an offer with the information if an user has matched it or not

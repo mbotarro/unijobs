@@ -4,9 +4,11 @@ import React from 'react';
 import { StyleSheet, Text, TextInput, View, Image, ScrollView, TouchableHighlight, ActivityIndicator } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { AsyncStorage } from 'react-native';
+import { Dimensions } from "react-native";
 
 import { populateRequestMiniCards } from '../components/FeedMiniCards';
 import { loadMyRequests, loadCategories } from '../actions/FeedActions'
+import MyRequestCard from '../components/MyRequestCard'
 
 import UniStyles from '../constants/UniStyles'
 import UniColors from '../constants/UniColors'
@@ -22,6 +24,9 @@ export default class MinhasSolicitacoesScreen extends React.Component {
 
         myRequests: {},
         categories: {},
+        
+        isRequestCardOpen: false,
+        openRequest: null,
     }
 
     textStrings = {
@@ -67,7 +72,7 @@ export default class MinhasSolicitacoesScreen extends React.Component {
                     onPress={() => this.onBackButtonPress(navigation)}
                 >
                     <Image
-                        source={require('../assets/icons/arrow-left.png')} 
+                        source={require('../assets/icons/arrow-left.png')}
                         style={styles.backButton}
                     />
                 </TouchableHighlight>
@@ -79,7 +84,31 @@ export default class MinhasSolicitacoesScreen extends React.Component {
         const feedView = this.state.isLoading ?
             <ActivityIndicator style={{ marginTop: 10 }} />
             :
-            populateRequestMiniCards(this.state.myRequests,this.state.categories);
+            populateRequestMiniCards(
+                this.state.myRequests,
+                this.state.categories,
+                (request) => this.setState({isRequestCardOpen: true, openRequest: request})
+                );
+
+        const openCard = 
+            this.state.isRequestCardOpen ?
+            <View style = {styles.openCard}>
+            {
+                this.state.isLoading ?
+                <ActivityIndicator style={{ marginTop: 10 }} />
+                :
+                <MyRequestCard
+                    request = {this.state.openRequest}
+                    categories = {this.state.categories}
+                    onHidePress = {() => {alert("TODO: Hide Offer")}}
+                    onEditPress = {() => {alert("TODO: Edit Offer")}}
+                    onRemovePress = {() =>{alert("TODO: Remove Offer")}}
+                    onQuit = {() => this.setState({isRequestCardOpen: false})}
+                />
+            }
+            </View>
+            :
+            null;
 
 
         return (
@@ -88,6 +117,7 @@ export default class MinhasSolicitacoesScreen extends React.Component {
                 resetScrollToCoords={{ x: 0, y: 0 }}
                 scrollEnabled={false}
             >
+            {openCard}
                 <View style={styles.container} >
                     {header}
                     <ScrollView contentContainerStyle={styles.feedContainer}>
@@ -137,5 +167,15 @@ const styles = StyleSheet.create({
         color:          UniColors.white,
         fontWeight:     UniText.semibold,
         textAlign:      'center',
+    },
+    
+    openCard: {
+        zIndex: 10,
+        position: 'absolute',
+        top: 0,
+        backgroundColor: '#65737E80',
+
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').height
     },
 });

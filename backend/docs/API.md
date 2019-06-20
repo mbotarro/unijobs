@@ -170,9 +170,12 @@ For `size` = 2
       "extrainfo": "",
       "maxprice": 40,
       "minprice": 30,
+      "expiration": "2020-06-20T03:00:13.250602Z",
       "userid": 1,
       "categoryid": 2,
-      "timestamp": "2019-06-13T10:28:42.411752Z"
+      "timestamp": "2019-06-13T10:28:42.411752Z",
+      "telephone": "0000-0000",
+      "email": "user@user.com"
     },
     {
       "id": 5,
@@ -181,9 +184,12 @@ For `size` = 2
       "extrainfo": "",
       "maxprice": 40,
       "minprice": 30,
+      "expiration": "2020-06-20T03:00:13.250602Z",
       "userid": 1,
       "categoryid": 2,
-      "timestamp": "2019-06-13T09:28:42.411752Z"
+      "timestamp": "2019-06-13T09:28:42.411752Z",
+      "telephone": "0000-0000",
+      "email": "user@user.com"
     }
   ],
   "last": 1560418122
@@ -208,9 +214,12 @@ You'll get
       "extrainfo": "",
       "maxprice": 40,
       "minprice": 30,
+      "expiration": "2020-06-20T03:00:13.250602Z",
       "userid": 1,
       "categoryid": 1,
-      "timestamp": "2019-06-13T08:28:42.411752Z"
+      "timestamp": "2019-06-13T08:28:42.411752Z",
+      "telephone": "0000-0000",
+      "email": "user@user.com"
     },
     {
       "id": 3,
@@ -219,9 +228,12 @@ You'll get
       "extrainfo": "",
       "maxprice": 40,
       "minprice": 30,
+      "expiration": "2020-06-20T03:00:13.250602Z",
       "userid": 1,
       "categoryid": 1,
-      "timestamp": "2019-06-13T07:28:42.411752Z"
+      "timestamp": "2019-06-13T07:28:42.411752Z",
+      "telephone": "0000-0000",
+      "email": "user@user.com"
     }
   ],
   "last": 1560410922
@@ -423,8 +435,11 @@ So far, the search endpoint doesn't accept pagination, always returning all matc
     "extrainfo": <string>
     "maxprice": <int>
     "minprice": <int>
+    "expiration": <string data as ISO8601>
     "userid": <int>
     "categoryid": <int>
+    "telephone": <bool>
+    "email": <bool>
 }
 ```
 
@@ -451,9 +466,12 @@ For size = 2
             "extrainfo": "",
             "maxprice": 40,
             "minPrice": 20,
+            "expiration": "2020-06-20T03:00:13.250602Z"
             "userid": 1,
             "categoryid": 2,
-            "timestamp": "2019-05-31T16:59:57.728024Z"
+            "timestamp": "2019-05-31T16:59:57.728024Z",
+            "telephone": "0000-0000",
+            "email": "user@user.com"
             },
             {
             "id": 5,
@@ -462,9 +480,12 @@ For size = 2
             "extrainfo": "",
             "maxprice": 40,
             "minPrice": 20,
+            "expiration": "2020-06-20T03:00:13.250602Z"
             "userid": 1,
             "categoryid": 2,
-            "timestamp": "2019-05-31T15:59:57.728024Z"
+            "timestamp": "2019-05-31T15:59:57.728024Z",
+            "telephone": "0000-0000",
+            "email": "user@user.com"
             }
         ],
         "last": 1559318397
@@ -489,9 +510,12 @@ You'll get
         "extrainfo": "",
         "maxprice": 40,
         "minPrice": 20,
+        "expiration": "2020-06-20T03:00:13.250602Z"
         "userid": 1,
         "categoryid": 1,
-        "timestamp": "2019-05-31T14:59:57.728024Z"
+        "timestamp": "2019-05-31T14:59:57.728024Z",
+        "telephone": "0000-0000",
+        "email": "user@user.com"
         },
         {
         "id": 3,
@@ -500,9 +524,12 @@ You'll get
         "extrainfo": "",
         "maxprice": 40,
         "minPrice": 20,
+        "expiration": "2020-06-20T03:00:13.250602Z"
         "userid": 1,
         "categoryid": 1,
-        "timestamp": "2019-05-31T13:59:57.728024Z"
+        "timestamp": "2019-05-31T13:59:57.728024Z",
+        "telephone": "0000-0000",
+        "email": "user@user.com"
         }
     ],
     "last": 1559311197

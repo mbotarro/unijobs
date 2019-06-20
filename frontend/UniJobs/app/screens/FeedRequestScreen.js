@@ -8,7 +8,7 @@ import { Dimensions } from "react-native";
 import { populateRequestMiniCards } from '../components/FeedMiniCards';
 import FloatActionButton from '../components/FloatActionButton'
 import { loadRequests, loadCategories } from '../actions/FeedActions'
-import FeedRequestCard from '../components/FeedRequestCard'
+import FeedCard from '../components/FeedCard'
 
 import UniStyles from '../constants/UniStyles'
 import UniColors from '../constants/UniColors'
@@ -40,6 +40,7 @@ export default class FeedRequestScreen extends React.Component {
         allFeedHeader: 'Últimas Solicitações'
     }
 
+    isOffer = false
 
     async componentDidMount() {
         // use for fetching data to show
@@ -56,8 +57,8 @@ export default class FeedRequestScreen extends React.Component {
         });
     }
 
-    onMenuButtonPress(navigate) {
-        navigate.openDrawer();
+    onMenuButtonPress(navigation) {
+        navigation.openDrawer();
     }
 
     onSearchBarChangeText(navigate, text) {
@@ -101,7 +102,7 @@ export default class FeedRequestScreen extends React.Component {
         const menuButton = (
             <TouchableHighlight
                 underlayColor={UniColors.main}
-                onPress={() => this.onMenuButtonPress(navigate)}
+                onPress={() => this.onMenuButtonPress(this.props.navigation)}
             >
                 <Image source={require('../assets/icons/line-menu.png')}  style={styles.menuButton} />
             </TouchableHighlight>
@@ -210,12 +211,13 @@ export default class FeedRequestScreen extends React.Component {
                     this.state.isLoading ?
                     <ActivityIndicator style={{ marginTop: 10 }} />
                     :
-                    <FeedRequestCard
+                    <FeedCard
                         request = {this.state.openRequest}
                         categories = {this.state.categories}
                         onCreateOfferPress = {() => {}}
                         onShowRequester = {() => {}}
                         onQuit = {() => this.setState({isRequestCardOpen: false})}
+                        isOffer = {this.isOffer}
                     />
                 }
                 </View>

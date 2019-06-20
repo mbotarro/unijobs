@@ -8,13 +8,8 @@ import Button from './Button'
 
 import CardsWrapper from './CardsWrapper'
 
-export default class FeedRequestCard extends React.Component {
+export default class MyRequestCard extends React.Component {
     state = {
-        isLoading: true,
-        userid: null,
-
-        userdata: null,
-        userpicture: null,
     }
 
     constructor (props) {
@@ -22,16 +17,8 @@ export default class FeedRequestCard extends React.Component {
         this.state.userid = this.props.request.userid
     }
 
-    async componentDidMount() {
-        getUserData (this.state.userid, (userdata) => {
-            getUserPicture(this.state.userid, (userpicture) => {
-                this.setState({isLoading: false, userdata: userdata, userpicture: userpicture});
-            });
-        });
-    }
-
     render() {
-        const { request, categories, onCreateOfferPress, onShowRequester, onQuit } = this.props;
+        const { request, categories, onHidePress, onEditPress, onRemovePress, onQuit } = this.props;
 
         const ActionButton = (text, onPress, color) => (
             <Button
@@ -41,44 +28,26 @@ export default class FeedRequestCard extends React.Component {
             />
         )
 
+        const HideButton = ActionButton('Ocultar', onHidePress, '#0BA5F2');
+        const EditButton = ActionButton('Editar', onEditPress, '#0BA5F2');
+        const RemoveButton = ActionButton('Remover', onRemovePress, '#EF513A');
 
-        const CardView = () => (
-            this.state.isLoading ?
-                null
-                :
-                <View style={[containerStyles.cardsContainer]}>
-                    <TouchableOpacity onPress={onShowRequester}>
-                        <View style={{
-                            flexDirection: 'row', width: window.width, alignItems: 'center',
-                            marginHorizontal: 25
-                        }}>
-                            <View style={{ justifyContent: 'center' }}>
-                                <Image
-                                    source={this.state.userpicture}
-                                    style={[{ marginHorizontal: 15, width: 50, height: 50, alignSelf: 'center', borderRadius: 25 }]}
-                                />
-                            </View>
-                            <Text numberOfLines={1} style={[textStyles.username]}>{this.state.userdata.username}</Text>
-                        </View>
-                    </TouchableOpacity>
+        const ButtonWrapper = () => {
+            return (
+                <View style={{flexDirection: 'column', marginBottom: 30, marginTop: 30}}>
+                    {HideButton}
+                    {EditButton}
+                    {RemoveButton}
                 </View>
-        )
-
-        ButtonWrapper = () => (
-            <View style={{ flexDirection: 'column', marginBottom: 30 }}>
-                {CreateOfferButtom}
-            </View>
-        )
-
-
-        const CreateOfferButtom = ActionButton('Criar Oferta', onCreateOfferPress, '#0BA5F2');
-
+            )
+        }
+        
         return (
             <CardsWrapper
                 request={request}
                 categories={categories}
                 ButtonWrapper={ButtonWrapper}
-                Cards={CardView}
+                Cards={() => (null)}
                 onQuit = {onQuit}
             />
         )
