@@ -227,3 +227,162 @@ func TestInsertOffer(t *testing.T) {
 	status := reqRecord.Code
 	assert.Equal(t, 201, status)
 }
+
+func TestSearchOffer(t *testing.T) {
+	db := tools.GetTestDB()
+	es := tools.GetTestES()
+	defer tools.CleanDB(db)
+	defer tools.CleanES(es)
+
+	ctrl := usecases.NewController(db, es)
+	oh := handlers.NewOfferHandler(ctrl.Offer)
+
+	handler := http.HandlerFunc(oh.SearchOffers)
+
+	// Fake Data
+	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234", "9999-1111")
+	c1 := tools.CreateFakeCategory(t, db, "Aula Matemática", "Matemática")
+	c2 := tools.CreateFakeCategory(t, db, "Aula Computação", "Ciência de Computação")
+
+	off1 := tools.CreateFakeOffer(t, db, "Aula de Cálculo I", "Dou aula particular", u.Userid, c1.ID, time.Now().Add(-10*time.Hour))
+	off2 := tools.CreateFakeOffer(t, db, "Aula de Cálculo II", "Ajudo com provas e listas", u.Userid, c1.ID, time.Now().Add(-9*time.Hour))
+	off3 := tools.CreateFakeOffer(t, db, "Aula de Cálculo III", "Mestrando no ICMC. Ajudo em estudo para provas", u.Userid, c1.ID, time.Now().Add(-8*time.Hour))
+	off4 := tools.CreateFakeOffer(t, db, "Álgebra Linear", "Ajudo com listas", u.Userid, c1.ID, time.Now().Add(-7*time.Hour))
+	off5 := tools.CreateFakeOffer(t, db, "Aula de ICC I", "Dou aulas particulares de C e C++", u.Userid, c2.ID, time.Now().Add(-6*time.Hour))
+	off6 := tools.CreateFakeOffer(t, db, "Aula de ICC II", "Ajudo na preparação para provas", u.Userid, c2.ID, time.Now().Add(-5*time.Hour))
+
+	// Insert offers in ES
+	for _, off := range []*models.Offer{&off1, &off2, &off3, &off4, &off5, &off6} {
+		id, err := ctrl.Offer.InsertOffer(*off)
+		assert.Equal(t, nil, err)
+		off.ID = id
+	}
+
+	t.Run("get only Calculus offers", func(t *testing.T) {
+		req, err := http.NewRequest("GET", "/requests?q=calculo", nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		rr := httptest.NewRecorder()
+
+		handler.ServeHTTP(rr, req)
+
+		if status := rr.Code; status != http.StatusOK {
+			t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
+
+		}
+
+		expected := handlers.OfferResponse{
+			Offers: []models.Offer{off3, off2, off1}, // In creation descending order
+			Last:   0,                                // Search doesn't have pagination
+		}
+		expectedJs, err := json.Marshal(expected)
+		assert.Equal(t, nil, err)
+
+		assert.Equal(t, string(expectedJs), rr.Body.String())
+	})
+
+	t.Run("get offers from 2 categories", func(t *testing.T) {
+		t.Run("not specifying the categories", func(t *testing.T) {
+			req, err := http.NewRequest("GET", "/requests?q=prova", nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			rr := httptest.NewRecorder()
+
+			handler.ServeHTTP(rr, req)
+
+			if status := rr.Code; status != http.StatusOK {
+				t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
+
+			}
+
+			expected := handlers.OfferResponse{
+				Offers: []models.Offer{off6, off3, off2}, // In creation descending order
+				Last:   0,                                // Search doesn't have pagination
+			}
+			expectedJs, err := json.Marshal(expected)
+			assert.Equal(t, nil, err)
+
+			assert.Equal(t, string(expectedJs), rr.Body.String())
+		})
+
+		t.Run("specifying both categories", func(t *testing.T) {
+			req, err := http.NewRequest("GET", fmt.Sprintf("/requests?q=prova&cat=%d,%d", c1.ID, c2.ID), nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			rr := httptest.NewRecorder()
+
+			handler.ServeHTTP(rr, req)
+
+			if status := rr.Code; status != http.StatusOK {
+				t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
+
+			}
+
+			expected := handlers.OfferResponse{
+				Offers: []models.Offer{off6, off3, off2}, // In creation descending order
+				Last:   0,                                // Search doesn't have pagination
+			}
+			expectedJs, err := json.Marshal(expected)
+			assert.Equal(t, nil, err)
+
+			assert.Equal(t, string(expectedJs), rr.Body.String())
+		})
+
+		t.Run("just one category", func(t *testing.T) {
+			req, err := http.NewRequest("GET", fmt.Sprintf("/requests?q=prova&cat=%d", c2.ID), nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			rr := httptest.NewRecorder()
+
+			handler.ServeHTTP(rr, req)
+
+			if status := rr.Code; status != http.StatusOK {
+				t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
+
+			}
+
+			expected := handlers.OfferResponse{
+				Offers: []models.Offer{off6}, // In creation descending order
+				Last:   0,                    // Search doesn't have pagination
+			}
+			expectedJs, err := json.Marshal(expected)
+			assert.Equal(t, nil, err)
+
+			assert.Equal(t, string(expectedJs), rr.Body.String())
+		})
+	})
+
+	t.Run("No matched request", func(t *testing.T) {
+		req, err := http.NewRequest("GET", "/requests?q=eps", nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		rr := httptest.NewRecorder()
+
+		handler.ServeHTTP(rr, req)
+
+		if status := rr.Code; status != http.StatusOK {
+			t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
+
+		}
+
+		expected := handlers.OfferResponse{
+			Offers: []models.Offer{}, // We expect to get no request
+			Last:   0,                // Search doesn't have pagination
+		}
+		expectedJs, err := json.Marshal(expected)
+		assert.Equal(t, nil, err)
+
+		assert.Equal(t, string(expectedJs), rr.Body.String())
+	})
+
+}

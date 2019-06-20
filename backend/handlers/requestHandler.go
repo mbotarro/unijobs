@@ -121,7 +121,7 @@ func (handler *RequestHandler) InsertRequest(w http.ResponseWriter, r *http.Requ
 	w.WriteHeader(http.StatusCreated)
 }
 
-// SearchRequests searched for Requests based on a query sent by the user
+// SearchRequests searches for Requests based on a query sent by the user
 // The results can be filtered by one or more by categories ids
 func (handler *RequestHandler) SearchRequests(w http.ResponseWriter, r *http.Request) {
 	// Query

@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/mbotarro/unijobs/backend/errors"
@@ -118,4 +119,41 @@ func (handler *OfferHandler) InsertOffer(w http.ResponseWriter, r *http.Request)
 		return
 	}
 	w.WriteHeader(http.StatusCreated)
+}
+
+// SearchOffers searches for Offers based on a query sent by the user
+// The results can be filtered by one or more by categories ids
+func (handler *OfferHandler) SearchOffers(w http.ResponseWriter, r *http.Request) {
+	// Query
+	query := r.FormValue("q")
+
+	// Categories ID. The frontend sends them separed by , . We should split them
+	catStr := r.FormValue("cat")
+
+	// We should convert categories ID to int
+	categoryIDs := make([]int, 0, len(catStr))
+
+	if catStr != "" { // If the user wants to filter the results by category
+		for _, cat := range strings.Split(catStr, ",") {
+			id, err := strconv.ParseInt(cat, 10, 32)
+			if err != nil {
+				http.Error(w, fmt.Errorf("%s:%s", errors.QueryParameterError, err.Error()).Error(), http.StatusBadRequest)
+				return
+			}
+
+			categoryIDs = append(categoryIDs, int(id))
+		}
+	}
+
+	offs, err := handler.offerController.SearchOffers(query, categoryIDs...)
+	if err != nil {
+		http.Error(w, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error()).Error(), http.StatusInternalServerError)
+		return
+	}
+
+	offRes := OfferResponse{
+		Offers: offs,
+	}
+
+	tools.WriteStructOnHTTPResponse(offRes, w)
 }
