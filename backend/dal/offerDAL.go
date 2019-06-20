@@ -42,8 +42,8 @@ func (dal *OfferDAL) GetLastOffers(before time.Time, size int) ([]models.Offer, 
 	return offs, nil
 }
 
-// InsertOffer Receives an offer as a parameter and inserts into the database
-func (dal *OfferDAL) InsertOffer(offer models.Offer) error {
+// InsertOfferInDB Receives an offer as a parameter and inserts into the database
+func (dal *OfferDAL) InsertOfferInDB(offer *models.Offer) error {
 	// Generates an uuid for the offer
 	offer.ID = uuid.New().String()
 

@@ -28,10 +28,15 @@ func (rc *RequestController) GetLastRequests(before time.Time, size int) ([]mode
 	return rc.requestDAL.GetLastRequests(before, size)
 }
 
-// InsertRequest inserts the given request into the database, calling the DAL package function.
+// InsertRequest inserts the given request into the databases (postgres + ES), calling the DAL package function.
 // It returns error != nil in case some error occured.
 func (rc *RequestController) InsertRequest(req models.Request) error {
-	return rc.requestDAL.InsertRequest(req)
+	err := rc.requestDAL.InsertRequestInDB(&req)
+	if err != nil {
+		return err
+	}
+
+	return rc.requestDAL.InsertRequestInES(req)
 }
 
 // InsertRequestInES inserts the given request into ElasticSearch.

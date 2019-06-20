@@ -43,8 +43,8 @@ func (dal *RequestDAL) GetLastRequests(before time.Time, size int) ([]models.Req
 	return reqs, nil
 }
 
-// InsertRequest Receives a request as a parameter and inserts into the database
-func (dal *RequestDAL) InsertRequest(request models.Request) error {
+// InsertRequestInDB Receives a request as a parameter and inserts into the database
+func (dal *RequestDAL) InsertRequestInDB(request *models.Request) error {
 	// Generate an uuid for the request
 	request.ID = uuid.New().String()
 

@@ -152,7 +152,7 @@ func TestInsertOffer(t *testing.T) {
 	off.Categoryid = c.ID
 
 	// Executes the test query
-	err := offerDAL.InsertOffer(off)
+	err := offerDAL.InsertOfferInDB(&off)
 
 	// Checks the expected results
 	assert.Equal(t, nil, err)
