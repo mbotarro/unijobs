@@ -100,8 +100,9 @@ export default class MinhasSolicitacoesScreen extends React.Component {
                 <MyRequestCard
                     request = {this.state.openRequest}
                     categories = {this.state.categories}
-                    onCreateOfferPress = {() => {}}
-                    onShowRequester = {() => {}}
+                    onHidePress = {() => {alert("TODO: Hide Offer")}}
+                    onEditPress = {() => {alert("TODO: Edit Offer")}}
+                    onRemovePress = {() =>{alert("TODO: Remove Offer")}}
                     onQuit = {() => this.setState({isRequestCardOpen: false})}
                 />
             }
