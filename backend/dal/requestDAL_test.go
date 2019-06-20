@@ -153,7 +153,7 @@ func TestInsertRequest(t *testing.T) {
 	req.Categoryid = c.ID
 
 	// Executes the test query
-	err := requestDAL.InsertRequestInDB(&req)
+	_, err := requestDAL.InsertRequestInDB(&req)
 
 	// Checks the expected results
 	assert.Equal(t, nil, err)

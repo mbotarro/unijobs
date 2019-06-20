@@ -6,8 +6,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
-	"time"
 	"strings"
+	"time"
 
 	"github.com/mbotarro/unijobs/backend/models"
 
@@ -113,7 +113,7 @@ func (handler *RequestHandler) InsertRequest(w http.ResponseWriter, r *http.Requ
 	req.Categoryid = reqInserted.Categoryid
 	req.Timestamp = time.Now()
 
-	err = handler.requestController.InsertRequest(req)
+	_, err = handler.requestController.InsertRequest(req)
 	if err != nil {
 		http.Error(w, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error()).Error(), http.StatusInternalServerError)
 		return
@@ -122,19 +122,19 @@ func (handler *RequestHandler) InsertRequest(w http.ResponseWriter, r *http.Requ
 }
 
 // SearchRequests searched for Requests based on a query sent by the user
-// The results can be filtered by one or more by categories ids 
-func (handler *RequestHandler) SearchRequests(w http.ResponseWriter, r *http.Request){
+// The results can be filtered by one or more by categories ids
+func (handler *RequestHandler) SearchRequests(w http.ResponseWriter, r *http.Request) {
 	// Query
-	query := r.FormValue("q") 
+	query := r.FormValue("q")
 
 	// Categories ID. The frontend sends them separed by , . We should split them
 	catStr := r.FormValue("cat")
-	
+
 	// We should convert categories ID to int
 	categoryIDs := make([]int, 0, len(catStr))
 
-	if catStr != ""{ // If the user wants to filter the results by category
-		for _, cat := range strings.Split(catStr, ","){
+	if catStr != "" { // If the user wants to filter the results by category
+		for _, cat := range strings.Split(catStr, ",") {
 			id, err := strconv.ParseInt(cat, 10, 32)
 			if err != nil {
 				http.Error(w, fmt.Errorf("%s:%s", errors.QueryParameterError, err.Error()).Error(), http.StatusBadRequest)
@@ -144,7 +144,7 @@ func (handler *RequestHandler) SearchRequests(w http.ResponseWriter, r *http.Req
 			categoryIDs = append(categoryIDs, int(id))
 		}
 	}
-	
+
 	reqs, err := handler.requestController.SearchRequests(query, categoryIDs...)
 	if err != nil {
 		http.Error(w, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error()).Error(), http.StatusInternalServerError)

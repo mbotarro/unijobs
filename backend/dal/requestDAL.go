@@ -44,7 +44,7 @@ func (dal *RequestDAL) GetLastRequests(before time.Time, size int) ([]models.Req
 }
 
 // InsertRequestInDB Receives a request as a parameter and inserts into the database
-func (dal *RequestDAL) InsertRequestInDB(request *models.Request) error {
+func (dal *RequestDAL) InsertRequestInDB(request *models.Request) (string, error) {
 	// Generate an uuid for the request
 	request.ID = uuid.New().String()
 
@@ -57,10 +57,10 @@ func (dal *RequestDAL) InsertRequestInDB(request *models.Request) error {
 
 	// Checks if any error happened during the query execution
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	return nil
+	return request.ID, nil
 }
 
 // GetRequestsByID fetch from postgreSQL the requests whose ids are passed in parameter
