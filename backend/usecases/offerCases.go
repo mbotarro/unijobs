@@ -29,11 +29,16 @@ func (rc *OfferController) GetLastOffers(before time.Time, size int) ([]models.O
 
 // InsertOffer inserts the given offer into the databases (postgres + ES), calling the DAL package function.
 // It returns error != nil in case some error occured.
-func (rc *OfferController) InsertOffer(offer models.Offer) error {
-	err := rc.offerDAL.InsertOfferInDB(&offer)
+func (rc *OfferController) InsertOffer(offer models.Offer) (string, error) {
+	id, err := rc.offerDAL.InsertOfferInDB(&offer)
 	if err != nil {
-		return nil
+		return "", nil
 	}
 
-	return rc.offerDAL.InsertOfferInES(offer)
+	err = rc.offerDAL.InsertOfferInES(offer)
+	if err != nil {
+		return "", nil
+	}
+
+	return id, nil
 }

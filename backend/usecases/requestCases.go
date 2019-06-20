@@ -44,12 +44,6 @@ func (rc *RequestController) InsertRequest(req models.Request) (string, error) {
 	return id, nil
 }
 
-// InsertRequestInES inserts the given request into ElasticSearch.
-// It returns error != nil when some error occured.
-// func (rc *RequestController) InsertRequestInES(req models.Request) error {
-// 	return rc.requestDAL.InsertRequestInES(req)
-// }
-
 // SearchRequests searches for requests based on a query sent by the user. It can be filtered by one or more categories whose
 // ids are passed by parameter
 func (rc *RequestController) SearchRequests(query string, categoryIDs ...int) ([]models.Request, error) {

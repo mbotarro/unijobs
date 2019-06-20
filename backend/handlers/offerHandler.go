@@ -112,7 +112,7 @@ func (handler *OfferHandler) InsertOffer(w http.ResponseWriter, r *http.Request)
 	off.Categoryid = offInserted.Categoryid
 	off.Timestamp = time.Now()
 
-	err = handler.offerController.InsertOffer(off)
+	_, err = handler.offerController.InsertOffer(off)
 	if err != nil {
 		http.Error(w, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error()).Error(), http.StatusInternalServerError)
 		return
