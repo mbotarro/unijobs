@@ -61,6 +61,32 @@ func (dal *OfferDAL) InsertOfferInDB(offer *models.Offer) (string, error) {
 	return offer.ID, nil
 }
 
+// GetOffersByID fetch from postgreSQL the offers whose ids are passed in parameter
+func (dal *OfferDAL) GetOffersByID(ids []string) ([]models.Offer, error) {
+	offs := []models.Offer{}
+	query, args, err := sqlx.In(`SELECT * FROM offer WHERE id IN (?) ORDER BY timestamp DESC`, ids)
+	if err != nil {
+		return nil, err
+	}
+
+	// Transform (?, ?, ...) in postgres specific ($1, $2, $3)
+	query = dal.db.Rebind(query)
+
+	rows, err := dal.db.Queryx(query, args...)
+	if err != nil {
+		return nil, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error())
+	}
+
+	// Transform the fecthed rows into offer struct
+	for rows.Next() {
+		var r models.Offer
+		err = rows.StructScan(&r)
+		offs = append(offs, r)
+	}
+
+	return offs, nil
+}
+
 // InsertOfferInES inserts an Offer in ES
 func (dal *OfferDAL) InsertOfferInES(offer models.Offer) error {
 	oES := models.OfferES{

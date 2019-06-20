@@ -42,3 +42,24 @@ func (rc *OfferController) InsertOffer(offer models.Offer) (string, error) {
 
 	return id, nil
 }
+
+// SearchOffers searches for offers based on a query sent by the user. It can be filtered by one or more categories whose
+// ids are passed by parameter
+func (rc *OfferController) SearchOffers(query string, categoryIDs ...int) ([]models.Offer, error) {
+	// Search for the requests ids in ES
+	ids, err := rc.offerDAL.SearchInES(query, categoryIDs...)
+	if err != nil {
+		return nil, err
+	}
+
+	// Get the complete documents in Postgres iff ES returned some requests
+	reqs := make([]models.Offer, 0, len(ids))
+	if len(ids) > 0 {
+		reqs, err = rc.offerDAL.GetOffersByID(ids)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return reqs, nil
+}

@@ -308,3 +308,48 @@ func TestSearchOfferInES(t *testing.T) {
 		})
 	})
 }
+
+func TestGetOffersByID(t *testing.T) {
+	db := tools.GetTestDB()
+	es := tools.GetTestES()
+	defer tools.CleanDB(db)
+	defer tools.CleanES(es)
+
+	offerDAL := getOfferDAL(db, es)
+
+	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234", "9999-1111")
+	c1 := tools.CreateFakeCategory(t, db, "Aula Matemática", "Matemática")
+	c2 := tools.CreateFakeCategory(t, db, "Aula Computação", "Ciência de Computação")
+
+	off1 := tools.CreateFakeOffer(t, db, "Aula de Cálculo I", "Oferecço aula particular", u.Userid, c1.ID, time.Now().Add(-10*time.Hour))
+	off2 := tools.CreateFakeOffer(t, db, "Aula de Cálculo II", "Ajudo em provas e listas", u.Userid, c1.ID, time.Now().Add(-9*time.Hour))
+	off3 := tools.CreateFakeOffer(t, db, "Aula de Cálculo III", "Ajudo em Cálculo III", u.Userid, c1.ID, time.Now().Add(-8*time.Hour))
+	off4 := tools.CreateFakeOffer(t, db, "Álgebra Linear", "Sou mestrando no ICMC", u.Userid, c1.ID, time.Now().Add(-7*time.Hour))
+	off5 := tools.CreateFakeOffer(t, db, "Aula de ICC I", "Ajuda em matéria e trabalhos", u.Userid, c2.ID, time.Now().Add(-6*time.Hour))
+	off6 := tools.CreateFakeOffer(t, db, "Aula de ICC II", "Ajudo em ICC II", u.Userid, c2.ID, time.Now().Add(-5*time.Hour))
+
+	t.Run("Get offer with 1 ID", func(t *testing.T) {
+		offs, err := offerDAL.GetOffersByID([]string{off1.ID})
+		assert.Equal(t, nil, err)
+		assert.Equal(t, off1, offs[0])
+	})
+
+	t.Run("Get offers with 3 IDs", func(t *testing.T) {
+		offs, err := offerDAL.GetOffersByID([]string{off1.ID, off2.ID, off3.ID})
+		assert.Equal(t, nil, err)
+		assert.Equal(t, off3, offs[0])
+		assert.Equal(t, off2, offs[1])
+		assert.Equal(t, off1, offs[2])
+	})
+
+	t.Run("Get offers with 6 IDs", func(t *testing.T) {
+		offs, err := offerDAL.GetOffersByID([]string{off1.ID, off2.ID, off3.ID, off4.ID, off5.ID, off6.ID})
+		assert.Equal(t, nil, err)
+		assert.Equal(t, off6, offs[0])
+		assert.Equal(t, off5, offs[1])
+		assert.Equal(t, off4, offs[2])
+		assert.Equal(t, off3, offs[3])
+		assert.Equal(t, off2, offs[4])
+		assert.Equal(t, off1, offs[5])
+	})
+}
