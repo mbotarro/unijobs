@@ -575,9 +575,12 @@ the server returns:
       "extrainfo": "",
       "maxprice": 40,
       "minprice": 30,
+      "expiration": "2020-06-20T23:35:45.460566Z",
       "userid": 1,
       "categoryid": 2,
-      "timestamp": "2019-06-20T09:35:36.5517Z"
+      "timestamp": "2019-06-20T18:35:45.460566Z",
+      "telephone": "1234-1234",
+      "email": "user@gmail.com"
     },
     {
       "id": "a74c4694-8eb2-11e9-bc42-526af7764a88",
@@ -586,20 +589,26 @@ the server returns:
       "extrainfo": "",
       "maxprice": 40,
       "minprice": 30,
+      "expiration": "2020-06-20T23:35:45.460566Z",
       "userid": 1,
       "categoryid": 2,
-      "timestamp": "2019-06-20T08:35:36.5517Z"
+      "timestamp": "2019-06-20T17:35:45.460566Z",
+      "telephone": "1234-1234",
+      "email": "user@gmail.com"
     },
     {
       "id": "a74c4694-8eb2-11e9-bc42-526af7764a87",
       "name": "Álgebra Linear",
-      "description": "Sou Mestrando em Matemática no ICMC. Posso ajudar com provas, listas, dúvidas teóricas etc",
+      "description": "ou Mestrando em Matemática no ICMC. Posso ajudar com provas, listas, dúvidas teóricas etc",
       "extrainfo": "",
       "maxprice": 40,
       "minprice": 30,
+      "expiration": "2020-06-20T23:35:45.460566Z",
       "userid": 1,
       "categoryid": 2,
-      "timestamp": "2019-06-20T07:35:36.5517Z"
+      "timestamp": "2019-06-20T16:35:45.460566Z",
+      "telephone": "1234-1234",
+      "email": "user@gmail.com"
     },
     {
       "id": "a74c4694-8eb2-11e9-bc42-526af7764a86",
@@ -608,9 +617,12 @@ the server returns:
       "extrainfo": "",
       "maxprice": 40,
       "minprice": 30,
+      "expiration": "2020-06-20T23:35:45.460566Z",
       "userid": 1,
       "categoryid": 2,
-      "timestamp": "2019-06-20T06:35:36.5517Z"
+      "timestamp": "2019-06-20T15:35:45.460566Z",
+      "telephone": "1234-1234",
+      "email": "user@gmail.com"
     }
   ],
   "last": 0
