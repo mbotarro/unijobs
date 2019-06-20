@@ -19,7 +19,7 @@ export default class FeedRequestCard extends React.Component {
 
     constructor (props) {
         super(props);
-        this.state.userid = this.props.request.Userid
+        this.state.userid = this.props.request.userid
     }
 
     async componentDidMount() {
@@ -58,7 +58,7 @@ export default class FeedRequestCard extends React.Component {
                                     style={[{ marginHorizontal: 15, width: 50, height: 50, alignSelf: 'center', borderRadius: 25 }]}
                                 />
                             </View>
-                            <Text numberOfLines={1} style={[textStyles.userName]}>{this.state.userdata.Username}</Text>
+                            <Text numberOfLines={1} style={[textStyles.username]}>{this.state.userdata.username}</Text>
                         </View>
                     </TouchableOpacity>
                 </View>

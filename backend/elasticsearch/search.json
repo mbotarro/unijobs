@@ -1,0 +1,13 @@
+{
+    "sort": [
+        {"timestamp": {"order" : "desc"}}, 
+        "_score"
+    ],
+    "query": {
+        "match" : {
+            "name" : {
+                "query" : "Cálculo I"
+            }
+        }
+    }
+}

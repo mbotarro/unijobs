@@ -1,13 +1,16 @@
 package tools
 
 import (
+	"context"
 	"log"
 	"testing"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"github.com/mbotarro/unijobs/backend/models"
+	"github.com/olivere/elastic/v7"
 	"gotest.tools/assert"
 )
 
@@ -22,6 +25,29 @@ func GetTestDB() *sqlx.DB {
 	CleanDB(db)
 
 	return db
+}
+
+// GetTestES returns a connection to a ES used for test
+func GetTestES() *elastic.Client {
+	es, err := elastic.NewClient(
+		elastic.SetURL("http://localhost:9200"),
+		elastic.SetSniff(false))
+	if err != nil {
+		log.Panicf("Can't connect to ES %s", err.Error())
+	}
+
+	return es
+}
+
+// CleanES deletes all documents stored in ES
+func CleanES(es *elastic.Client) {
+	// Delete in all documents in elasticSearch
+	query := elastic.NewMatchAllQuery()
+	es.DeleteByQuery().
+		Index("request").
+		Query(query).
+		Refresh("true").
+		Do(context.Background())
 }
 
 // CleanDB delete all rows from all DB tables
@@ -39,9 +65,14 @@ const (
 	getUser        = `SELECT * FROM userdata WHERE email = $1`
 	insertCategory = `INSERT INTO category (name, description) VALUES ($1, $2)`
 	getCategory    = `SELECT * FROM category WHERE name = $1`
-	insertRequest  = `INSERT INTO request (name, description, extrainfo, minprice, maxprice, userid, categoryid, timestamp) 
-						VALUES ($1, $2, '', $3, $4, $5, $6, $7)`
-	getRequest = `SELECT * FROM request WHERE (name, description, userid, categoryid) = ($1, $2, $3, $4)`
+	insertRequest  = `INSERT INTO request (id, name, description, extrainfo, minprice, maxprice, userid, categoryid, timestamp) 
+						VALUES ($1, $2, $3, '', $4, $5, $6, $7, $8)`
+
+	getRequest = `SELECT * FROM request WHERE id = $1`
+
+	insertOffer = `INSERT INTO offer (id, name, description, extrainfo, minprice, maxprice, userid, categoryid, timestamp) 
+						VALUES ($1, $2, $3, '', $4, $5, $6, $7, $8)`
+	getOffer = `SELECT * FROM offer WHERE id = $1`
 )
 
 // CreateFakeUser inserts a fake user in the db
@@ -77,12 +108,26 @@ func CreateFakeCategory(t *testing.T, db *sqlx.DB, name, description string) mod
 
 // CreateFakeRequest creates a fake request in the db
 func CreateFakeRequest(t *testing.T, db *sqlx.DB, name, description string, user, category int, timestamp time.Time) models.Request {
-	db.MustExec(insertRequest, name, description, 20, 30, user, category, timestamp.UTC())
+	id := uuid.New().String()
+	db.MustExec(insertRequest, id, name, description, 20, 30, user, category, timestamp.UTC())
 
 	r := models.Request{}
-	err := db.Get(&r, getRequest, name, description, user, category)
+	err := db.Get(&r, getRequest, id)
 	assert.Equal(t, nil, err)
 
 	return r
+}
+
+// CreateFakeOffer creates a fake request in the db
+func CreateFakeOffer(t *testing.T, db *sqlx.DB, name, description string, user, category int, timestamp time.Time) models.Offer {
+	id := uuid.New().String()
+
+	db.MustExec(insertOffer, id, name, description, 20, 30, user, category, timestamp.UTC())
+
+	off := models.Offer{}
+	err := db.Get(&off, getOffer, id)
+	assert.Equal(t, nil, err)
+
+	return off
 
 }

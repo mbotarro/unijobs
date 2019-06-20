@@ -42,6 +42,8 @@
 
 ### GET
 
+One must provide the user id.
+
 ```
 /users/<id>
 ```
@@ -66,13 +68,15 @@
 
 ### GET
 
+One must provide the user `id` and the number of requests at `int`.
+
 ```
 /users/<id>/requests?size=<int>
 ```
 
 #### Expected Response
 
-For size = 2
+For `size` = 2
 
 ```
 {
@@ -81,9 +85,9 @@ For size = 2
       "id": 6,
       "name": "Aula",
       "description": "Present Perfect",
-      "extraInfo": "",
-      "maxPrice": 40,
-      "minPrice": 20,
+      "extrainfo": "",
+      "maxprice": 40,
+      "minprice": 20,
       "userid": 1,
       "categoryid": 2,
       "timestamp": "2019-06-06T08:25:44.596591Z"
@@ -92,9 +96,9 @@ For size = 2
       "id": 5,
       "name": "Aula",
       "description": "Phrasal Verbs",
-      "extraInfo": "",
-      "maxPrice": 40,
-      "minPrice": 20,
+      "extrainfo": "",
+      "maxprice": 40,
+      "minprice": 20,
       "userid": 1,
       "categoryid": 2,
       "timestamp": "2019-06-06T07:25:44.596591Z"
@@ -104,7 +108,7 @@ For size = 2
 }
 ```
 
-The **last** parameter is a cursor used for pagination. If you want to get the next 2 requests, you can send
+The `last` parameter is a cursor used for pagination. If you want to get the next 2 requests, you can send
 
 ```
 /users/<id>/requests?size=<int>&before=<last>
@@ -119,9 +123,9 @@ You'll get
       "id": 4,
       "name": "Aula",
       "description": "Calculo IV",
-      "extraInfo": "",
-      "maxPrice": 40,
-      "minPrice": 20,
+      "extrainfo": "",
+      "maxprice": 40,
+      "minprice": 20,
       "userid": 1,
       "categoryid": 1,
       "timestamp": "2019-06-06T06:25:44.596591Z"
@@ -130,9 +134,9 @@ You'll get
       "id": 3,
       "name": "Aula",
       "description": "Calculo III",
-      "extraInfo": "",
-      "maxPrice": 40,
-      "minPrice": 20,
+      "extrainfo": "",
+      "maxprice": 40,
+      "minprice": 20,
       "userid": 1,
       "categoryid": 1,
       "timestamp": "2019-06-06T05:25:44.596591Z"
@@ -142,9 +146,91 @@ You'll get
 }
 ```
 
+## Get User Offers
+
+### GET
+
+One must provide the user `id` and the number of offers at `int`.
+
+```
+/users/<id>/offers?size=<int>
+```
+
+#### Expected Response
+
+For `size` = 2
+
+```
+{
+  "offers": [
+    {
+      "id": 6,
+      "name": "Aula",
+      "description": "Verb To Be",
+      "extrainfo": "",
+      "maxprice": 40,
+      "minprice": 30,
+      "userid": 1,
+      "categoryid": 2,
+      "timestamp": "2019-06-13T10:28:42.411752Z"
+    },
+    {
+      "id": 5,
+      "name": "Aula",
+      "description": "False Friends",
+      "extrainfo": "",
+      "maxprice": 40,
+      "minprice": 30,
+      "userid": 1,
+      "categoryid": 2,
+      "timestamp": "2019-06-13T09:28:42.411752Z"
+    }
+  ],
+  "last": 1560418122
+}
+```
+
+The `last` parameter is a cursor used for pagination. If you want to get the next 2 offers, you can send
+
+```
+/users/<id>/offers?size=<int>&before=<last>
+```
+
+You'll get
+
+```
+{
+  "offers": [
+    {
+      "id": 4,
+      "name": "Aula",
+      "description": "Fisica IV",
+      "extrainfo": "",
+      "maxprice": 40,
+      "minprice": 30,
+      "userid": 1,
+      "categoryid": 1,
+      "timestamp": "2019-06-13T08:28:42.411752Z"
+    },
+    {
+      "id": 3,
+      "name": "Aula",
+      "description": "Fisica III",
+      "extrainfo": "",
+      "maxprice": 40,
+      "minprice": 30,
+      "userid": 1,
+      "categoryid": 1,
+      "timestamp": "2019-06-13T07:28:42.411752Z"
+    }
+  ],
+  "last": 1560410922
+}
+```
+
 # Request API
 
-## Get all requests created in the platform
+## Get and insert requests created in the platform
 
 ### POST
 
@@ -176,6 +262,7 @@ Content-Length: 0
 ##### Invalid Insertion
 An invalid insertion returns the error message.
 
+
 ### GET
 
 One must provide the number of requests that should be sent.
@@ -196,9 +283,9 @@ For size = 2
             "id": 6,
             "name": "Aula",
             "description": "Present Perfect",
-            "extraInfo": "",
-            "maxPrice": 40,
-            "minPrice": 20,
+            "extrainfo": "",
+            "maxprice": 40,
+            "minprice": 20,
             "userid": 1,
             "categoryid": 2,
             "timestamp": "2019-05-31T16:59:57.728024Z"
@@ -207,9 +294,9 @@ For size = 2
             "id": 5,
             "name": "Aula",
             "description": "Phrasal Verbs",
-            "extraInfo": "",
-            "maxPrice": 40,
-            "minPrice": 20,
+            "extrainfo": "",
+            "maxprice": 40,
+            "minprice": 20,
             "userid": 1,
             "categoryid": 2,
             "timestamp": "2019-05-31T15:59:57.728024Z"
@@ -234,8 +321,173 @@ You'll get
         "id": 4,
         "name": "Aula",
         "description": "Calculo IV",
-        "extraInfo": "",
-        "maxPrice": 40,
+        "extrainfo": "",
+        "maxprice": 40,
+        "minprice": 20,
+        "userid": 1,
+        "categoryid": 1,
+        "timestamp": "2019-05-31T14:59:57.728024Z"
+        },
+        {
+        "id": 3,
+        "name": "Aula",
+        "description": "Calculo III",
+        "extrainfo": "",
+        "maxprice": 40,
+        "minprice": 20,
+        "userid": 1,
+        "categoryid": 1,
+        "timestamp": "2019-05-31T13:59:57.728024Z"
+        }
+    ],
+    "last": 1559311197
+}
+```
+
+## Search for Requests in the platform
+
+### GET
+
+To search for requests based on a query, use the following URL:
+
+```
+/requests?q=<string>
+```
+
+The query parameter is used to match requests based in their name and their description. Name match has a higher score
+than description match.
+
+You might want to filter the fetched requests by one or more categories IDs. The categories ID must be separed by comma.
+
+```
+/requests?q=<string>&cat=<catID1>,<catID2>,...
+```
+
+#### Expected Reponse
+
+For the following request
+
+```
+/requests?q=prova
+```
+
+the server returns:
+
+```
+{
+  "requests": [
+    {
+      "id": "a74c4694-8eb2-11e9-bc42-526af7764f67",
+      "name": "Álgebra Linear",
+      "description": "Preciso de ajuda para prova",
+      "extrainfo": "",
+      "maxprice": 40,
+      "minprice": 20,
+      "userid": 2,
+      "categoryid": 2,
+      "timestamp": "2019-06-18T10:09:45.881559Z"
+    },
+    {
+      "id": "a74c4694-8eb2-11e9-bc42-526af7764f65",
+      "name": "Calculo II",
+      "description": "Tenho prova semana que vem",
+      "extrainfo": "",
+      "maxprice": 40,
+      "minprice": 20,
+      "userid": 2,
+      "categoryid": 2,
+      "timestamp": "2019-06-18T08:09:45.881559Z"
+    }
+  ],
+  "last": 0
+}
+```
+
+So far, the search endpoint doesn't accept pagination, always returning all matched requests.
+
+# Offer API
+
+## Get and insert offers created in the platform
+
+### POST 
+
+```
+/requests
+```
+
+#### Expected Body
+```
+{
+    "name": <string>
+    "description": <string>
+    "extrainfo": <string>
+    "maxprice": <int>
+    "minprice": <int>
+    "userid": <int>
+    "categoryid": <int>
+}
+```
+
+### GET
+
+One must provide the number of offers that should be sent.
+
+```
+/offers?size=<int>
+```
+
+#### Expected Reponse
+
+For size = 2
+
+```
+{
+    {
+        "offers": [
+            {
+            "id": 6,
+            "name": "Aula",
+            "description": "Present Perfect",
+            "extrainfo": "",
+            "maxprice": 40,
+            "minPrice": 20,
+            "userid": 1,
+            "categoryid": 2,
+            "timestamp": "2019-05-31T16:59:57.728024Z"
+            },
+            {
+            "id": 5,
+            "name": "Aula",
+            "description": "Phrasal Verbs",
+            "extrainfo": "",
+            "maxprice": 40,
+            "minPrice": 20,
+            "userid": 1,
+            "categoryid": 2,
+            "timestamp": "2019-05-31T15:59:57.728024Z"
+            }
+        ],
+        "last": 1559318397
+    }
+}
+```
+
+The **last** parameter is a cursor used for pagination. If you want to get the next 2 offers, you can send
+
+```
+/offers?size=<int>&before=<last>
+```
+
+You'll get
+
+```{
+    "offers": [
+        {
+        "id": 4,
+        "name": "Aula",
+        "description": "Calculo IV",
+        "extrainfo": "",
+        "maxprice": 40,
         "minPrice": 20,
         "userid": 1,
         "categoryid": 1,
@@ -245,8 +497,8 @@ You'll get
         "id": 3,
         "name": "Aula",
         "description": "Calculo III",
-        "extraInfo": "",
-        "maxPrice": 40,
+        "extrainfo": "",
+        "maxprice": 40,
         "minPrice": 20,
         "userid": 1,
         "categoryid": 1,
@@ -256,6 +508,8 @@ You'll get
     "last": 1559311197
 }
 ```
+
+
 
 # Category API
 

@@ -8,15 +8,16 @@ import UniColors from "../constants/UniColors";
 import TestScreen from "../screens/TestScreen";
 import FeedRequestScreen from "../screens/FeedRequestScreen"
 import FeedOfferScreen from "../screens/FeedOfferScreen"
+import AddOfferScreen from '../screens/AddOfferScreen';
 
 
 export default FeedNavigator = createBottomTabNavigator({
     FeedOffer : {
-        screen : FeedOfferScreen,
+        screen: FeedOfferScreen,
     },
     FeedRequest : {
-        screen : FeedRequestScreen,
-    }
+        screen: FeedRequestScreen,
+    },
 },
 {
     tabBarOptions: {

@@ -18,9 +18,11 @@ import (
 
 func TestGetLastRequest(t *testing.T) {
 	db := tools.GetTestDB()
+	es := tools.GetTestES()
 	defer tools.CleanDB(db)
+	defer tools.CleanES(es)
 
-	ctrl := usecases.NewController(db)
+	ctrl := usecases.NewController(db, es)
 	rh := handlers.NewRequestHandler(ctrl.Request)
 
 	handler := http.HandlerFunc(rh.GetLastRequests)
@@ -192,9 +194,11 @@ func TestGetLastRequest(t *testing.T) {
 
 func TestInsertRequest(t *testing.T) {
 	db := tools.GetTestDB()
+	es := tools.GetTestES()
 	defer tools.CleanDB(db)
+	defer tools.CleanES(es)
 
-	ctrl := usecases.NewController(db)
+	ctrl := usecases.NewController(db, es)
 	rh := handlers.NewRequestHandler(ctrl.Request)
 
 	// Creates fake user and category to be used at the request
@@ -222,4 +226,162 @@ func TestInsertRequest(t *testing.T) {
 
 	status := reqRecord.Code
 	assert.Equal(t, 201, status)
+}
+
+func TestSearchRequest(t *testing.T) {
+	db := tools.GetTestDB()
+	es := tools.GetTestES()
+	defer tools.CleanDB(db)
+	defer tools.CleanES(es)
+
+	ctrl := usecases.NewController(db, es)
+	rh := handlers.NewRequestHandler(ctrl.Request)
+
+	handler := http.HandlerFunc(rh.SearchRequests)
+
+	// Fake Data
+	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234", "9999-1111")
+	c1 := tools.CreateFakeCategory(t, db, "Aula Matemática", "Matemática")
+	c2 := tools.CreateFakeCategory(t, db, "Aula Computação", "Ciência de Computação")
+
+	req1 := tools.CreateFakeRequest(t, db, "Aula de Cálculo I", "Procuro aula particular", u.Userid, c1.ID, time.Now().Add(-10*time.Hour))
+	req2 := tools.CreateFakeRequest(t, db, "Aula de Cálculo II", "Tenho prova semana que vem", u.Userid, c1.ID, time.Now().Add(-9*time.Hour))
+	req3 := tools.CreateFakeRequest(t, db, "Aula de Cálculo III", "Teorema de Green", u.Userid, c1.ID, time.Now().Add(-8*time.Hour))
+	req4 := tools.CreateFakeRequest(t, db, "Álgebra Linear", "Preciso de ajuda para prova", u.Userid, c1.ID, time.Now().Add(-9*time.Hour))
+	req5 := tools.CreateFakeRequest(t, db, "Aula de ICC I", "Ajuda para estudar para prova", u.Userid, c2.ID, time.Now().Add(-8*time.Hour))
+	req6 := tools.CreateFakeRequest(t, db, "Aula de ICC II", "Ajuda em prova", u.Userid, c2.ID, time.Now().Add(-7*time.Hour))
+
+	// Insert requests in ES
+	for _, req := range []models.Request{req1, req2, req3, req4, req5, req6} {
+		err := ctrl.Request.InsertRequestInES(req)
+		assert.Equal(t, nil, err)
+	}
+
+	t.Run("get only Calculus requests", func(t *testing.T) {
+		req, err := http.NewRequest("GET", "/requests?q=calculo", nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		rr := httptest.NewRecorder()
+
+		handler.ServeHTTP(rr, req)
+
+		if status := rr.Code; status != http.StatusOK {
+			t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
+
+		}
+
+		expected := handlers.RequestResponse{
+			Requests: []models.Request{req3, req2, req1}, // In creation descending order
+			Last:     0,                                  // Search doesn't have pagination
+		}
+		expectedJs, err := json.Marshal(expected)
+		assert.Equal(t, nil, err)
+
+		assert.Equal(t, string(expectedJs), rr.Body.String())
+	})
+
+	t.Run("get request from 2 categories", func(t *testing.T) {
+		t.Run("not specifying the categories", func(t *testing.T) {
+			req, err := http.NewRequest("GET", "/requests?q=prova", nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			rr := httptest.NewRecorder()
+
+			handler.ServeHTTP(rr, req)
+
+			if status := rr.Code; status != http.StatusOK {
+				t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
+
+			}
+
+			expected := handlers.RequestResponse{
+				Requests: []models.Request{req6, req5, req4, req2}, // In creation descending order
+				Last:     0,                                        // Search doesn't have pagination
+			}
+			expectedJs, err := json.Marshal(expected)
+			assert.Equal(t, nil, err)
+
+			assert.Equal(t, string(expectedJs), rr.Body.String())
+		})
+
+		t.Run("specifying both categories", func(t *testing.T) {
+			req, err := http.NewRequest("GET", fmt.Sprintf("/requests?q=prova&cat=%d,%d", c1.ID, c2.ID), nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			rr := httptest.NewRecorder()
+
+			handler.ServeHTTP(rr, req)
+
+			if status := rr.Code; status != http.StatusOK {
+				t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
+
+			}
+
+			expected := handlers.RequestResponse{
+				Requests: []models.Request{req6, req5, req4, req2}, // In creation descending order
+				Last:     0,                                        // Search doesn't have pagination
+			}
+			expectedJs, err := json.Marshal(expected)
+			assert.Equal(t, nil, err)
+
+			assert.Equal(t, string(expectedJs), rr.Body.String())
+		})
+
+		t.Run("just one category", func(t *testing.T) {
+			req, err := http.NewRequest("GET", fmt.Sprintf("/requests?q=prova&cat=%d", c2.ID), nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			rr := httptest.NewRecorder()
+
+			handler.ServeHTTP(rr, req)
+
+			if status := rr.Code; status != http.StatusOK {
+				t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
+
+			}
+
+			expected := handlers.RequestResponse{
+				Requests: []models.Request{req6, req5}, // In creation descending order
+				Last:     0,                            // Search doesn't have pagination
+			}
+			expectedJs, err := json.Marshal(expected)
+			assert.Equal(t, nil, err)
+
+			assert.Equal(t, string(expectedJs), rr.Body.String())
+		})
+	})
+
+	t.Run("No matched request", func(t *testing.T) {
+		req, err := http.NewRequest("GET", "/requests?q=eps", nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		rr := httptest.NewRecorder()
+
+		handler.ServeHTTP(rr, req)
+
+		if status := rr.Code; status != http.StatusOK {
+			t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
+
+		}
+
+		expected := handlers.RequestResponse{
+			Requests: []models.Request{}, // We expect to get no request
+			Last:     0,                  // Search doesn't have pagination
+		}
+		expectedJs, err := json.Marshal(expected)
+		assert.Equal(t, nil, err)
+
+		assert.Equal(t, string(expectedJs), rr.Body.String())
+	})
+
 }

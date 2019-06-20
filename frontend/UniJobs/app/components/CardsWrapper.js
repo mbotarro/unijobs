@@ -9,12 +9,12 @@ export default class CardsWrapper extends React.Component {
     render() {
         const { request, categories, ButtonWrapper, Cards, onQuit } = this.props
 
-        var price = 'R$' + request.MinPrice;
-        if (request.MaxPrice > request.MinPrice)
-            price += ' - ' + request.MaxPrice;
+        var price = 'R$' + request.minprice;
+        if (request.maxprice > request.minprice)
+            price += ' - ' + request.maxprice;
 
-        const category = categories[request.Categoryid];
-        const categoryName = category ? category.Name.replace('.', ' de ') : 'UNDEFINED';
+        const category = categories[request.categoryid];
+        const categoryName = category ? category.name.replace('.', ' de ') : 'UNDEFINED';
 
         const Images = (name) => {
             switch (name) {
@@ -38,7 +38,7 @@ export default class CardsWrapper extends React.Component {
                     <View style={{alignSelf: 'center', justifyContent: 'flex-start'}}>
                         <QuitButton/>
                     </View>
-                    <Text style={textStyles.textTitle}>{request.Name}</Text>
+                    <Text style={textStyles.textTitle}>{request.name}</Text>
                     <View style={{justifyContent: 'flex-end', width: iconStyles.exitIcon.width, height: iconStyles.exitIcon.height,
                         marginRight: iconStyles.exitIcon.marginLeft, alignSelf: 'center'}}
                     />
@@ -60,7 +60,7 @@ export default class CardsWrapper extends React.Component {
                         </View>
                     </View>
                     <Text style={[textStyles.mainDescText]}>
-                        {(request.Description.length > 290) ? (((request.Description).substring(0,290-3)) + '...') : request.Description}
+                        {(request.description.length > 290) ? (((request.description).substring(0,290-3)) + '...') : request.description}
                     </Text>
                 </View>
             )
