@@ -423,6 +423,7 @@ So far, the search endpoint doesn't accept pagination, always returning all matc
     "extrainfo": <string>
     "maxprice": <int>
     "minprice": <int>
+    "expiration": <string data as ISO8601>
     "userid": <int>
     "categoryid": <int>
 }
@@ -451,6 +452,7 @@ For size = 2
             "extrainfo": "",
             "maxprice": 40,
             "minPrice": 20,
+            "expiration": "2020-06-20T03:00:13.250602Z"
             "userid": 1,
             "categoryid": 2,
             "timestamp": "2019-05-31T16:59:57.728024Z"
@@ -462,6 +464,7 @@ For size = 2
             "extrainfo": "",
             "maxprice": 40,
             "minPrice": 20,
+            "expiration": "2020-06-20T03:00:13.250602Z"
             "userid": 1,
             "categoryid": 2,
             "timestamp": "2019-05-31T15:59:57.728024Z"
@@ -489,6 +492,7 @@ You'll get
         "extrainfo": "",
         "maxprice": 40,
         "minPrice": 20,
+        "expiration": "2020-06-20T03:00:13.250602Z"
         "userid": 1,
         "categoryid": 1,
         "timestamp": "2019-05-31T14:59:57.728024Z"
@@ -500,6 +504,7 @@ You'll get
         "extrainfo": "",
         "maxprice": 40,
         "minPrice": 20,
+        "expiration": "2020-06-20T03:00:13.250602Z"
         "userid": 1,
         "categoryid": 1,
         "timestamp": "2019-05-31T13:59:57.728024Z"
