@@ -8,6 +8,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
+
+	// Pq is the postgres interface library
 	_ "github.com/lib/pq"
 	"github.com/mbotarro/unijobs/backend/models"
 	"github.com/olivere/elastic/v7"
@@ -70,8 +72,8 @@ const (
 
 	getRequest = `SELECT * FROM request WHERE id = $1`
 
-	insertOffer = `INSERT INTO offer (id, name, description, extrainfo, minprice, maxprice, expiration, userid, categoryid, timestamp) 
-						VALUES ($1, $2, $3, '', $4, $5, $6, $7, $8, $9)`
+	insertOffer = `INSERT INTO offer (id, name, description, extrainfo, minprice, maxprice, expiration, userid, categoryid, timestamp, telephone, email) 
+						VALUES ($1, $2, $3, '', $4, $5, $6, $7, $8, $9, $10, $11)`
 	getOffer = `SELECT * FROM offer WHERE id = $1`
 )
 
@@ -122,7 +124,7 @@ func CreateFakeRequest(t *testing.T, db *sqlx.DB, name, description string, user
 func CreateFakeOffer(t *testing.T, db *sqlx.DB, name, description string, user, category int, timestamp time.Time) models.Offer {
 	id := uuid.New().String()
 
-	db.MustExec(insertOffer, id, name, description, 20, 30, time.Now().Add(8760*time.Hour).UTC(), user, category, timestamp.UTC())
+	db.MustExec(insertOffer, id, name, description, 20, 30, time.Now().Add(8760*time.Hour).UTC(), user, category, timestamp.UTC(), "(34)9999-9999", "user@teste.com")
 
 	off := models.Offer{}
 	err := db.Get(&off, getOffer, id)
