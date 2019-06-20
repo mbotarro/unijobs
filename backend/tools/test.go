@@ -122,9 +122,15 @@ func CreateFakeRequest(t *testing.T, db *sqlx.DB, name, description string, user
 
 // CreateFakeOffer creates a fake request in the db
 func CreateFakeOffer(t *testing.T, db *sqlx.DB, name, description string, user, category int, timestamp time.Time) models.Offer {
+	return CreateFakeOfferWithTelAndMail(t, db, name, description, user, category, timestamp, "(34)9999-9999", "user@teste.com")
+}
+
+// CreateFakeOfferWithTelAndMail creates a fake offer with a specified email and telephone
+func CreateFakeOfferWithTelAndMail(t *testing.T, db *sqlx.DB, name, description string, user,
+	category int, timestamp time.Time, tel, email string) models.Offer {
 	id := uuid.New().String()
 
-	db.MustExec(insertOffer, id, name, description, 20, 30, time.Now().Add(8760*time.Hour).UTC(), user, category, timestamp.UTC(), "(34)9999-9999", "user@teste.com")
+	db.MustExec(insertOffer, id, name, description, 20, 30, time.Now().Add(8760*time.Hour).UTC(), user, category, timestamp.UTC(), tel, email)
 
 	off := models.Offer{}
 	err := db.Get(&off, getOffer, id)

@@ -249,16 +249,16 @@ func TestSearchOffer(t *testing.T) {
 	c1 := tools.CreateFakeCategory(t, db, "Aula Matemática", "Matemática")
 	c2 := tools.CreateFakeCategory(t, db, "Aula Computação", "Ciência de Computação")
 
-	off1 := tools.CreateFakeOffer(t, db, "Aula de Cálculo I", "Dou aula particular", u.Userid, c1.ID, time.Now().Add(-10*time.Hour))
-	off2 := tools.CreateFakeOffer(t, db, "Aula de Cálculo II", "Ajudo com provas e listas", u.Userid, c1.ID, time.Now().Add(-9*time.Hour))
-	off3 := tools.CreateFakeOffer(t, db, "Aula de Cálculo III", "Mestrando no ICMC. Ajudo em estudo para provas", u.Userid, c1.ID, time.Now().Add(-8*time.Hour))
-	off4 := tools.CreateFakeOffer(t, db, "Álgebra Linear", "Ajudo com listas", u.Userid, c1.ID, time.Now().Add(-7*time.Hour))
-	off5 := tools.CreateFakeOffer(t, db, "Aula de ICC I", "Dou aulas particulares de C e C++", u.Userid, c2.ID, time.Now().Add(-6*time.Hour))
-	off6 := tools.CreateFakeOffer(t, db, "Aula de ICC II", "Ajudo na preparação para provas", u.Userid, c2.ID, time.Now().Add(-5*time.Hour))
+	off1 := tools.CreateFakeOfferWithTelAndMail(t, db, "Aula de Cálculo I", "Dou aula particular", u.Userid, c1.ID, time.Now().Add(-10*time.Hour), u.Telephone, u.Email)
+	off2 := tools.CreateFakeOfferWithTelAndMail(t, db, "Aula de Cálculo II", "Ajudo com provas e listas", u.Userid, c1.ID, time.Now().Add(-9*time.Hour), u.Telephone, u.Email)
+	off3 := tools.CreateFakeOfferWithTelAndMail(t, db, "Aula de Cálculo III", "Mestrando no ICMC. Ajudo em estudo para provas", u.Userid, c1.ID, time.Now().Add(-8*time.Hour), u.Telephone, u.Email)
+	off4 := tools.CreateFakeOfferWithTelAndMail(t, db, "Álgebra Linear", "Ajudo com listas", u.Userid, c1.ID, time.Now().Add(-7*time.Hour), u.Telephone, u.Email)
+	off5 := tools.CreateFakeOfferWithTelAndMail(t, db, "Aula de ICC I", "Dou aulas particulares de C e C++", u.Userid, c2.ID, time.Now().Add(-6*time.Hour), u.Telephone, u.Email)
+	off6 := tools.CreateFakeOfferWithTelAndMail(t, db, "Aula de ICC II", "Ajudo na preparação para provas", u.Userid, c2.ID, time.Now().Add(-5*time.Hour), u.Telephone, u.Email)
 
 	// Insert offers in ES
 	for _, off := range []*models.Offer{&off1, &off2, &off3, &off4, &off5, &off6} {
-		id, err := ctrl.Offer.InsertOffer(*off)
+		id, err := ctrl.Offer.InsertOffer(*off, true, true)
 		assert.Equal(t, nil, err)
 		off.ID = id
 	}
