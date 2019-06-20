@@ -215,7 +215,10 @@ func TestInsertOffer(t *testing.T) {
 								"minPrice": 0,
 								"expiration": "2008-09-15T15:53:00+05:00",
 								"userid": %d,
-								"categoryid": %d}`, u.Userid, c.ID)
+								"categoryid": %d,
+								"telephone": true,
+								"email": false
+								}`, u.Userid, c.ID)
 	jsonOff := []byte(jsonStr)
 
 	req, err := http.NewRequest("POST", "/offers", bytes.NewBuffer(jsonOff))

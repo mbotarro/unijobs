@@ -7,7 +7,7 @@ import { Dimensions } from "react-native";
 
 import { populateRequestMiniCards } from '../components/FeedMiniCards';
 import { loadRequests, loadCategories } from '../actions/FeedActions'
-import FeedRequestCard from '../components/FeedRequestCard'
+import FeedCard from '../components/FeedCard'
 import FloatActionButton from '../components/FloatActionButton'
 
 import UniStyles from '../constants/UniStyles'
@@ -39,6 +39,7 @@ export default class FeedRequestScreen extends React.Component {
         allFeedHeader: 'Últimas Ofertas'
     }
 
+    isOffer = true
 
     async componentDidMount() {
         // use for fetching data to show
@@ -55,8 +56,8 @@ export default class FeedRequestScreen extends React.Component {
         });
     }
 
-    onMenuButtonPress(navigate) {
-        navigate.openDrawer();
+    onMenuButtonPress(navigation) {
+        navigation.openDrawer();
     }
 
     onSearchBarChangeText(navigate, text) {
@@ -100,7 +101,7 @@ export default class FeedRequestScreen extends React.Component {
         const menuButton = (
             <TouchableHighlight
                 underlayColor={UniColors.main}
-                onPress={() => this.onMenuButtonPress(navigate)}
+                onPress={() => this.onMenuButtonPress(this.props.navigation)}
             >
                 <Image source={require('../assets/icons/line-menu.png')}  style={styles.menuButton} />
             </TouchableHighlight>
@@ -215,12 +216,13 @@ export default class FeedRequestScreen extends React.Component {
                     this.state.isLoading ?
                     <ActivityIndicator style={{ marginTop: 10 }} />
                     :
-                    <FeedRequestCard
+                    <FeedCard
                         request = {this.state.openRequest}
                         categories = {this.state.categories}
                         onCreateOfferPress = {() => {}}
                         onShowRequester = {() => {}}
                         onQuit = {() => this.setState({isRequestCardOpen: false})}
+                        isOffer = {this.isOffer}
                     />
                 }
                 </View>
@@ -373,20 +375,13 @@ const styles = StyleSheet.create({
     }
 });
 
-
-
-
-
-
-
-
 // TEST !!! (TODO: REMOVE)
 const myFeedTestRequests = [
     {
         id : 0,
         name : 'Titulo Solicitação',
         description : 'Descrição bem grande o suficiente para usar todo o espaço disponível em preview limitado em espaço máximo e restrito!!!!!!!!!!!!!!!!!!!!!!!!!!',
-        extrainfo : '',
+        extrainfo : 'some extrasasijhdjfashdfiusjhfdjkasdhfajklsdfhakjdfhaskjdfhaskdjfhaskjdfhasjkdfhasdjkfh',
         minprice : 'XXXXX',
         maxprice: 'XXXXX',
         userid : 0,

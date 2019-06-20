@@ -48,6 +48,16 @@ async function loadCategories (onResponse) {
     });
 }
 
+async function loadUserInfo(id, onResponse) {
+    fetch(UniData.userDataApi(id), {method: 'GET'})
+    .then((response) => response.json())
+    .then((response) => onResponse(response))
+    .catch((error) => {
+        console.log("Error while getting user info");
+        alert(error.message)
+    })
+}
+
 
 function getCategoryImage(id) {
     switch (id) {
@@ -61,4 +71,4 @@ function getCategoryImage(id) {
 };
 
 
-module.exports = { loadRequests, loadCategories, loadMyRequests };
+module.exports = { loadRequests, loadCategories, loadMyRequests, loadUserInfo };

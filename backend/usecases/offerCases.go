@@ -12,12 +12,14 @@ import (
 // OfferController wraps all Offers' usecases
 type OfferController struct {
 	offerDAL *dal.OfferDAL
+	userDAL  *dal.UserDAL
 }
 
 // NewOfferController returns a new OfferController
 func NewOfferController(db *sqlx.DB, es *elastic.Client) *OfferController {
 	return &OfferController{
 		offerDAL: dal.NewOfferDAL(db, es),
+		userDAL:  dal.NewUserDAL(db),
 	}
 }
 
@@ -29,7 +31,23 @@ func (oc *OfferController) GetLastOffers(before time.Time, size int) ([]models.O
 
 // InsertOffer inserts the given offer into the databases (postgres + ES), calling the DAL package function.
 // It returns error != nil in case some error occured.
-func (oc *OfferController) InsertOffer(offer models.Offer) (string, error) {
+func (oc *OfferController) InsertOffer(offer models.Offer, telephone bool, email bool) (string, error) {
+	u, err := oc.userDAL.GetUserInfo(offer.Userid)
+	if err != nil {
+		return "", nil
+	}
+
+	if telephone {
+		offer.Telephone = u.Telephone
+	} else {
+		offer.Telephone = ""
+	}
+	if email {
+		offer.Email = u.Email
+	} else {
+		offer.Email = ""
+	}
+
 	id, err := oc.offerDAL.InsertOfferInDB(&offer)
 	if err != nil {
 		return "", nil

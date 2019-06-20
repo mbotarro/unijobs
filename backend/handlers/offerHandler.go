@@ -46,6 +46,8 @@ type OfferInsertion struct {
 	Expiration  time.Time `json:"expiration"`
 	Userid      int       `json:"userid"`
 	Categoryid  int       `json:"categoryid"`
+	Telephone   bool      `db:"telephone" json:"telephone"`
+	Email       bool      `db:"email" json:"email"`
 }
 
 // GetLastOffers sends the last offers created in the unijobs service
@@ -114,7 +116,7 @@ func (handler *OfferHandler) InsertOffer(w http.ResponseWriter, r *http.Request)
 	off.Categoryid = offInserted.Categoryid
 	off.Timestamp = time.Now()
 
-	_, err = handler.offerController.InsertOffer(off)
+	_, err = handler.offerController.InsertOffer(off, offInserted.Telephone, offInserted.Email)
 	if err != nil {
 		http.Error(w, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error()).Error(), http.StatusInternalServerError)
 		return
