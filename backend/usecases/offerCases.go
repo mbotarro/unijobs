@@ -18,7 +18,7 @@ type OfferController struct {
 // NewOfferController returns a new OfferController
 func NewOfferController(db *sqlx.DB, es *elastic.Client) *OfferController {
 	return &OfferController{
-		offerDAL: dal.NewOfferDAL(db),
+		offerDAL: dal.NewOfferDAL(db, es),
 		userDAL:  dal.NewUserDAL(db),
 	}
 }
@@ -48,5 +48,5 @@ func (rc *OfferController) InsertOffer(offer models.Offer, telephone bool, email
 		offer.Email = ""
 	}
 
-	return rc.offerDAL.InsertOffer(offer)
+	return rc.offerDAL.InsertOfferInDB(&offer)
 }
