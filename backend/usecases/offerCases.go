@@ -32,7 +32,6 @@ func (rc *OfferController) GetLastOffers(before time.Time, size int) ([]models.O
 // It returns error != nil in case some error occured.
 func (rc *OfferController) InsertOffer(offer models.Offer, telephone bool, email bool) error {
 	u, err := rc.userDAL.GetUserInfo(offer.Userid)
-
 	if err != nil {
 		return nil
 	}
