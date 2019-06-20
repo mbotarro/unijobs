@@ -37,13 +37,14 @@ type OfferResponse struct {
 
 // OfferInsertion contains the expected input from the frontend
 type OfferInsertion struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	ExtraInfo   string `json:"extrainfo"`
-	MaxPrice    int    `json:"maxprice"`
-	MinPrice    int    `json:"minprice"`
-	Userid      int    `json:"userid"`
-	Categoryid  int    `json:"categoryid"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	ExtraInfo   string    `json:"extrainfo"`
+	MaxPrice    int       `json:"maxprice"`
+	MinPrice    int       `json:"minprice"`
+	Expiration  time.Time `json:"expiration"`
+	Userid      int       `json:"userid"`
+	Categoryid  int       `json:"categoryid"`
 }
 
 // GetLastOffers sends the last offers created in the unijobs service
