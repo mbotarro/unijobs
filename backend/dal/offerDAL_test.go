@@ -78,11 +78,11 @@ func TestGetLastOffersBeforeTimestamp(t *testing.T) {
 	offerDAL := getOfferDAL(db)
 
 	t.Run("without size limit", func(t *testing.T) {
-		// Get only the requests created before 1 hour ago
+		// Get only the offers created before 1 hour ago
 		gotOffers, err := offerDAL.GetLastOffers(time.Now().Add(-time.Hour), 30)
 		assert.Equal(t, nil, err)
 
-		// We should get just the first two requests, ordered by creation time
+		// We should get just the first two offers, ordered by creation time
 		assert.Equal(t, 3, len(gotOffers))
 		assert.Equal(t, offers[2], gotOffers[0])
 		assert.Equal(t, offers[1], gotOffers[1])
@@ -106,5 +106,55 @@ func TestGetLastOffersBeforeTimestamp(t *testing.T) {
 			assert.Equal(t, 1, len(gotOffers))
 			assert.Equal(t, offers[2], gotOffers[0])
 		})
+	})
+}
+
+func CompareOffers(off1, off2 models.Offer) bool {
+	equalReqs := true
+
+	equalReqs = equalReqs && (off1.Name == off2.Name)
+	equalReqs = equalReqs && (off1.Description == off2.Description)
+	equalReqs = equalReqs && (off1.ExtraInfo == off2.ExtraInfo)
+	equalReqs = equalReqs && (off1.MaxPrice == off2.MaxPrice)
+	equalReqs = equalReqs && (off1.MinPrice == off2.MinPrice)
+	equalReqs = equalReqs && (off1.Userid == off2.Userid)
+	equalReqs = equalReqs && (off1.Categoryid == off2.Categoryid)
+
+	return equalReqs
+}
+
+func TestInsertOffer(t *testing.T) {
+	// Get connection to test database and cleans it
+	db := tools.GetTestDB()
+	defer tools.CleanDB(db)
+	offerDAL := getOfferDAL(db)
+
+	// Create the fake offer
+	var off models.Offer
+	off.Name = "Requis Aula Calc"
+	off.Description = "Procuro aula de calculo"
+	off.ExtraInfo = "Informacao X"
+	off.MinPrice = 20
+	off.MaxPrice = 50
+	off.Expiration = time.Now().Add(8760 * time.Hour)
+
+	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234", "9999-1111")
+	c := tools.CreateFakeCategory(t, db, "Aula Matemática", "Matemática")
+	off.Userid = u.Userid
+	off.Categoryid = c.ID
+
+	// Executes the test query
+	err := offerDAL.InsertOffer(off)
+
+	// Checks the expected results
+	assert.Equal(t, nil, err)
+
+	// Checks if the offer was inserted successfully
+	t.Run("size 1", func(t *testing.T) {
+		gotReqs, err := offerDAL.GetLastOffers(time.Now().Add(-time.Hour), 1)
+		assert.Equal(t, nil, err)
+
+		equalReqs := CompareOffers(gotReqs[0], off)
+		assert.Equal(t, equalReqs, true)
 	})
 }

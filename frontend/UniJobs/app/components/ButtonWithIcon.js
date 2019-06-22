@@ -25,15 +25,6 @@ export default class ButtonWithIcon extends Component {
 }
 
 
-Button.propTypes = {
-    text: PropTypes.string.isRequired,
-    onPress: PropTypes.func.isRequired,
-
-    buttonStyle: ViewPropTypes.style,
-    textStyle: Text.propTypes.style,
-};
-
-
 const styles = StyleSheet.create({
     textStyle: {
         fontSize: UniText.normal,
