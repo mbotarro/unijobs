@@ -43,6 +43,7 @@ func (dal *OfferDAL) GetLastOffers(before time.Time, size int) ([]models.Offer, 
 }
 
 // InsertOfferInDB Receives an offer as a parameter and inserts into the database
+// It will return the ID of the inserted offer.
 func (dal *OfferDAL) InsertOfferInDB(offer *models.Offer) (string, error) {
 	// Generates an uuid for the offer
 	offer.ID = uuid.New().String()
