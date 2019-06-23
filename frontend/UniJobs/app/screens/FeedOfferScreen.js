@@ -5,7 +5,7 @@ import { Platform, StyleSheet, Text, TextInput, View, Image, ScrollView, Touchab
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { Dimensions } from "react-native";
 
-import { populateOfferMiniCards } from '../components/FeedMiniCards';
+import { populateRequestMiniCards } from '../components/FeedMiniCards';
 import { loadOffers, loadCategories } from '../actions/FeedActions'
 import FeedCard from '../components/FeedCard'
 import FloatActionButton from '../components/FloatActionButton'
@@ -203,7 +203,7 @@ export default class FeedOfferScreen extends React.Component {
         const feedView = this.state.isLoading ?
             <ActivityIndicator style={{ marginTop: 10 }} />
             :
-            populateOfferMiniCards(
+            populateRequestMiniCards(
                 this.state.isMyFeedOpen ? this.state.myFeedOffers : this.state.allFeedOffers,
                 this.state.categories,
                 (offer) => this.setState({isOfferCardOpen: true, openOffer: offer})

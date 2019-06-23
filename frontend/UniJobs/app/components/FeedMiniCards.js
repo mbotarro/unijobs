@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Image } from 'react-native';
 import ItemMiniCard from './ItemMiniCard'
-
+//used for requests and offers
 function populateRequestMiniCard(request, categories, onMiniCardOpen) {
     const category  = categories[request.categoryid];
     
@@ -36,39 +36,5 @@ function populateRequestMiniCards(requests, categories, onMiniCardOpen) {
     ))
     );
 }
-    
-function populateOfferMiniCard(offer, categories, onMiniCardOpen) {
-    const category  = categories[offer.categoryid];
-    
-    const categoryName = category ? category.name.replace('.', ' de ') : 'UNDEFINED';
-    
-    const image     =   <Image
-                        source = {category.image}
-                        style={{ width: 65, height: 65}}
-                        />;
-    
-    var price     = 'R$' + offer.minprice;
-    if (offer.maxprice > offer.minprice)
-        price += ' - ' + offer.maxprice;
-    
-    return (
-        <ItemMiniCard
-        image           = {image}
-        titleText       = {offer.name}
-        contentText     = {offer.description}
-        categoryText    = {categoryName}
-        priceText       = {price}
-        onPress         = {() => onMiniCardOpen(offer)}
-        />);
-};
 
-function populateOfferMiniCards(offers, categories, onMiniCardOpen) {
-    return (
-        offers.map((off, index) => (
-            <View key = {index} style = {{marginTop: 3}} >
-            {populateOfferMiniCard(off, categories, onMiniCardOpen)}
-        </View>
-        ))
-    );
-}
-module.exports = { populateRequestMiniCards, populateOfferMiniCards };
+module.exports = { populateRequestMiniCards};

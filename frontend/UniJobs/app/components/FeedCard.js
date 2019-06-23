@@ -33,7 +33,7 @@ export default class FeedCard extends React.Component {
     }
 
     render() {
-        const { request, categories, onCreateOfferPress, onShowRequester, onQuit, isOffer } = this.props;
+        const { offer, request, categories, onCreateOfferPress, onShowRequester, onQuit, isOffer } = this.props;
 
         const ActionButton = (text, onPress, color) => (
             <Button
@@ -130,7 +130,7 @@ export default class FeedCard extends React.Component {
 
         return (
             <CardsWrapper
-                request={request}
+                request={this.props.isOffer?offer:request}
                 categories={categories}
                 ButtonWrapper={ButtonWrapper}
                 Cards={CardView}
