@@ -1,16 +1,16 @@
 package dal_test
 
 import (
+	"context"
 	"testing"
 	"time"
-	"context"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/mbotarro/unijobs/backend/dal"
 	"github.com/mbotarro/unijobs/backend/models"
 	"github.com/mbotarro/unijobs/backend/tools"
-	"gotest.tools/assert"
 	"github.com/olivere/elastic/v7"
+	"gotest.tools/assert"
 )
 
 func getRequestDAL(db *sqlx.DB, es *elastic.Client) *dal.RequestDAL {
@@ -153,7 +153,7 @@ func TestInsertRequest(t *testing.T) {
 	req.Categoryid = c.ID
 
 	// Executes the test query
-	err := requestDAL.InsertRequest(req)
+	_, err := requestDAL.InsertRequestInDB(&req)
 
 	// Checks the expected results
 	assert.Equal(t, nil, err)
@@ -168,7 +168,7 @@ func TestInsertRequest(t *testing.T) {
 	})
 }
 
-func TestInsertRequestInES(t *testing.T){
+func TestInsertRequestInES(t *testing.T) {
 	db := tools.GetTestDB()
 	es := tools.GetTestES()
 	defer tools.CleanDB(db)
@@ -189,19 +189,19 @@ func TestInsertRequestInES(t *testing.T){
 	assert.Equal(t, nil, err)
 
 	// Checks if the request was inserted successfully
-	
+
 	t.Run("1 insertion", func(t *testing.T) {
-		termQuery := elastic.NewTermQuery("db_id",req.ID)
+		termQuery := elastic.NewTermQuery("db_id", req.ID)
 		searchResult, err := es.Search().
 			Index("request").
 			Query(termQuery).
 			Do(context.Background())
-		
+
 		// We expect no error
 		assert.Equal(t, nil, err)
 		assert.Equal(t, 1, int(searchResult.TotalHits()))
 
-		gotReqs, err := tools.GetRequestFromSearchResult(searchResult)
+		gotReqs, err := tools.GetRequestsFromSearchResult(searchResult)
 		assert.Equal(t, nil, err)
 		assert.Equal(t, 1, len(gotReqs))
 	})
@@ -210,7 +210,7 @@ func TestInsertRequestInES(t *testing.T){
 	err = requestDAL.InsertRequestInES(req2)
 	assert.Equal(t, nil, err)
 
-	t.Run("2 insertions", func(t *testing.T){
+	t.Run("2 insertions", func(t *testing.T) {
 		termsQuery := elastic.NewTermsQuery("db_id", req.ID, req2.ID)
 		searchResult, err := es.Search().
 			Index("request").
@@ -220,13 +220,13 @@ func TestInsertRequestInES(t *testing.T){
 		assert.Equal(t, nil, err)
 		assert.Equal(t, 2, int(searchResult.TotalHits()))
 
-		gotReqs, err := tools.GetRequestFromSearchResult(searchResult)
+		gotReqs, err := tools.GetRequestsFromSearchResult(searchResult)
 		assert.Equal(t, nil, err)
 		assert.Equal(t, 2, len(gotReqs))
 	})
 }
 
-func TestSearchRequestInES(t *testing.T){
+func TestSearchRequestInES(t *testing.T) {
 	db := tools.GetTestDB()
 	es := tools.GetTestES()
 	defer tools.CleanDB(db)
@@ -240,35 +240,35 @@ func TestSearchRequestInES(t *testing.T){
 	req := tools.CreateFakeRequest(t, db, "Aula de Cálculo I", "Preciso de ajuda na matéria", u.Userid, c.ID, time.Now().Add(-10*time.Hour))
 	err := requestDAL.InsertRequestInES(req)
 	assert.Equal(t, nil, err)
-	
-	t.Run("one element in es", func(t *testing.T){
-		t.Run("match exact name", func(t *testing.T){
+
+	t.Run("one element in es", func(t *testing.T) {
+		t.Run("match exact name", func(t *testing.T) {
 			ids, err := requestDAL.SearchInES(req.Name)
-			
+
 			// We expect to recover just the ID of the only request inserted
 			assert.Equal(t, nil, err)
 			assert.Equal(t, 1, len(ids))
 			assert.Equal(t, req.ID, ids[0])
 		})
-	
-		t.Run("match name without accent", func(t *testing.T){
+
+		t.Run("match name without accent", func(t *testing.T) {
 			ids, err := requestDAL.SearchInES("Aula de Calculo I")
-			
+
 			assert.Equal(t, nil, err)
 			assert.Equal(t, 1, len(ids))
 			assert.Equal(t, req.ID, ids[0])
 		})
 
-		t.Run("match name with typo", func(t *testing.T){
+		t.Run("match name with typo", func(t *testing.T) {
 			ids, err := requestDAL.SearchInES("Aula de Clculo I")
 			assert.Equal(t, nil, err)
 			assert.Equal(t, 1, len(ids))
 			assert.Equal(t, req.ID, ids[0])
 		})
-	
-		t.Run("match part of the name", func(t *testing.T){
+
+		t.Run("match part of the name", func(t *testing.T) {
 			ids, err := requestDAL.SearchInES("Calculo I")
-			
+
 			assert.Equal(t, nil, err)
 			assert.Equal(t, 1, len(ids))
 			assert.Equal(t, req.ID, ids[0])
@@ -277,24 +277,24 @@ func TestSearchRequestInES(t *testing.T){
 
 	req2 := tools.CreateFakeRequest(t, db, "Aula de Cálculo II", "Tenho prova semana que vem", u.Userid, c.ID, time.Now().Add(-9*time.Hour))
 	req3 := tools.CreateFakeRequest(t, db, "Aula de Cálculo III", "Teorema de Green", u.Userid, c.ID, time.Now().Add(-8*time.Hour))
-	for _, req := range []models.Request{req, req2, req3}{
+	for _, req := range []models.Request{req, req2, req3} {
 		err := requestDAL.InsertRequestInES(req)
 		assert.Equal(t, nil, err)
 	}
 
-	t.Run("3 elements in ES", func(t *testing.T){			
-		t.Run("match exact name", func(t *testing.T){
+	t.Run("3 elements in ES", func(t *testing.T) {
+		t.Run("match exact name", func(t *testing.T) {
 			ids, err := requestDAL.SearchInES(req.Name)
-			
+
 			// We expect to recover the IDs of the 3 request but with the first one in the top
 			assert.Equal(t, nil, err)
 			assert.Equal(t, 3, len(ids))
-			assert.Equal(t, req.ID, ids[0]) // Cálculo I
+			assert.Equal(t, req.ID, ids[0])  // Cálculo I
 			assert.Equal(t, req3.ID, ids[1]) // Cálculo III then Cálculo II because III is most recent
 			assert.Equal(t, req2.ID, ids[2])
 		})
 
-		t.Run("match specific part of name", func(t *testing.T){
+		t.Run("match specific part of name", func(t *testing.T) {
 			ids, err := requestDAL.SearchInES("III")
 
 			// We expect to get just the request with 'Cálculo III'
@@ -318,15 +318,15 @@ func TestSearchRequestInES(t *testing.T){
 	req9 := tools.CreateFakeRequest(t, db, "Pet Care", "Procuro alguém para passear com meu cachorro", u.Userid, c5.ID, time.Now().Add(-2*time.Hour))
 	req10 := tools.CreateFakeRequest(t, db, "Limpeza", "Procuro alguém para me ajudar a limpar a casa", u.Userid, c5.ID, time.Now().Add(-time.Hour))
 
-	for _, req := range []models.Request{req4, req5, req6, req7, req8, req9, req10}{
+	for _, req := range []models.Request{req4, req5, req6, req7, req8, req9, req10} {
 		err := requestDAL.InsertRequestInES(req)
 		assert.Equal(t, nil, err)
 	}
-	
-	t.Run("10 elements in ES", func(t *testing.T){		
-		t.Run("group of related Subjects 1", func(t *testing.T){
+
+	t.Run("10 elements in ES", func(t *testing.T) {
+		t.Run("group of related Subjects 1", func(t *testing.T) {
 			ids, err := requestDAL.SearchInES("Cálculo")
-			
+
 			// We expect to recover the IDs of the 3 requests related to Aula de Cálculo, sorted by decreased date
 			assert.Equal(t, nil, err)
 			assert.Equal(t, 3, len(ids))
@@ -335,7 +335,7 @@ func TestSearchRequestInES(t *testing.T){
 			assert.Equal(t, req.ID, ids[2])
 		})
 
-		t.Run("group of related Subjects 2", func(t *testing.T){
+		t.Run("group of related Subjects 2", func(t *testing.T) {
 			ids, err := requestDAL.SearchInES("ICC")
 
 			// Expected Order: ICC II, ICC I because the first one is most recent
@@ -345,7 +345,7 @@ func TestSearchRequestInES(t *testing.T){
 			assert.Equal(t, req5.ID, ids[1])
 		})
 
-		t.Run("group of unrelated Subjects", func(t * testing.T){
+		t.Run("group of unrelated Subjects", func(t *testing.T) {
 			ids, err := requestDAL.SearchInES("I")
 
 			// We expect to get Física I, Aula de ICC I and Cálculo I
@@ -357,8 +357,8 @@ func TestSearchRequestInES(t *testing.T){
 		})
 	})
 
-	t.Run("search in Request description", func(t *testing.T){
-		t.Run("value just in description 1", func(t *testing.T){
+	t.Run("search in Request description", func(t *testing.T) {
+		t.Run("value just in description 1", func(t *testing.T) {
 			ids, err := requestDAL.SearchInES("prova")
 
 			// We expect to get Algebra Linear and Calculo II, in this order
@@ -368,7 +368,7 @@ func TestSearchRequestInES(t *testing.T){
 			assert.Equal(t, req2.ID, ids[1])
 		})
 
-		t.Run("value just in description 2", func(t *testing.T){
+		t.Run("value just in description 2", func(t *testing.T) {
 			ids, err := requestDAL.SearchInES("passear")
 
 			// We expect to get just Pet Care: it's the only one with passear in either name or description
@@ -377,7 +377,7 @@ func TestSearchRequestInES(t *testing.T){
 			assert.Equal(t, req9.ID, ids[0])
 		})
 
-		t.Run("value in name and description", func(t *testing.T){
+		t.Run("value in name and description", func(t *testing.T) {
 			ids, err := requestDAL.SearchInES("calculo prova")
 
 			// We expect to get Calculo II in first place because it matches calculo in name and prova in description
@@ -392,16 +392,16 @@ func TestSearchRequestInES(t *testing.T){
 		})
 	})
 
-	t.Run("No matched requests", func(t *testing.T){
+	t.Run("No matched requests", func(t *testing.T) {
 		ids, err := requestDAL.SearchInES("eps")
 
-			// We expect to get just Pet Care: it's the only one with passear in either name or description
-			assert.Equal(t, nil, err)
-			assert.Equal(t, 0, len(ids))
+		// We expect to get just Pet Care: it's the only one with passear in either name or description
+		assert.Equal(t, nil, err)
+		assert.Equal(t, 0, len(ids))
 	})
 }
 
-func TestSearchRequestWithCategoryInES(t *testing.T){
+func TestSearchRequestWithCategoryInES(t *testing.T) {
 	db := tools.GetTestDB()
 	es := tools.GetTestES()
 	defer tools.CleanDB(db)
@@ -420,12 +420,12 @@ func TestSearchRequestWithCategoryInES(t *testing.T){
 	req4 := tools.CreateFakeRequest(t, db, "Aula de ICC II", "Ajuda em prova", u.Userid, c2.ID, time.Now().Add(-7*time.Hour))
 	req5 := tools.CreateFakeRequest(t, db, "Aula de Piano", "Procuro aula para iniciantes", u.Userid, c4.ID, time.Now().Add(-6*time.Hour))
 
-	for _, req := range []models.Request{req1, req2, req3, req4, req5}{
+	for _, req := range []models.Request{req1, req2, req3, req4, req5} {
 		err := requestDAL.InsertRequestInES(req)
 		assert.Equal(t, nil, err)
 	}
 
-	t.Run("Math filter", func(t *testing.T){
+	t.Run("Math filter", func(t *testing.T) {
 		ids, err := requestDAL.SearchInES("prova", c1.ID)
 
 		// We expect to get only request belonging to the first category that has prova in description
@@ -434,7 +434,7 @@ func TestSearchRequestWithCategoryInES(t *testing.T){
 		assert.Equal(t, req2.ID, ids[0])
 	})
 
-	t.Run("CS Filter", func(t *testing.T){
+	t.Run("CS Filter", func(t *testing.T) {
 		ids, err := requestDAL.SearchInES("prova", c2.ID)
 
 		// We expect to get Aula de ICC II and Aula de ICC I (in descending creation order)
@@ -444,7 +444,7 @@ func TestSearchRequestWithCategoryInES(t *testing.T){
 		assert.Equal(t, req3.ID, ids[1])
 	})
 
-	t.Run("Math and CS Filters", func(t *testing.T){
+	t.Run("Math and CS Filters", func(t *testing.T) {
 		ids, err := requestDAL.SearchInES("prova", c1.ID, c2.ID)
 
 		// We expect to get request from both categories, sorted in descending order of creation time
@@ -455,7 +455,7 @@ func TestSearchRequestWithCategoryInES(t *testing.T){
 		assert.Equal(t, req2.ID, ids[2])
 	})
 
-	t.Run("Extraclass Filter", func(t *testing.T){
+	t.Run("Extraclass Filter", func(t *testing.T) {
 		ids, err := requestDAL.SearchInES("aula", c4.ID)
 
 		// We expect to get only Aula de Piano
@@ -465,7 +465,7 @@ func TestSearchRequestWithCategoryInES(t *testing.T){
 	})
 }
 
-func TestGetRequestsByID(t *testing.T){
+func TestGetRequestsByID(t *testing.T) {
 	db := tools.GetTestDB()
 	es := tools.GetTestES()
 	defer tools.CleanDB(db)
@@ -484,13 +484,13 @@ func TestGetRequestsByID(t *testing.T){
 	req5 := tools.CreateFakeRequest(t, db, "Aula de ICC I", "Ajuda para estudar para prova", u.Userid, c2.ID, time.Now().Add(-6*time.Hour))
 	req6 := tools.CreateFakeRequest(t, db, "Aula de ICC II", "Ajuda em prova", u.Userid, c2.ID, time.Now().Add(-5*time.Hour))
 
-	t.Run("Get request with 1 ID", func(t *testing.T){
+	t.Run("Get request with 1 ID", func(t *testing.T) {
 		reqs, err := requestDAL.GetRequestsByID([]string{req1.ID})
 		assert.Equal(t, nil, err)
 		assert.Equal(t, req1, reqs[0])
 	})
 
-	t.Run("Get requests with 3 IDs", func(t *testing.T){
+	t.Run("Get requests with 3 IDs", func(t *testing.T) {
 		reqs, err := requestDAL.GetRequestsByID([]string{req1.ID, req2.ID, req3.ID})
 		assert.Equal(t, nil, err)
 		assert.Equal(t, req3, reqs[0])
@@ -498,7 +498,7 @@ func TestGetRequestsByID(t *testing.T){
 		assert.Equal(t, req1, reqs[2])
 	})
 
-	t.Run("Get request with 6 IDs", func(t *testing.T){
+	t.Run("Get request with 6 IDs", func(t *testing.T) {
 		reqs, err := requestDAL.GetRequestsByID([]string{req1.ID, req2.ID, req3.ID, req4.ID, req5.ID, req6.ID})
 		assert.Equal(t, nil, err)
 		assert.Equal(t, req6, reqs[0])

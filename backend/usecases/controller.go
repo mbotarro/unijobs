@@ -1,6 +1,6 @@
 package usecases
 
-import(
+import (
 	"github.com/jmoiron/sqlx"
 	"github.com/olivere/elastic/v7"
 )
@@ -19,6 +19,6 @@ func NewController(db *sqlx.DB, es *elastic.Client) *Controller {
 		User:     NewUserController(db),
 		Category: NewCategoryController(db),
 		Request:  NewRequestController(db, es),
-		Offer:    NewOfferController(db),
+		Offer:    NewOfferController(db, es),
 	}
 }

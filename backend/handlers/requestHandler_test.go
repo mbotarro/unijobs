@@ -252,9 +252,10 @@ func TestSearchRequest(t *testing.T) {
 	req6 := tools.CreateFakeRequest(t, db, "Aula de ICC II", "Ajuda em prova", u.Userid, c2.ID, time.Now().Add(-7*time.Hour))
 
 	// Insert requests in ES
-	for _, req := range []models.Request{req1, req2, req3, req4, req5, req6} {
-		err := ctrl.Request.InsertRequestInES(req)
+	for _, req := range []*models.Request{&req1, &req2, &req3, &req4, &req5, &req6} {
+		id, err := ctrl.Request.InsertRequest(*req)
 		assert.Equal(t, nil, err)
+		req.ID = id
 	}
 
 	t.Run("get only Calculus requests", func(t *testing.T) {

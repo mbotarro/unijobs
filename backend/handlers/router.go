@@ -94,6 +94,18 @@ func NewRouter(ctrl *usecases.Controller) *mux.Router {
 		HandlerFunc(offerHandler.GetLastOffers).
 		Methods("GET")
 
+	// Search for offers with filter by category
+	route.r.Path("/offers").
+		Queries("q", "", "cat", "{cat:[0-9,]+}").
+		HandlerFunc(offerHandler.SearchOffers).
+		Methods("GET")
+
+	// Search for offers
+	route.r.Path("/offers").
+		Queries("q", "").
+		HandlerFunc(offerHandler.SearchOffers).
+		Methods("GET")
+
 	// Send new offer
 	route.r.Path("/offers").
 		HandlerFunc(offerHandler.InsertOffer).
