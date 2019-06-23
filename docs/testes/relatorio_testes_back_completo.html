@@ -56,21 +56,23 @@
 				
 				<option value="file0">github.com/mbotarro/unijobs/backend/dal/categoryDAL.go (83.3%)</option>
 				
-				<option value="file1">github.com/mbotarro/unijobs/backend/dal/offerDAL.go (45.5%)</option>
+				<option value="file1">github.com/mbotarro/unijobs/backend/dal/common.go (91.7%)</option>
 				
-				<option value="file2">github.com/mbotarro/unijobs/backend/dal/requestDAL.go (85.4%)</option>
+				<option value="file2">github.com/mbotarro/unijobs/backend/dal/offerDAL.go (82.5%)</option>
 				
-				<option value="file3">github.com/mbotarro/unijobs/backend/dal/userDAL.go (81.5%)</option>
+				<option value="file3">github.com/mbotarro/unijobs/backend/dal/requestDAL.go (82.5%)</option>
 				
-				<option value="file4">github.com/mbotarro/unijobs/backend/handlers/categoryHandler.go (16.7%)</option>
+				<option value="file4">github.com/mbotarro/unijobs/backend/dal/userDAL.go (81.5%)</option>
 				
-				<option value="file5">github.com/mbotarro/unijobs/backend/handlers/offerHandler.go (72.7%)</option>
+				<option value="file5">github.com/mbotarro/unijobs/backend/handlers/categoryHandler.go (16.7%)</option>
 				
-				<option value="file6">github.com/mbotarro/unijobs/backend/handlers/requestHandler.go (73.8%)</option>
+				<option value="file6">github.com/mbotarro/unijobs/backend/handlers/offerHandler.go (73.8%)</option>
 				
-				<option value="file7">github.com/mbotarro/unijobs/backend/handlers/router.go (100.0%)</option>
+				<option value="file7">github.com/mbotarro/unijobs/backend/handlers/requestHandler.go (73.8%)</option>
 				
-				<option value="file8">github.com/mbotarro/unijobs/backend/handlers/userHandler.go (43.3%)</option>
+				<option value="file8">github.com/mbotarro/unijobs/backend/handlers/router.go (100.0%)</option>
+				
+				<option value="file9">github.com/mbotarro/unijobs/backend/handlers/userHandler.go (43.3%)</option>
 				
 				</select>
 			</div>
@@ -118,21 +120,77 @@ func (dal *CategoryDAL) GetAllCategories() ([]models.Category, error) <span clas
 		<pre class="file" id="file1" style="display: none">package dal
 
 import (
+        "context"
+        "fmt"
+
+        "github.com/mbotarro/unijobs/backend/errors"
+        "github.com/olivere/elastic/v7"
+)
+
+// searchDocumentInES is used to search for requests or offers in ES.
+// It matches the query against a request/offer name and description and filters the results according to the informed categoryIDs
+func searchDocumentInES(es *elastic.Client, index string, query string, categoryIDs ...int) (*elastic.SearchResult, error) <span class="cov8" title="1">{
+        q := elastic.NewMultiMatchQuery(query).
+                Type("most_fields").         // The final score is the sum of the matched fields with their respective weight
+                FieldWithBoost("name", 2.5). // The match in the name should has a higher score than a match in the description
+                FieldWithBoost("description", 1)
+
+        b := elastic.NewBoolQuery() // A Bool query is needed to filter the results
+        b.Must(q)
+
+        // If any categoryID is passed by the variadic parameter
+        if len(categoryIDs) != 0 </span><span class="cov8" title="1">{
+                // categoryIDs is an int slice. To use NewTermsQuery, we need an interface{} slice. We need to convert them!
+                ids := make([]interface{}, 0, len(categoryIDs))
+                for _, id := range categoryIDs </span><span class="cov8" title="1">{
+                        ids = append(ids, id)
+                }</span>
+
+                // Passes ids to a variadic function
+                <span class="cov8" title="1">b.Filter(elastic.NewTermsQuery("category", ids...))</span>
+        }
+
+        <span class="cov8" title="1">searchResult, err := es.Search().
+                Index(index).
+                Query(b).
+                Size(30).                 // TODO: enable pagination
+                Sort("_score", false).    // Documents with higher score come first
+                Sort("timestamp", false). // Sort in descending order by timestamp for documents with same score
+                Do(context.Background())
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("%s:%s", errors.ESSearchError, err.Error())
+        }</span>
+
+        <span class="cov8" title="1">return searchResult, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package dal
+
+import (
+        "context"
+        "fmt"
         "time"
 
+        "github.com/google/uuid"
         "github.com/jmoiron/sqlx"
+        "github.com/mbotarro/unijobs/backend/errors"
         "github.com/mbotarro/unijobs/backend/models"
+        "github.com/mbotarro/unijobs/backend/tools"
+        "github.com/olivere/elastic/v7"
 )
 
 // OfferDAL interacts with the DB to perform Offer related queries
 type OfferDAL struct {
         db *sqlx.DB
+        es *elastic.Client
 }
 
 // NewOfferDAL returns a new OfferDAL
-func NewOfferDAL(db *sqlx.DB) *OfferDAL <span class="cov8" title="1">{
+func NewOfferDAL(db *sqlx.DB, es *elastic.Client) *OfferDAL <span class="cov8" title="1">{
         return &amp;OfferDAL{
                 db: db,
+                es: es,
         }
 }</span>
 
@@ -151,35 +209,113 @@ func (dal *OfferDAL) GetLastOffers(before time.Time, size int) ([]models.Offer, 
         <span class="cov8" title="1">return offs, nil</span>
 }
 
-// InsertOffer Receives an offer as a parameter and inserts into the database
-func (dal *OfferDAL) InsertOffer(offer models.Offer) error <span class="cov0" title="0">{
-        insertQuery := `INSERT INTO offer (name, description, extrainfo, minprice, maxprice, userid, categoryid, timestamp) 
-                                                VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`
+// InsertOfferInDB Receives an offer as a parameter and inserts into the database
+func (dal *OfferDAL) InsertOfferInDB(offer *models.Offer) (string, error) <span class="cov8" title="1">{
+        // Generates an uuid for the offer
+        offer.ID = uuid.New().String()
+
+        insertQuery := `INSERT INTO offer (id, name, description, extrainfo, minprice, maxprice, expiration, userid, categoryid, timestamp, telephone, email) 
+                                                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`
 
         // Gets the controller of the database and executes the query
-        _, err := dal.db.Exec(insertQuery, offer.Name, offer.Description, offer.ExtraInfo, offer.MinPrice, offer.MaxPrice, offer.Userid, offer.Categoryid, offer.Timestamp)
+        _, err := dal.db.Exec(insertQuery, offer.ID, offer.Name, offer.Description, offer.ExtraInfo, offer.MinPrice,
+                offer.MaxPrice, offer.Expiration, offer.Userid, offer.Categoryid, offer.Timestamp, offer.Telephone, offer.Email)
 
         // Checks if any error happened during the query execution
         if err != nil </span><span class="cov0" title="0">{
-                return err
+                return "", err
         }</span>
 
-        <span class="cov0" title="0">return nil</span>
+        <span class="cov8" title="1">return offer.ID, nil</span>
+}
+
+// GetOffersByID fetch from postgreSQL the offers whose ids are passed in parameter
+func (dal *OfferDAL) GetOffersByID(ids []string) ([]models.Offer, error) <span class="cov8" title="1">{
+        offs := []models.Offer{}
+        query, args, err := sqlx.In(`SELECT * FROM offer WHERE id IN (?) ORDER BY timestamp DESC`, ids)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        // Transform (?, ?, ...) in postgres specific ($1, $2, $3)
+        <span class="cov8" title="1">query = dal.db.Rebind(query)
+
+        rows, err := dal.db.Queryx(query, args...)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error())
+        }</span>
+
+        // Transform the fecthed rows into offer struct
+        <span class="cov8" title="1">for rows.Next() </span><span class="cov8" title="1">{
+                var r models.Offer
+                err = rows.StructScan(&amp;r)
+                offs = append(offs, r)
+        }</span>
+
+        <span class="cov8" title="1">return offs, nil</span>
+}
+
+// InsertOfferInES inserts an Offer in ES
+func (dal *OfferDAL) InsertOfferInES(offer models.Offer) error <span class="cov8" title="1">{
+        oES := models.OfferES{
+                ID:          offer.ID,
+                Name:        offer.Name,
+                Description: offer.Description,
+                Category:    offer.Categoryid,
+                Timestamp:   offer.Timestamp.Unix(),
+        }
+
+        _, err := dal.es.Index().
+                Index("offer").
+                Id(oES.ID).
+                BodyJson(oES).
+                Refresh("true").
+                Do(context.Background())
+        if err != nil </span><span class="cov0" title="0">{
+                return fmt.Errorf("%s:%s", errors.ESInsertError, err.Error())
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+// SearchInES searches for Offers in ES given a query.
+// If one or more category ID is informed, the results are filtered to only contain offers beloging to them.
+// A slice with the IDs of the matched offers are returned
+func (dal *OfferDAL) SearchInES(query string, categoryIDs ...int) ([]string, error) <span class="cov8" title="1">{
+        searchResult, err := searchDocumentInES(dal.es, "offer", query, categoryIDs...)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        // Get the matched Offers
+        <span class="cov8" title="1">offs, err := tools.GetOffersFromSearchResult(searchResult)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        // Get the UUIDs of the matched offers
+        <span class="cov8" title="1">ids := make([]string, 0, len(offs))
+        for _, off := range offs </span><span class="cov8" title="1">{
+                ids = append(ids, off.ID)
+        }</span>
+
+        <span class="cov8" title="1">return ids, nil</span>
 }
 </pre>
 		
-		<pre class="file" id="file2" style="display: none">package dal
+		<pre class="file" id="file3" style="display: none">package dal
 
 import (
-        "github.com/mbotarro/unijobs/backend/tools"
-        "time"
         "context"
         "fmt"
+        "time"
 
-        "github.com/jmoiron/sqlx"
-        "github.com/mbotarro/unijobs/backend/models"
-        "github.com/mbotarro/unijobs/backend/errors"
+        "github.com/mbotarro/unijobs/backend/tools"
+
         "github.com/google/uuid"
+        "github.com/jmoiron/sqlx"
+        "github.com/mbotarro/unijobs/backend/errors"
+        "github.com/mbotarro/unijobs/backend/models"
         "github.com/olivere/elastic/v7"
 )
 
@@ -212,8 +348,8 @@ func (dal *RequestDAL) GetLastRequests(before time.Time, size int) ([]models.Req
         <span class="cov8" title="1">return reqs, nil</span>
 }
 
-// InsertRequest Receives a request as a parameter and inserts into the database
-func (dal *RequestDAL) InsertRequest(request models.Request) error <span class="cov8" title="1">{
+// InsertRequestInDB Receives a request as a parameter and inserts into the database
+func (dal *RequestDAL) InsertRequestInDB(request *models.Request) (string, error) <span class="cov8" title="1">{
         // Generate an uuid for the request
         request.ID = uuid.New().String()
 
@@ -221,26 +357,26 @@ func (dal *RequestDAL) InsertRequest(request models.Request) error <span class="
                                                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`
 
         // Gets the controller of the database and executes the query
-        _, err := dal.db.Exec(insertQuery, request.ID, request.Name, request.Description, request.ExtraInfo, 
+        _, err := dal.db.Exec(insertQuery, request.ID, request.Name, request.Description, request.ExtraInfo,
                 request.MinPrice, request.MaxPrice, request.Userid, request.Categoryid, request.Timestamp)
 
         // Checks if any error happened during the query execution
         if err != nil </span><span class="cov0" title="0">{
-                return err
+                return "", err
         }</span>
 
-        <span class="cov8" title="1">return nil</span>
+        <span class="cov8" title="1">return request.ID, nil</span>
 }
 
 // GetRequestsByID fetch from postgreSQL the requests whose ids are passed in parameter
-func (dal *RequestDAL) GetRequestsByID(ids []string) ([]models.Request, error)<span class="cov8" title="1">{
+func (dal *RequestDAL) GetRequestsByID(ids []string) ([]models.Request, error) <span class="cov8" title="1">{
         reqs := []models.Request{}
-        query, args, err := sqlx.In(`SELECT * FROM request WHERE id IN (?) ORDER BY timestamp DESC`,ids)
-        if err != nil</span><span class="cov0" title="0">{
+        query, args, err := sqlx.In(`SELECT * FROM request WHERE id IN (?) ORDER BY timestamp DESC`, ids)
+        if err != nil </span><span class="cov0" title="0">{
                 return nil, err
         }</span>
-        
-        // Transform (?, ?, ...) in postgres specific ($1, $2, $3) 
+
+        // Transform (?, ?, ...) in postgres specific ($1, $2, $3)
         <span class="cov8" title="1">query = dal.db.Rebind(query)
 
         rows, err := dal.db.Queryx(query, args...)
@@ -254,27 +390,27 @@ func (dal *RequestDAL) GetRequestsByID(ids []string) ([]models.Request, error)<s
                 err = rows.StructScan(&amp;r)
                 reqs = append(reqs, r)
         }</span>
-        
+
         <span class="cov8" title="1">return reqs, nil</span>
 }
 
-// InsertRequestInES inserts a Request in the ES
-func (dal *RequestDAL) InsertRequestInES(request models.Request) error<span class="cov8" title="1">{
+// InsertRequestInES inserts a Request in ES
+func (dal *RequestDAL) InsertRequestInES(request models.Request) error <span class="cov8" title="1">{
         rES := models.RequestES{
-                ID: request.ID,
-                Name: request.Name,
+                ID:          request.ID,
+                Name:        request.Name,
                 Description: request.Description,
-                Category: request.Categoryid,
-                Timestamp: request.Timestamp.Unix(),
+                Category:    request.Categoryid,
+                Timestamp:   request.Timestamp.Unix(),
         }
 
         _, err := dal.es.Index().
-                                Index("request").
-                                Id(rES.ID).
-                                BodyJson(rES).
-                                Refresh("true").
-                                Do(context.Background())
-        if err != nil</span><span class="cov0" title="0">{
+                Index("request").
+                Id(rES.ID).
+                BodyJson(rES).
+                Refresh("true").
+                Do(context.Background())
+        if err != nil </span><span class="cov0" title="0">{
                 return fmt.Errorf("%s:%s", errors.ESInsertError, err.Error())
         }</span>
 
@@ -283,57 +419,30 @@ func (dal *RequestDAL) InsertRequestInES(request models.Request) error<span clas
 
 // SearchInES searches for Requests in ES given a query.
 // If one or more category ID is informed, the results are filtered to only contain requests beloging to them.
-// A slice with the IDs of the matched queries are returned
-func (dal *RequestDAL) SearchInES(query string, categoryIDs ...int) ([]string, error)<span class="cov8" title="1">{
-        q := elastic.NewMultiMatchQuery(query).
-                Type("most_fields"). // The final score is the sum of the matched fields with their respective weight
-                FieldWithBoost("name", 2.5). // The match in the name should has a higher score than a match in the description
-                FieldWithBoost("description", 1)
-        
-        b := elastic.NewBoolQuery() // A Bool query is needed to filter the results
-        b.Must(q)
-
-        // If any categoryID is passed by the variadic parameter
-        if len(categoryIDs) != 0</span><span class="cov8" title="1">{
-                // categoryIDs is an int slice. To use NewTermsQuery, we need an interface{} slice. We need to convert them!
-                ids := make([]interface{}, 0, len(categoryIDs))
-                for _, id := range categoryIDs</span><span class="cov8" title="1">{
-                        ids = append(ids, id)
-                }</span>
-
-                // Passes ids to a variadic function
-                <span class="cov8" title="1">b.Filter(elastic.NewTermsQuery("category", ids...))</span>
-        }
-
-        <span class="cov8" title="1">searchResult, err := dal.es.Search().
-                        Index("request").
-                        Query(b).
-                        Size(30). // TODO: enable pagination
-                        Sort("_score", false). // Documents with higher score come first
-                        Sort("timestamp", false). // Sort in descending order by timestamp for documents with same score
-                        Do(context.Background())
-        if err != nil</span><span class="cov0" title="0">{
-                return nil, fmt.Errorf("%s:%s", errors.ESSearchError, err.Error())
+// A slice with the IDs of the matched requests are returned
+func (dal *RequestDAL) SearchInES(query string, categoryIDs ...int) ([]string, error) <span class="cov8" title="1">{
+        searchResult, err := searchDocumentInES(dal.es, "request", query, categoryIDs...)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
         }</span>
 
         // Get the matched Requests
-        <span class="cov8" title="1">reqs, err := tools.GetRequestFromSearchResult(searchResult)
-        if err != nil</span><span class="cov0" title="0">{
+        <span class="cov8" title="1">reqs, err := tools.GetRequestsFromSearchResult(searchResult)
+        if err != nil </span><span class="cov0" title="0">{
                 return nil, err
         }</span>
 
         // Get the UUIDs of the matched requests
         <span class="cov8" title="1">ids := make([]string, 0, len(reqs))
-        for _, req := range reqs</span><span class="cov8" title="1">{
+        for _, req := range reqs </span><span class="cov8" title="1">{
                 ids = append(ids, req.ID)
         }</span>
 
-        <span class="cov8" title="1">return ids, nil</span>;
+        <span class="cov8" title="1">return ids, nil</span>
 }
-
 </pre>
 		
-		<pre class="file" id="file3" style="display: none">package dal
+		<pre class="file" id="file4" style="display: none">package dal
 
 import (
         "time"
@@ -421,7 +530,7 @@ func (dal *UserDAL) GetUserOffers(id int, before time.Time, size int) ([]models.
 }
 </pre>
 		
-		<pre class="file" id="file4" style="display: none">package handlers
+		<pre class="file" id="file5" style="display: none">package handlers
 
 import (
         "fmt"
@@ -455,12 +564,15 @@ func (handler *CategoryHandler) getAllCategories(w http.ResponseWriter, r *http.
 }
 </pre>
 		
-		<pre class="file" id="file5" style="display: none">package handlers
+		<pre class="file" id="file6" style="display: none">package handlers
 
 import (
+        "encoding/json"
         "fmt"
+        "io/ioutil"
         "net/http"
         "strconv"
+        "strings"
         "time"
 
         "github.com/mbotarro/unijobs/backend/errors"
@@ -492,13 +604,16 @@ type OfferResponse struct {
 
 // OfferInsertion contains the expected input from the frontend
 type OfferInsertion struct {
-        Name        string `json:"name"`
-        Description string `json:"description"`
-        ExtraInfo   string `json:"extrainfo"`
-        MaxPrice    int    `json:"maxprice"`
-        MinPrice    int    `json:"minprice"`
-        Userid      int    `json:"userid"`
-        Categoryid  int    `json:"categoryid"`
+        Name        string    `json:"name"`
+        Description string    `json:"description"`
+        ExtraInfo   string    `json:"extrainfo"`
+        MaxPrice    int       `json:"maxprice"`
+        MinPrice    int       `json:"minprice"`
+        Expiration  time.Time `json:"expiration"`
+        Userid      int       `json:"userid"`
+        Categoryid  int       `json:"categoryid"`
+        Telephone   bool      `db:"telephone" json:"telephone"`
+        Email       bool      `db:"email" json:"email"`
 }
 
 // GetLastOffers sends the last offers created in the unijobs service
@@ -538,9 +653,82 @@ func (handler *OfferHandler) GetLastOffers(w http.ResponseWriter, r *http.Reques
 
         <span class="cov8" title="1">tools.WriteStructOnHTTPResponse(reqRes, w)</span>
 }
+
+// InsertOffer is a function that receives a post request with some parameters and calls the function to insert it in the database
+// The offer is sent as a json file. It's fields are given in Models.Offer
+func (handler *OfferHandler) InsertOffer(w http.ResponseWriter, r *http.Request) <span class="cov8" title="1">{
+        body, err := ioutil.ReadAll(r.Body)
+        if err != nil </span><span class="cov0" title="0">{
+                http.Error(w, fmt.Errorf("%s:%s", errors.ReadRequestBodyError, err.Error()).Error(), http.StatusBadRequest)
+                return
+        }</span>
+
+        <span class="cov8" title="1">var offInserted OfferInsertion
+        err = json.Unmarshal(body, &amp;offInserted)
+        if err != nil </span><span class="cov0" title="0">{
+                http.Error(w, fmt.Errorf("%s:%s", errors.JSONUnmarshalError, err.Error()).Error(), http.StatusInternalServerError)
+                return
+        }</span>
+
+        // Passes the received data into a offer for it to be inserted
+        <span class="cov8" title="1">var off models.Offer
+
+        off.Name = offInserted.Name
+        off.Description = offInserted.Description
+        off.ExtraInfo = offInserted.ExtraInfo
+        off.MaxPrice = offInserted.MaxPrice
+        off.MinPrice = offInserted.MinPrice
+        off.Userid = offInserted.Userid
+        off.Categoryid = offInserted.Categoryid
+        off.Timestamp = time.Now()
+
+        _, err = handler.offerController.InsertOffer(off, offInserted.Telephone, offInserted.Email)
+        if err != nil </span><span class="cov0" title="0">{
+                http.Error(w, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error()).Error(), http.StatusInternalServerError)
+                return
+        }</span>
+        <span class="cov8" title="1">w.WriteHeader(http.StatusCreated)</span>
+}
+
+// SearchOffers searches for Offers based on a query sent by the user
+// The results can be filtered by one or more by categories ids
+func (handler *OfferHandler) SearchOffers(w http.ResponseWriter, r *http.Request) <span class="cov8" title="1">{
+        // Query
+        query := r.FormValue("q")
+
+        // Categories ID. The frontend sends them separed by , . We should split them
+        catStr := r.FormValue("cat")
+
+        // We should convert categories ID to int
+        categoryIDs := make([]int, 0, len(catStr))
+
+        if catStr != "" </span><span class="cov8" title="1">{ // If the user wants to filter the results by category
+                for _, cat := range strings.Split(catStr, ",") </span><span class="cov8" title="1">{
+                        id, err := strconv.ParseInt(cat, 10, 32)
+                        if err != nil </span><span class="cov0" title="0">{
+                                http.Error(w, fmt.Errorf("%s:%s", errors.QueryParameterError, err.Error()).Error(), http.StatusBadRequest)
+                                return
+                        }</span>
+
+                        <span class="cov8" title="1">categoryIDs = append(categoryIDs, int(id))</span>
+                }
+        }
+
+        <span class="cov8" title="1">offs, err := handler.offerController.SearchOffers(query, categoryIDs...)
+        if err != nil </span><span class="cov0" title="0">{
+                http.Error(w, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error()).Error(), http.StatusInternalServerError)
+                return
+        }</span>
+
+        <span class="cov8" title="1">offRes := OfferResponse{
+                Offers: offs,
+        }
+
+        tools.WriteStructOnHTTPResponse(offRes, w)</span>
+}
 </pre>
 		
-		<pre class="file" id="file6" style="display: none">package handlers
+		<pre class="file" id="file7" style="display: none">package handlers
 
 import (
         "encoding/json"
@@ -548,8 +736,8 @@ import (
         "io/ioutil"
         "net/http"
         "strconv"
-        "time"
         "strings"
+        "time"
 
         "github.com/mbotarro/unijobs/backend/models"
 
@@ -655,7 +843,7 @@ func (handler *RequestHandler) InsertRequest(w http.ResponseWriter, r *http.Requ
         req.Categoryid = reqInserted.Categoryid
         req.Timestamp = time.Now()
 
-        err = handler.requestController.InsertRequest(req)
+        _, err = handler.requestController.InsertRequest(req)
         if err != nil </span><span class="cov0" title="0">{
                 http.Error(w, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error()).Error(), http.StatusInternalServerError)
                 return
@@ -663,20 +851,20 @@ func (handler *RequestHandler) InsertRequest(w http.ResponseWriter, r *http.Requ
         <span class="cov8" title="1">w.WriteHeader(http.StatusCreated)</span>
 }
 
-// SearchRequests searched for Requests based on a query sent by the user
-// The results can be filtered by one or more by categories ids 
-func (handler *RequestHandler) SearchRequests(w http.ResponseWriter, r *http.Request)<span class="cov8" title="1">{
+// SearchRequests searches for Requests based on a query sent by the user
+// The results can be filtered by one or more by categories ids
+func (handler *RequestHandler) SearchRequests(w http.ResponseWriter, r *http.Request) <span class="cov8" title="1">{
         // Query
-        query := r.FormValue("q") 
+        query := r.FormValue("q")
 
         // Categories ID. The frontend sends them separed by , . We should split them
         catStr := r.FormValue("cat")
-        
+
         // We should convert categories ID to int
         categoryIDs := make([]int, 0, len(catStr))
 
-        if catStr != ""</span><span class="cov8" title="1">{ // If the user wants to filter the results by category
-                for _, cat := range strings.Split(catStr, ",")</span><span class="cov8" title="1">{
+        if catStr != "" </span><span class="cov8" title="1">{ // If the user wants to filter the results by category
+                for _, cat := range strings.Split(catStr, ",") </span><span class="cov8" title="1">{
                         id, err := strconv.ParseInt(cat, 10, 32)
                         if err != nil </span><span class="cov0" title="0">{
                                 http.Error(w, fmt.Errorf("%s:%s", errors.QueryParameterError, err.Error()).Error(), http.StatusBadRequest)
@@ -686,7 +874,7 @@ func (handler *RequestHandler) SearchRequests(w http.ResponseWriter, r *http.Req
                         <span class="cov8" title="1">categoryIDs = append(categoryIDs, int(id))</span>
                 }
         }
-        
+
         <span class="cov8" title="1">reqs, err := handler.requestController.SearchRequests(query, categoryIDs...)
         if err != nil </span><span class="cov0" title="0">{
                 http.Error(w, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error()).Error(), http.StatusInternalServerError)
@@ -701,7 +889,7 @@ func (handler *RequestHandler) SearchRequests(w http.ResponseWriter, r *http.Req
 }
 </pre>
 		
-		<pre class="file" id="file7" style="display: none">package handlers
+		<pre class="file" id="file8" style="display: none">package handlers
 
 import (
         "github.com/gorilla/mux"
@@ -797,11 +985,28 @@ func NewRouter(ctrl *usecases.Controller) *mux.Router <span class="cov8" title="
                 HandlerFunc(offerHandler.GetLastOffers).
                 Methods("GET")
 
+        // Search for offers with filter by category
+        route.r.Path("/offers").
+                Queries("q", "", "cat", "{cat:[0-9,]+}").
+                HandlerFunc(offerHandler.SearchOffers).
+                Methods("GET")
+
+        // Search for offers
+        route.r.Path("/offers").
+                Queries("q", "").
+                HandlerFunc(offerHandler.SearchOffers).
+                Methods("GET")
+
+        // Send new offer
+        route.r.Path("/offers").
+                HandlerFunc(offerHandler.InsertOffer).
+                Methods("POST")
+
         return &amp;route.r
 }</span>
 </pre>
 		
-		<pre class="file" id="file8" style="display: none">package handlers
+		<pre class="file" id="file9" style="display: none">package handlers
 
 import (
         "encoding/json"

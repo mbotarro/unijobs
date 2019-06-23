@@ -43,7 +43,8 @@ func (dal *OfferDAL) GetLastOffers(before time.Time, size int) ([]models.Offer, 
 }
 
 // InsertOfferInDB Receives an offer as a parameter and inserts into the database
-func (dal *OfferDAL) InsertOfferInDB(offer *models.Offer) error {
+// It will return the ID of the inserted offer.
+func (dal *OfferDAL) InsertOfferInDB(offer *models.Offer) (string, error) {
 	// Generates an uuid for the offer
 	offer.ID = uuid.New().String()
 
@@ -56,10 +57,36 @@ func (dal *OfferDAL) InsertOfferInDB(offer *models.Offer) error {
 
 	// Checks if any error happened during the query execution
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	return nil
+	return offer.ID, nil
+}
+
+// GetOffersByID fetch from postgreSQL the offers whose ids are passed in parameter
+func (dal *OfferDAL) GetOffersByID(ids []string) ([]models.Offer, error) {
+	offs := []models.Offer{}
+	query, args, err := sqlx.In(`SELECT * FROM offer WHERE id IN (?) ORDER BY timestamp DESC`, ids)
+	if err != nil {
+		return nil, err
+	}
+
+	// Transform (?, ?, ...) in postgres specific ($1, $2, $3)
+	query = dal.db.Rebind(query)
+
+	rows, err := dal.db.Queryx(query, args...)
+	if err != nil {
+		return nil, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error())
+	}
+
+	// Transform the fecthed rows into offer struct
+	for rows.Next() {
+		var r models.Offer
+		err = rows.StructScan(&r)
+		offs = append(offs, r)
+	}
+
+	return offs, nil
 }
 
 // InsertOfferInES inserts an Offer in ES
