@@ -8,7 +8,7 @@ export default class CardsWrapper extends React.Component {
 
     render() {
         const { request, categories, ButtonWrapper, Cards, onQuit, isOffer } = this.props
-
+        console.log(this.props.request.MinPrice); 
         var price = 'R$' + request.minprice;
         if (request.maxprice > request.minprice)
             price += ' - ' + request.maxprice;
@@ -52,7 +52,7 @@ export default class CardsWrapper extends React.Component {
                 return (
                     <View style={{flexDirection: 'column', marginLeft: 15, marginRight: 10, marginBottom: 15}}>
                         <View style={{flexDirection: 'row', marginBottom: 5}}>
-                            <Text style={[textStyles.offerInfoText, {color: '#00A5F2'}]}>
+                            <Text style={[textStyles.requestInfoText, {color: '#00A5F2'}]}>
                                 Disponível até:
                             </Text>
                             <Text style={{marginLeft: 25, fontSize: UniText.small}}>
@@ -60,7 +60,7 @@ export default class CardsWrapper extends React.Component {
                             </Text>
                         </View>
                         <View style={{flexDirection: 'column'}}>
-                            <Text  style={[textStyles.offerInfoText, {color: '#00A5F2'}]}>
+                            <Text  style={[textStyles.requestInfoText, {color: '#00A5F2'}]}>
                                 Informações Adicionais
                             </Text>
                             <Text numberOfLines={1} style={{fontSize: UniText.small}}>
@@ -182,7 +182,7 @@ const textStyles = StyleSheet.create({
         textAlign: 'center',
         marginBottom: 15,
     },
-    offerInfoText: {
+    requestInfoText: {
         fontSize: UniText.small,
     }
 })

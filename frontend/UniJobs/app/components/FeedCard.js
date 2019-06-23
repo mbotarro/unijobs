@@ -21,7 +21,7 @@ export default class FeedCard extends React.Component {
 
     constructor (props) {
         super(props);
-        this.state.userid = this.props.request.userid
+        this.state.userid = this.props.isOffer? this.props.offer.userid : this.props.request.userid
     }
 
     async componentDidMount() {

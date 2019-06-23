@@ -11,11 +11,12 @@ const AWS_SERVER = {
 
     autenticationApi: 'http://ec2-3-92-175-230.compute-1.amazonaws.com:8080/users/authenticate',
     allRequestsApi: (size) => ('http://ec2-3-92-175-230.compute-1.amazonaws.com:8080/requests?size=' + size),
+    allOffersApi: (size) => ('http://ec2-3-92-175-230.compute-1.amazonaws.com:8080/offers?size=' + size),
     categoriesApi: 'http://ec2-3-92-175-230.compute-1.amazonaws.com:8080/categories',
 
     userDataApi: (id) => ('http://ec2-3-92-175-230.compute-1.amazonaws.com:8080/users/' + id),
     userRequestsApi: (id, size) => ('http://ec2-3-92-175-230.compute-1.amazonaws.com:8080/users/' + id +'/requests?size=' + size),
-
+    userOffersApi: (id, size) => ('http://ec2-3-92-175-230.compute-1.amazonaws.com:8080/users/' + id +'/offers?size=' + size),
 }
 
 module.exports = {

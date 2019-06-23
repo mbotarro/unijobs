@@ -11,7 +11,8 @@ export default class MinhasOfertasScreen extends React.Component {
         return (
             <View style={UniStyles.container}>
                 <Text>
-                    Minhas ofertas
+                    Under construction:
+                    Tela Minhas ofertas
                 </Text>
             </View>
         )

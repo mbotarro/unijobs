@@ -153,7 +153,13 @@ export default class FeedRequestScreen extends React.Component {
                                     style = {styles.feedBarLeftIcon}
                                 />
                                 :
-                                <View style = {{marginLeft: 43}} />
+                                this.state.isMyFeedOpen ?
+                                    <Image 
+                                        source = {require('../assets/icons/arrow-up.png')}
+                                        style = {styles.feedBarLeftIcon}
+                                    />
+                                    :
+                                    <View style = {{marginLeft: 43}} />          
                         }
                         <Text style = {styles.feedBarText}>
                             {text}

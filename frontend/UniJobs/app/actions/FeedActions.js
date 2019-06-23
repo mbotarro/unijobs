@@ -34,6 +34,26 @@ async function loadMyRequests (id, onResponse) {
     });
 };
 
+async function loadOffers (onResponse) {
+    fetch(UniData.allOffersApi(10), { method: 'GET' })
+    .then((response) => response.json())
+    .then((response) => onResponse(response.offers))
+    .catch((error) => {
+        console.log("Load All Offers Error!");
+        alert(error.message);
+    });
+};
+
+async function loadMyOffers (id, onResponse) {
+    fetch(UniData.userOffersApi(id, 10), { method: 'GET' })
+    .then((response) => response.json())
+    .then((response) => onResponse(response.offers))
+    .catch((error) => {
+        console.log("Load All Offers Error!");
+        alert(error.message);
+    });
+};
+
 async function loadCategories (onResponse) {
     fetch(UniData.categoriesApi, { method: 'GET' })
     .then((response) => response.json())
@@ -71,4 +91,4 @@ function getCategoryImage(id) {
 };
 
 
-module.exports = { loadRequests, loadCategories, loadMyRequests, loadUserInfo };
+module.exports = { loadRequests,loadOffers, loadCategories, loadMyRequests, loadMyOffers, loadUserInfo };
