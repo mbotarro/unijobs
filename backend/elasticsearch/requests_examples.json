@@ -1,20 +1,20 @@
 { "create" : { "_index" : "request", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764f64" } }
-{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f64", "name": "Aula de Cálculo I", "description": "Preciso de ajuda na matéria", "category": 1 }
+{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f64", "name": "Aula de Cálculo I", "description": "Preciso de ajuda na matéria", "category": 2 }
 { "create" : { "_index" : "request", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764f65" } }
-{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f65", "name": "Aula de Cálculo II", "description": "Tenho prova semana que vem", "category": 1 }
+{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f65", "name": "Aula de Cálculo II", "description": "Tenho prova semana que vem", "category": 2 }
 { "create" : { "_index" : "request", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764f66" } }
-{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f66", "name": "Aula de Cálculo III", "description": "Teorema de Green", "category": 1 }
+{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f66", "name": "Aula de Cálculo III", "description": "Teorema de Green", "category": 2 }
 { "create" : { "_index" : "request", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764f67" } }
-{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f67", "name": "Álgebra Linear", "description": "Preciso de ajuda para prova", "category": 1 }
+{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f67", "name": "Álgebra Linear", "description": "Preciso de ajuda para prova", "category": 2 }
 { "create" : { "_index" : "request", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764f68" } }
 { "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f68", "name": "Aula de ICC I", "description": "Ajuda em trabalho", "category": 2 }
 { "create" : { "_index" : "request", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764f69" } }
 { "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f69", "name": "Aula de ICC II", "description": "Ajuda na matéria", "category": 2 }
 { "create" : { "_index" : "request", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764f70" } }
-{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f70", "name": "Física I", "description": "Ajuda em Conservação de Movimento Linear", "category": 3 }
+{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f70", "name": "Física I", "description": "Ajuda em Conservação de Movimento Linear", "category": 2 }
 { "create" : { "_index" : "request", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764f71" } }
 { "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f71", "name": "Aula de Piano", "description": "Procuro aula para iniciantes", "category": 4 }
 { "create" : { "_index" : "request", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764f72" } }
-{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f72", "name": "Pet Care", "description": "Procuro alguém para passear com meu cachorro", "category": 5 }
+{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f72", "name": "Pet Care", "description": "Procuro alguém para passear com meu cachorro", "category": 8 }
 { "create" : { "_index" : "request", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764f73" } }
-{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f73", "name": "Limpeza", "description": "Procuro alguém para me ajudar a limpar a casa", "category": 5 }
+{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f73", "name": "Limpeza", "description": "Procuro alguém para me ajudar a limpar a casa", "category": 6 }

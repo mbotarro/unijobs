@@ -46,7 +46,7 @@ func CleanES(es *elastic.Client) {
 	// Delete in all documents in elasticSearch
 	query := elastic.NewMatchAllQuery()
 	es.DeleteByQuery().
-		Index("request").
+		Index("request,offer").
 		Query(query).
 		Refresh("true").
 		Do(context.Background())
