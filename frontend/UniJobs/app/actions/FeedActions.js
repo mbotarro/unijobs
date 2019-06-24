@@ -29,7 +29,7 @@ async function loadMyRequests (id, onResponse) {
     .then((response) => response.json())
     .then((response) => onResponse(response.requests))
     .catch((error) => {
-        console.log("Load All Requests Error!");
+        console.log("Load User Requests Error!");
         alert(error.message);
     });
 };
@@ -49,7 +49,7 @@ async function loadMyOffers (id, onResponse) {
     .then((response) => response.json())
     .then((response) => onResponse(response.offers))
     .catch((error) => {
-        console.log("Load All Offers Error!");
+        console.log("Load User Offers Error!");
         alert(error.message);
     });
 };

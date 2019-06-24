@@ -3,16 +3,17 @@
 import React from 'react';
 import { Platform, StyleSheet, Text, TextInput, View, Image, ScrollView, TouchableHighlight, ActivityIndicator } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { Dimensions } from "react-native";
+import { Dimensions,AsyncStorage } from "react-native";
 
 import { populateRequestMiniCards } from '../components/FeedMiniCards';
-import { loadOffers, loadCategories } from '../actions/FeedActions'
+import { loadOffers, loadMyOffers, loadCategories } from '../actions/FeedActions'
 import FeedCard from '../components/FeedCard'
 import FloatActionButton from '../components/FloatActionButton'
 
 import UniStyles from '../constants/UniStyles'
 import UniColors from '../constants/UniColors'
 import UniText from '../constants/UniText'
+import UniData from '../constants/UniData'
 
 
 
@@ -42,18 +43,25 @@ export default class FeedOfferScreen extends React.Component {
     isOffer = true
 
     async componentDidMount() {
-        // use for fetching data to show
-        loadCategories((categories) => {
-            var hash = {}
-            for (var i = 0; i < categories.length; i++)
-                hash[categories[i].id] = categories[i];
-            this.setState({categories: hash})
+        try {
+            const userid = parseInt(await AsyncStorage.getItem(UniData.userid));
+            // use for fetching data to show
+            loadCategories((categories) => {
+                var hash = {}
+                for (var i = 0; i < categories.length; i++)
+                    hash[categories[i].id] = categories[i];
+                this.setState({categories: hash})
 
-            loadOffers((offers) => {
-                this.setState({allFeedOffers: offers, myFeedOffers: myFeedTestOffers});
-                this.setState({isLoading: false});
-            })
-        });
+                loadOffers((offers) => {
+                    this.setState({allFeedOffers: offers});
+                })
+                loadMyOffers(userid, (myOffers) => {
+                    this.setState({myFeedOffers: myOffers});
+                    this.setState({isLoading: false});
+                })
+            });
+        } catch (error) {
+        }
     }
 
     onMenuButtonPress(navigation) {

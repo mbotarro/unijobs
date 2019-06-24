@@ -3,16 +3,17 @@
 import React from 'react';
 import { Platform, StyleSheet, Text, TextInput, View, Image, ScrollView, TouchableHighlight, ActivityIndicator } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { Dimensions } from "react-native";
+import { Dimensions ,AsyncStorage} from "react-native";
 
 import { populateRequestMiniCards } from '../components/FeedMiniCards';
 import FloatActionButton from '../components/FloatActionButton'
-import { loadRequests, loadCategories } from '../actions/FeedActions'
+import { loadRequests, loadCategories, loadMyRequests } from '../actions/FeedActions'
 import FeedCard from '../components/FeedCard'
 
 import UniStyles from '../constants/UniStyles'
 import UniColors from '../constants/UniColors'
 import UniText from '../constants/UniText'
+import UniData from '../constants/UniData'
 
 import ActionButton from 'react-native-action-button';
 
@@ -43,18 +44,25 @@ export default class FeedRequestScreen extends React.Component {
     isOffer = false
 
     async componentDidMount() {
-        // use for fetching data to show
-        loadCategories((categories) => {
-            var hash = {}
-            for (var i = 0; i < categories.length; i++)
-                hash[categories[i].id] = categories[i];
-            this.setState({categories: hash})
+        try {
+            const userid = parseInt(await AsyncStorage.getItem(UniData.userid));
+            // use for fetching data to show
+            loadCategories((categories) => {
+                var hash = {}
+                for (var i = 0; i < categories.length; i++)
+                    hash[categories[i].id] = categories[i];
+                this.setState({categories: hash})
 
-            loadRequests((requests) => {
-                this.setState({allFeedRequests: requests, myFeedRequests: myFeedTestRequests});
-                this.setState({isLoading: false});
-            })
-        });
+                loadRequests((requests) => {
+                    this.setState({allFeedRequests: requests});
+                })
+                loadMyRequests(userid, (myRequests) => {
+                    this.setState({myFeedRequests: myRequests});
+                    this.setState({isLoading: false});
+                })
+            });
+        } catch (error) {
+        }
     }
 
     onMenuButtonPress(navigation) {
