@@ -19,9 +19,15 @@ const (
 )
 
 // Common ES errors
-const(
+const (
 	ESConnectionError = "Can't connect to ES"
 	ESUnmarshallError = "Can't unmarshall ES response"
-	ESInsertError = "Can't insert document in ES"
-	ESSearchError = "Can't search for documento in ES"
+	ESInsertError     = "Can't insert document in ES"
+	ESSearchError     = "Can't search for documento in ES"
+)
+
+// Common match errors
+const (
+	UserNotFound  = "User not found"
+	OfferNotFound = "Offer not found"
 )

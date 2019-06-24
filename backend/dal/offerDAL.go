@@ -135,3 +135,41 @@ func (dal *OfferDAL) SearchInES(query string, categoryIDs ...int) ([]string, err
 
 	return ids, nil
 }
+
+// InsertOfferMatch receives the id of the user and the offer and inserts the match into the match table
+func (dal *OfferDAL) InsertOfferMatch(userid, offerid string) error {
+	// Checks if the offer is valid
+	off := models.Offer{}
+	err := dal.db.Select(off,
+		`SELECT * FROM offer WHERE ID = $1
+			LIMIT 1`, offerid)
+	if err != nil {
+		return err
+	}
+	if off.ID == "" {
+		return fmt.Errorf("%s:%s", errors.OfferNotFound, err.Error())
+	}
+
+	// Checks if the user is valid
+	user := models.User{}
+	err = dal.db.Select(user,
+		`SELECT * FROM USERDATA WHERE USERID = $1
+			LIMIT 1`, userid)
+	if err != nil {
+		return err
+	}
+	if user.Userid == 0 {
+		return fmt.Errorf("%s:%s", errors.UserNotFound, err.Error())
+	}
+
+	insertQuery := `INSERT INTO match (userid, offerid) 
+						VALUES ($1, $2)`
+
+	// Gets the controller of the database and executes the query
+	_, err = dal.db.Exec(insertQuery, userid, offerid)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
