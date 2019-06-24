@@ -18,12 +18,12 @@ function populateRequestMiniCard(request, categories, onMiniCardOpen) {
     
     return (
         <ItemMiniCard
-        image           = {image}
-        titleText       = {request.name}
-        contentText     = {request.description}
-        categoryText    = {categoryName}
-        priceText       = {price}
-        onPress         = {() => onMiniCardOpen(request)}
+            image           = {image}
+            titleText       = {request.name}
+            contentText     = {request.description}
+            categoryText    = {categoryName}
+            priceText       = {price}
+            onPress         = {() => onMiniCardOpen(request)}
         />);
 };
 
