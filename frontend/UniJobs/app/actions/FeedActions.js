@@ -29,7 +29,27 @@ async function loadMyRequests (id, onResponse) {
     .then((response) => response.json())
     .then((response) => onResponse(response.requests))
     .catch((error) => {
-        console.log("Load All Requests Error!");
+        console.log("Load User Requests Error!");
+        alert(error.message);
+    });
+};
+
+async function loadOffers (onResponse) {
+    fetch(UniData.allOffersApi(10), { method: 'GET' })
+    .then((response) => response.json())
+    .then((response) => onResponse(response.offers))
+    .catch((error) => {
+        console.log("Load All Offers Error!");
+        alert(error.message);
+    });
+};
+
+async function loadMyOffers (id, onResponse) {
+    fetch(UniData.userOffersApi(id, 10), { method: 'GET' })
+    .then((response) => response.json())
+    .then((response) => onResponse(response.offers))
+    .catch((error) => {
+        console.log("Load User Offers Error!");
         alert(error.message);
     });
 };
@@ -71,4 +91,4 @@ function getCategoryImage(id) {
 };
 
 
-module.exports = { loadRequests, loadCategories, loadMyRequests, loadUserInfo };
+module.exports = { loadRequests,loadOffers, loadCategories, loadMyRequests, loadMyOffers, loadUserInfo };
