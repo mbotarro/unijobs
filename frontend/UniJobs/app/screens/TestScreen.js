@@ -1,39 +1,40 @@
 "use strict";
 
 import React from 'react';
-import { StyleSheet, Text, TextInput, View, Image, ScrollView, TouchableHighlight } from 'react-native';
+import { Platform, StyleSheet, Text, View, ScrollView, TouchableHighlight } from 'react-native';
+import { loadCategories } from '../actions/FeedActions'
 
 import UniStyles from '../constants/UniStyles'
 import UniColors from '../constants/UniColors'
 import UniText from '../constants/UniText'
 import UniData from '../constants/UniData'
 
-import ORHistoryCard from '../components/ORHistoryCard'
-
 
 export default class TestScreen extends React.Component {
     static navigationOptions = { title: 'Test' };
     
     state = {
-        // use for store data
+        categories: {}
     }
 
     async componentDidMount() {
         // use for fetching data to show
+        loadCategories((categories) => {
+            var hash = {}
+            for (var i = 0; i < categories.length; i++)
+                hash[categories[i].id] = categories[i];
+            this.setState({categories: hash})
+        });
     }
-
-    isOffer = true
 
     render() {
         const { navigate } = this.props.navigation;
         return (
             <View style={styles.container} >
-                {/* <ORHistoryCard
-                    onHidePress={() => alert('hide')}
-                    onEditPress={() => alert('edit')}
-                    onRemovePress={() => alert('remove')}
-                    isOffer={this.isOffer}
-                /> */}
+                <View style={{backgroundColor: 'black', alignSelf: 'stretch', height: 10}} />
+                <ScrollView style = {styles.barContainer}>
+
+                </ScrollView>
             </View>
         );
     }
@@ -42,7 +43,29 @@ export default class TestScreen extends React.Component {
 
 const styles = StyleSheet.create({
     container: {
-        flex:           1,
         alignSelf:      'stretch',
+    },
+
+    barContainer: {
+        backgroundColor:UniColors.main,
+        height:         40,
+        alignSelf:      'stretch',
+        
+        shadowOffset:   { width: 0, height: 2 },
+        shadowRadius :  2,
+        shadowColor:    UniColors.black,
+        shadowOpacity:  0.16,
+        zIndex:         2,
+        // ...Platform.select({
+        //     ios: {
+        //         shadowOffset:   { width: 0, height: 2 },
+        //         shadowRadius :  2,
+        //         shadowColor:    UniColors.black,
+        //         shadowOpacity:  0.16,
+        //     },
+        //     android: {   
+        //         elevation: 2,
+        //     },
+        //   }),
     },
 });
