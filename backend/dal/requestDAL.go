@@ -43,8 +43,9 @@ func (dal *RequestDAL) GetLastRequests(before time.Time, size int) ([]models.Req
 	return reqs, nil
 }
 
-// InsertRequest Receives a request as a parameter and inserts into the database
-func (dal *RequestDAL) InsertRequest(request models.Request) error {
+// InsertRequestInDB Receives a request as a parameter and inserts into the database
+// It returns the ID of the inserted request
+func (dal *RequestDAL) InsertRequestInDB(request *models.Request) (string, error) {
 	// Generate an uuid for the request
 	request.ID = uuid.New().String()
 
@@ -57,10 +58,10 @@ func (dal *RequestDAL) InsertRequest(request models.Request) error {
 
 	// Checks if any error happened during the query execution
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	return nil
+	return request.ID, nil
 }
 
 // GetRequestsByID fetch from postgreSQL the requests whose ids are passed in parameter
@@ -89,7 +90,7 @@ func (dal *RequestDAL) GetRequestsByID(ids []string) ([]models.Request, error) {
 	return reqs, nil
 }
 
-// InsertRequestInES inserts a Request in the ES
+// InsertRequestInES inserts a Request in ES
 func (dal *RequestDAL) InsertRequestInES(request models.Request) error {
 	rES := models.RequestES{
 		ID:          request.ID,
@@ -114,41 +115,15 @@ func (dal *RequestDAL) InsertRequestInES(request models.Request) error {
 
 // SearchInES searches for Requests in ES given a query.
 // If one or more category ID is informed, the results are filtered to only contain requests beloging to them.
-// A slice with the IDs of the matched queries are returned
+// A slice with the IDs of the matched requests are returned
 func (dal *RequestDAL) SearchInES(query string, categoryIDs ...int) ([]string, error) {
-	q := elastic.NewMultiMatchQuery(query).
-		Type("most_fields").         // The final score is the sum of the matched fields with their respective weight
-		FieldWithBoost("name", 2.5). // The match in the name should has a higher score than a match in the description
-		FieldWithBoost("description", 1)
-
-	b := elastic.NewBoolQuery() // A Bool query is needed to filter the results
-	b.Must(q)
-
-	// If any categoryID is passed by the variadic parameter
-	if len(categoryIDs) != 0 {
-		// categoryIDs is an int slice. To use NewTermsQuery, we need an interface{} slice. We need to convert them!
-		ids := make([]interface{}, 0, len(categoryIDs))
-		for _, id := range categoryIDs {
-			ids = append(ids, id)
-		}
-
-		// Passes ids to a variadic function
-		b.Filter(elastic.NewTermsQuery("category", ids...))
-	}
-
-	searchResult, err := dal.es.Search().
-		Index("request").
-		Query(b).
-		Size(30).                 // TODO: enable pagination
-		Sort("_score", false).    // Documents with higher score come first
-		Sort("timestamp", false). // Sort in descending order by timestamp for documents with same score
-		Do(context.Background())
+	searchResult, err := searchDocumentInES(dal.es, "request", query, categoryIDs...)
 	if err != nil {
-		return nil, fmt.Errorf("%s:%s", errors.ESSearchError, err.Error())
+		return nil, err
 	}
 
 	// Get the matched Requests
-	reqs, err := tools.GetRequestFromSearchResult(searchResult)
+	reqs, err := tools.GetRequestsFromSearchResult(searchResult)
 	if err != nil {
 		return nil, err
 	}

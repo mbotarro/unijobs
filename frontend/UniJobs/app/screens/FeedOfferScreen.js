@@ -3,20 +3,21 @@
 import React from 'react';
 import { Platform, StyleSheet, Text, TextInput, View, Image, ScrollView, TouchableHighlight, ActivityIndicator } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { Dimensions } from "react-native";
+import { Dimensions,AsyncStorage } from "react-native";
 
 import { populateRequestMiniCards } from '../components/FeedMiniCards';
-import { loadRequests, loadCategories } from '../actions/FeedActions'
+import { loadOffers, loadMyOffers, loadCategories } from '../actions/FeedActions'
 import FeedCard from '../components/FeedCard'
 import FloatActionButton from '../components/FloatActionButton'
 
 import UniStyles from '../constants/UniStyles'
 import UniColors from '../constants/UniColors'
 import UniText from '../constants/UniText'
+import UniData from '../constants/UniData'
 
 
 
-export default class FeedRequestScreen extends React.Component {
+export default class FeedOfferScreen extends React.Component {
     static navigationOptions = { title: 'Ofertas' };
     
     state = {
@@ -25,12 +26,12 @@ export default class FeedRequestScreen extends React.Component {
 
         searchBarText: '',
         
-        allFeedRequests: {},
-        myFeedRequests: {},
+        allFeedOffers: {},
+        myFeedOffers: {},
         categories: {},
 
-        isRequestCardOpen: false,
-        openRequest: null,
+        isOfferCardOpen: false,
+        openOffer: null,
     }
 
     textStrings = {
@@ -42,18 +43,25 @@ export default class FeedRequestScreen extends React.Component {
     isOffer = true
 
     async componentDidMount() {
-        // use for fetching data to show
-        loadCategories((categories) => {
-            var hash = {}
-            for (var i = 0; i < categories.length; i++)
-                hash[categories[i].id] = categories[i];
-            this.setState({categories: hash})
+        try {
+            const userid = parseInt(await AsyncStorage.getItem(UniData.userid));
+            // use for fetching data to show
+            loadCategories((categories) => {
+                var hash = {}
+                for (var i = 0; i < categories.length; i++)
+                    hash[categories[i].id] = categories[i];
+                this.setState({categories: hash})
 
-            loadRequests((requests) => {
-                this.setState({allFeedRequests: requests, myFeedRequests: myFeedTestRequests});
-                this.setState({isLoading: false});
-            })
-        });
+                loadOffers((offers) => {
+                    this.setState({allFeedOffers: offers});
+                })
+                loadMyOffers(userid, (myOffers) => {
+                    this.setState({myFeedOffers: myOffers});
+                    this.setState({isLoading: false});
+                })
+            });
+        } catch (error) {
+        }
     }
 
     onMenuButtonPress(navigation) {
@@ -89,8 +97,8 @@ export default class FeedRequestScreen extends React.Component {
         navigate('AddOffer')
     }
 
-    onAddRequestPress(self, navigate) {
-        navigate('AddRequest')
+    onAddOfferPress(self, navigate) {
+        navigate('AddOffer')
     }
 
     render() {
@@ -204,24 +212,24 @@ export default class FeedRequestScreen extends React.Component {
             <ActivityIndicator style={{ marginTop: 10 }} />
             :
             populateRequestMiniCards(
-                this.state.isMyFeedOpen ? this.state.myFeedRequests : this.state.allFeedRequests,
+                this.state.isMyFeedOpen ? this.state.myFeedOffers : this.state.allFeedOffers,
                 this.state.categories,
-                (request) => this.setState({isRequestCardOpen: true, openRequest: request})
+                (offer) => this.setState({isOfferCardOpen: true, openOffer: offer})
             );
 
         const openCard = 
-            this.state.isRequestCardOpen ?
+            this.state.isOfferCardOpen ?
                 <View style = {styles.openCard}>
                 {
                     this.state.isLoading ?
                     <ActivityIndicator style={{ marginTop: 10 }} />
                     :
                     <FeedCard
-                        request = {this.state.openRequest}
+                        offer = {this.state.openOffer}
                         categories = {this.state.categories}
                         onCreateOfferPress = {() => {}}
-                        onShowRequester = {() => {}}
-                        onQuit = {() => this.setState({isRequestCardOpen: false})}
+                        onShowOfferer = {() => {}}
+                        onQuit = {() => this.setState({isOfferCardOpen: false})}
                         isOffer = {this.isOffer}
                     />
                 }
@@ -376,7 +384,7 @@ const styles = StyleSheet.create({
 });
 
 // TEST !!! (TODO: REMOVE)
-const myFeedTestRequests = [
+const myFeedTestOffers = [
     {
         id : 0,
         name : 'Titulo Solicitação',
@@ -384,8 +392,11 @@ const myFeedTestRequests = [
         extrainfo : 'some extrasasijhdjfashdfiusjhfdjkasdhfajklsdfhakjdfhaskjdfhaskdjfhaskjdfhasjkdfhasdjkfh',
         minprice : 'XXXXX',
         maxprice: 'XXXXX',
+        expiration: '2020-06-20T03:00:13.250602Z',  //just for offer
         userid : 0,
         categoryid : 5,
+        telephone: '0000-0000',                     //just for offer   
+        email: 'user@user.com'                      //just for offer
     },
     {
         id : 1,
@@ -396,6 +407,9 @@ const myFeedTestRequests = [
         maxprice: '50',
         userid : 0,
         categoryid : 1,
+        expiration: '2020-06-20T03:00:13.250602Z',
+        telephone: '0000-0000',   
+        email: 'user@user.com'
     },
     {
         id : 2,
@@ -406,6 +420,9 @@ const myFeedTestRequests = [
         maxprice: '100',
         userid : 0,
         categoryid : 2,
+        expiration: '2020-06-20T03:00:13.250602Z',
+        telephone: '0000-0000',                 
+        email: 'user@user.com'  
     },
     {
         id : 3,
@@ -416,6 +433,9 @@ const myFeedTestRequests = [
         maxprice: '30',
         userid : 0,
         categoryid : 3,
+        expiration: '2020-06-20T03:00:13.250602Z',
+        telephone: '0000-0000',   
+        email: 'user@user.com' 
     },
     {
         id : 4,
@@ -426,6 +446,9 @@ const myFeedTestRequests = [
         maxprice: '80',
         userid : 0,
         categoryid : 2,
+        expiration: '2020-06-20T03:00:13.250602Z',
+        telephone: '0000-0000',
+        email: 'user@user.com'
     },
     {
         id : 4,
@@ -436,6 +459,9 @@ const myFeedTestRequests = [
         maxprice: '80',
         userid : 0,
         categoryid : 12,
+        expiration: '2020-06-20T03:00:13.250602Z',
+        telephone: '0000-0000',  
+        email: 'user@user.com'
     },
     {
         id : 4,
@@ -446,6 +472,9 @@ const myFeedTestRequests = [
         maxprice: '80',
         userid : 0,
         categoryid : 8,
+        expiration: '2020-06-20T03:00:13.250602Z',
+        telephone: '0000-0000',
+        email: 'user@user.com',
     },
     {
         id : 4,
@@ -456,6 +485,9 @@ const myFeedTestRequests = [
         maxprice: '80',
         userid : 0,
         categoryid : 9,
+        expiration: '2020-06-20T03:00:13.250602Z',
+        telephone: '0000-0000',
+        email: 'user@user.com',
     },
     {
         id : 4,
@@ -466,6 +498,9 @@ const myFeedTestRequests = [
         maxprice: '80',
         userid : 0,
         categoryid : 7,
+        expiration: '2020-06-20T03:00:13.250602Z',
+        telephone: '0000-0000',
+        email: 'user@user.com',
     },
 ]
 

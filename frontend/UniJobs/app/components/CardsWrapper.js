@@ -7,8 +7,9 @@ import UniText from '../constants/UniText'
 export default class CardsWrapper extends React.Component {
 
     render() {
+        //request is used for request and offers
         const { request, categories, ButtonWrapper, Cards, onQuit, isOffer } = this.props
-
+        
         var price = 'R$' + request.minprice;
         if (request.maxprice > request.minprice)
             price += ' - ' + request.maxprice;
@@ -48,19 +49,21 @@ export default class CardsWrapper extends React.Component {
 
         OfferInfo = () => {return(null)}
         if(isOffer) {
+            //experition format :   2020-06-20T03:00:13.250602Z , output format : DD / MM / AAAA às 19hrs
+            var date = request.expiration.substring(8,10) + ' / ' + request.expiration.substring(5,7) + ' / ' + request.expiration.substring(0,4)+ '  às   '+ request.expiration.substring(11,13)+ ' h.';
             OfferInfo = () => {
                 return (
                     <View style={{flexDirection: 'column', marginLeft: 15, marginRight: 10, marginBottom: 15}}>
                         <View style={{flexDirection: 'row', marginBottom: 5}}>
-                            <Text style={[textStyles.offerInfoText, {color: '#00A5F2'}]}>
+                            <Text style={[textStyles.requestInfoText, {color: '#00A5F2'}]}>
                                 Disponível até:
                             </Text>
                             <Text style={{marginLeft: 25, fontSize: UniText.small}}>
-                                DD / MM / AAAA
+                                {date}
                             </Text>
                         </View>
                         <View style={{flexDirection: 'column'}}>
-                            <Text  style={[textStyles.offerInfoText, {color: '#00A5F2'}]}>
+                            <Text  style={[textStyles.requestInfoText, {color: '#00A5F2'}]}>
                                 Informações Adicionais
                             </Text>
                             <Text numberOfLines={1} style={{fontSize: UniText.small}}>
@@ -182,7 +185,7 @@ const textStyles = StyleSheet.create({
         textAlign: 'center',
         marginBottom: 15,
     },
-    offerInfoText: {
+    requestInfoText: {
         fontSize: UniText.small,
     }
 })

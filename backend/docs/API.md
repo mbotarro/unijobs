@@ -536,7 +536,100 @@ You'll get
 }
 ```
 
+## Search for Offers in the platform
 
+### GET
+
+To search for offers based on a query, use the following URL:
+
+```
+/offers?q=<string>
+```
+
+The query parameter is used to match offers based in their name and their description. Name match has a higher score
+than description match.
+
+You might want to filter the fetched offers by one or more categories IDs. The categories ID must be separed by comma.
+
+```
+/offers?q=<string>&cat=<catID1>,<catID2>,...
+```
+
+#### Expected Reponse
+
+For the following request
+
+```
+/offers?q=prova
+```
+
+the server returns:
+
+```
+{
+  "offers": [
+    {
+      "id": "a74c4694-8eb2-11e9-bc42-526af7764a89",
+      "name": "ICC II",
+      "description": "Posso te ajudar em provas e trabalhos de ICCII",
+      "extrainfo": "",
+      "maxprice": 40,
+      "minprice": 30,
+      "expiration": "2020-06-20T23:35:45.460566Z",
+      "userid": 1,
+      "categoryid": 2,
+      "timestamp": "2019-06-20T18:35:45.460566Z",
+      "telephone": "1234-1234",
+      "email": "user@gmail.com"
+    },
+    {
+      "id": "a74c4694-8eb2-11e9-bc42-526af7764a88",
+      "name": "ICC I",
+      "description": "Problemas com trabalhos ou provas de ICC I? Estou aqui para te ajudar!!",
+      "extrainfo": "",
+      "maxprice": 40,
+      "minprice": 30,
+      "expiration": "2020-06-20T23:35:45.460566Z",
+      "userid": 1,
+      "categoryid": 2,
+      "timestamp": "2019-06-20T17:35:45.460566Z",
+      "telephone": "1234-1234",
+      "email": "user@gmail.com"
+    },
+    {
+      "id": "a74c4694-8eb2-11e9-bc42-526af7764a87",
+      "name": "Álgebra Linear",
+      "description": "ou Mestrando em Matemática no ICMC. Posso ajudar com provas, listas, dúvidas teóricas etc",
+      "extrainfo": "",
+      "maxprice": 40,
+      "minprice": 30,
+      "expiration": "2020-06-20T23:35:45.460566Z",
+      "userid": 1,
+      "categoryid": 2,
+      "timestamp": "2019-06-20T16:35:45.460566Z",
+      "telephone": "1234-1234",
+      "email": "user@gmail.com"
+    },
+    {
+      "id": "a74c4694-8eb2-11e9-bc42-526af7764a86",
+      "name": "Aula de Cálculo III",
+      "description": "Aulas de preparação para provas e resolução de listas",
+      "extrainfo": "",
+      "maxprice": 40,
+      "minprice": 30,
+      "expiration": "2020-06-20T23:35:45.460566Z",
+      "userid": 1,
+      "categoryid": 2,
+      "timestamp": "2019-06-20T15:35:45.460566Z",
+      "telephone": "1234-1234",
+      "email": "user@gmail.com"
+    }
+  ],
+  "last": 0
+}
+```
+
+So far, the search endpoint doesn't accept pagination, always returning all matched offers.
 
 # Category API
 
