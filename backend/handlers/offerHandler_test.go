@@ -391,3 +391,32 @@ func TestSearchOffer(t *testing.T) {
 	})
 
 }
+
+func TestInsertOfferMatch(t *testing.T) {
+	db := tools.GetTestDB()
+	es := tools.GetTestES()
+	defer tools.CleanDB(db)
+	defer tools.CleanES(es)
+
+	ctrl := usecases.NewController(db, es)
+	ch := handlers.NewOfferHandler(ctrl.Offer)
+
+	// Creates fake user and category to be used at the offer
+	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234", "9999-1111")
+	c := tools.CreateFakeCategory(t, db, "Aula Matemática", "Matemática")
+	off := tools.CreateFakeOffer(t, db, "Aula de Cálculo I", "Oferecço aula particular", u.Userid, c.ID, time.Now().Add(-10*time.Hour))
+
+	handler := http.HandlerFunc(ch.InsertOfferMatch)
+
+	///offers/{offer-id:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}/users/{user-id:[0-9]+}
+
+	req, err := http.NewRequest("POST", fmt.Sprintf("/offers/%s/users/%d", off.ID, u.Userid), nil)
+
+	assert.Equal(t, nil, err)
+
+	reqRecord := httptest.NewRecorder()
+	handler.ServeHTTP(reqRecord, req)
+
+	status := reqRecord.Code
+	assert.Equal(t, 201, status)
+}
