@@ -97,8 +97,8 @@ export default class FeedOfferScreen extends React.Component {
         navigate('AddOffer')
     }
 
-    onAddOfferPress(self, navigate) {
-        navigate('AddOffer')
+    onAddRequestPress(self, navigate) {
+        navigate('AddRequest')
     }
 
     render() {
