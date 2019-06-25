@@ -54,6 +54,7 @@ func CleanES(es *elastic.Client) {
 
 // CleanDB delete all rows from all DB tables
 func CleanDB(db *sqlx.DB) {
+	db.MustExec("DELETE FROM match")
 	db.MustExec("DELETE FROM request")
 	db.MustExec("DELETE FROM offer")
 	db.MustExec("DELETE FROM category")

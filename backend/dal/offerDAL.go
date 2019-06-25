@@ -137,10 +137,10 @@ func (dal *OfferDAL) SearchInES(query string, categoryIDs ...int) ([]string, err
 }
 
 // InsertOfferMatch receives the id of the user and the offer and inserts the match into the match table
-func (dal *OfferDAL) InsertOfferMatch(userid, offerid string) error {
+func (dal *OfferDAL) InsertOfferMatch(userid int, offerid string) error {
 	// Checks if the offer is valid
 	off := models.Offer{}
-	err := dal.db.Select(off,
+	err := dal.db.Get(&off,
 		`SELECT * FROM offer WHERE ID = $1
 			LIMIT 1`, offerid)
 	if err != nil {
@@ -152,7 +152,7 @@ func (dal *OfferDAL) InsertOfferMatch(userid, offerid string) error {
 
 	// Checks if the user is valid
 	user := models.User{}
-	err = dal.db.Select(user,
+	err = dal.db.Get(&user,
 		`SELECT * FROM USERDATA WHERE USERID = $1
 			LIMIT 1`, userid)
 	if err != nil {
@@ -162,7 +162,7 @@ func (dal *OfferDAL) InsertOfferMatch(userid, offerid string) error {
 		return fmt.Errorf("%s:%s", errors.UserNotFound, err.Error())
 	}
 
-	insertQuery := `INSERT INTO match (userid, offerid) 
+	insertQuery := `INSERT INTO match(userid, offerid) 
 						VALUES ($1, $2)`
 
 	// Gets the controller of the database and executes the query
@@ -172,4 +172,22 @@ func (dal *OfferDAL) InsertOfferMatch(userid, offerid string) error {
 	}
 
 	return nil
+}
+
+// GetOfferMatchStatus receives the id of the user and the offer and inserts the match into the match table
+func (dal *OfferDAL) GetOfferMatchStatus(userid int, offerid string) (bool, error) {
+	selectQuery := `SELECT count(*) from match
+						WHERE userid = $1 
+						AND offerid = $2`
+
+	var count int
+	err := dal.db.Get(&count, selectQuery, userid, offerid)
+	fmt.Printf("%d\n", count)
+	if err != nil {
+		return false, err
+	}
+	if count == 0 {
+		return false, nil
+	}
+	return true, nil
 }
