@@ -5,9 +5,12 @@ CREATE TABLE IF NOT EXISTS offer (
 	extrainfo	text,
 	minprice    integer,
 	maxprice    integer,
+	expiration  timestamp NOT NULL,
 	userid      integer NOT NULL,
 	categoryid  integer,
 	timestamp	timestamp NOT NULL,
+	telephone 	text NOT NULL,
+	email		text NOT NULL,
 	CONSTRAINT pk_offer PRIMARY KEY (id),
     FOREIGN KEY (userid) REFERENCES userdata(userid),
     FOREIGN KEY (categoryid) REFERENCES category(id)

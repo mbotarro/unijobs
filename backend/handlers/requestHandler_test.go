@@ -252,9 +252,10 @@ func TestSearchRequest(t *testing.T) {
 	req6 := tools.CreateFakeRequest(t, db, "Aula de ICC II", "Ajuda em prova", u.Userid, c2.ID, time.Now().Add(-7*time.Hour))
 
 	// Insert requests in ES
-	for _, req := range []models.Request{req1, req2, req3, req4, req5, req6}{
-		err := ctrl.Request.InsertRequestInES(req)
+	for _, req := range []*models.Request{&req1, &req2, &req3, &req4, &req5, &req6} {
+		id, err := ctrl.Request.InsertRequest(*req)
 		assert.Equal(t, nil, err)
+		req.ID = id
 	}
 
 	t.Run("get only Calculus requests", func(t *testing.T) {
@@ -274,7 +275,7 @@ func TestSearchRequest(t *testing.T) {
 
 		expected := handlers.RequestResponse{
 			Requests: []models.Request{req3, req2, req1}, // In creation descending order
-			Last:     0, // Search doesn't have pagination
+			Last:     0,                                  // Search doesn't have pagination
 		}
 		expectedJs, err := json.Marshal(expected)
 		assert.Equal(t, nil, err)
@@ -282,80 +283,106 @@ func TestSearchRequest(t *testing.T) {
 		assert.Equal(t, string(expectedJs), rr.Body.String())
 	})
 
-	t.Run("get request from 2 categories", func(t *testing.T){
-		t.Run("not specifying the categories", func(t *testing.T){
+	t.Run("get request from 2 categories", func(t *testing.T) {
+		t.Run("not specifying the categories", func(t *testing.T) {
 			req, err := http.NewRequest("GET", "/requests?q=prova", nil)
-		if err != nil {
-			t.Fatal(err)
-		}
+			if err != nil {
+				t.Fatal(err)
+			}
 
-		rr := httptest.NewRecorder()
+			rr := httptest.NewRecorder()
 
-		handler.ServeHTTP(rr, req)
+			handler.ServeHTTP(rr, req)
 
-		if status := rr.Code; status != http.StatusOK {
-			t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
+			if status := rr.Code; status != http.StatusOK {
+				t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
 
-		}
+			}
 
-		expected := handlers.RequestResponse{
-			Requests: []models.Request{req6, req5, req4, req2}, // In creation descending order
-			Last:     0, // Search doesn't have pagination
-		}
-		expectedJs, err := json.Marshal(expected)
-		assert.Equal(t, nil, err)
+			expected := handlers.RequestResponse{
+				Requests: []models.Request{req6, req5, req4, req2}, // In creation descending order
+				Last:     0,                                        // Search doesn't have pagination
+			}
+			expectedJs, err := json.Marshal(expected)
+			assert.Equal(t, nil, err)
 
-		assert.Equal(t, string(expectedJs), rr.Body.String())
+			assert.Equal(t, string(expectedJs), rr.Body.String())
 		})
 
-		t.Run("specifying both categories", func(t *testing.T){
+		t.Run("specifying both categories", func(t *testing.T) {
 			req, err := http.NewRequest("GET", fmt.Sprintf("/requests?q=prova&cat=%d,%d", c1.ID, c2.ID), nil)
-		if err != nil {
-			t.Fatal(err)
-		}
+			if err != nil {
+				t.Fatal(err)
+			}
 
-		rr := httptest.NewRecorder()
+			rr := httptest.NewRecorder()
 
-		handler.ServeHTTP(rr, req)
+			handler.ServeHTTP(rr, req)
 
-		if status := rr.Code; status != http.StatusOK {
-			t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
+			if status := rr.Code; status != http.StatusOK {
+				t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
 
-		}
+			}
 
-		expected := handlers.RequestResponse{
-			Requests: []models.Request{req6, req5, req4, req2}, // In creation descending order
-			Last:     0, // Search doesn't have pagination
-		}
-		expectedJs, err := json.Marshal(expected)
-		assert.Equal(t, nil, err)
+			expected := handlers.RequestResponse{
+				Requests: []models.Request{req6, req5, req4, req2}, // In creation descending order
+				Last:     0,                                        // Search doesn't have pagination
+			}
+			expectedJs, err := json.Marshal(expected)
+			assert.Equal(t, nil, err)
 
-		assert.Equal(t, string(expectedJs), rr.Body.String())
+			assert.Equal(t, string(expectedJs), rr.Body.String())
 		})
 
-		t.Run("just one category", func(t *testing.T){
+		t.Run("just one category", func(t *testing.T) {
 			req, err := http.NewRequest("GET", fmt.Sprintf("/requests?q=prova&cat=%d", c2.ID), nil)
-		if err != nil {
-			t.Fatal(err)
-		}
+			if err != nil {
+				t.Fatal(err)
+			}
 
-		rr := httptest.NewRecorder()
+			rr := httptest.NewRecorder()
 
-		handler.ServeHTTP(rr, req)
+			handler.ServeHTTP(rr, req)
 
-		if status := rr.Code; status != http.StatusOK {
-			t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
+			if status := rr.Code; status != http.StatusOK {
+				t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
 
-		}
+			}
 
-		expected := handlers.RequestResponse{
-			Requests: []models.Request{req6, req5}, // In creation descending order
-			Last:     0, // Search doesn't have pagination
-		}
-		expectedJs, err := json.Marshal(expected)
-		assert.Equal(t, nil, err)
+			expected := handlers.RequestResponse{
+				Requests: []models.Request{req6, req5}, // In creation descending order
+				Last:     0,                            // Search doesn't have pagination
+			}
+			expectedJs, err := json.Marshal(expected)
+			assert.Equal(t, nil, err)
 
-		assert.Equal(t, string(expectedJs), rr.Body.String())
+			assert.Equal(t, string(expectedJs), rr.Body.String())
 		})
 	})
+
+	t.Run("No matched request", func(t *testing.T) {
+		req, err := http.NewRequest("GET", "/requests?q=eps", nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		rr := httptest.NewRecorder()
+
+		handler.ServeHTTP(rr, req)
+
+		if status := rr.Code; status != http.StatusOK {
+			t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
+
+		}
+
+		expected := handlers.RequestResponse{
+			Requests: []models.Request{}, // We expect to get no request
+			Last:     0,                  // Search doesn't have pagination
+		}
+		expectedJs, err := json.Marshal(expected)
+		assert.Equal(t, nil, err)
+
+		assert.Equal(t, string(expectedJs), rr.Body.String())
+	})
+
 }

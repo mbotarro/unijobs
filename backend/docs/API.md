@@ -164,29 +164,37 @@ For `size` = 2
 {
   "offers": [
     {
-      "id": 6,
-      "name": "Aula",
-      "description": "Verb To Be",
+      "id": "a74c4694-8eb2-11e9-bc42-526af7764a89",
+      "name": "ICC II",
+      "description": "Posso te ajudar em provas e trabalhos de ICCII",
       "extrainfo": "",
       "maxprice": 40,
       "minprice": 30,
+      "expiration": "2020-06-26T03:21:12.898347Z",
       "userid": 1,
       "categoryid": 2,
-      "timestamp": "2019-06-13T10:28:42.411752Z"
+      "timestamp": "2019-06-25T22:21:12.898347Z",
+      "telephone": "1234-1234",
+      "email": "user@gmail.com",
+      "InterestedUsers": []
     },
     {
-      "id": 5,
-      "name": "Aula",
-      "description": "False Friends",
+      "id": "a74c4694-8eb2-11e9-bc42-526af7764a90",
+      "name": "Aulas de Física",
+      "description": "Dou aulas particulares de Física I, II, III e IV",
       "extrainfo": "",
-      "maxprice": 40,
-      "minprice": 30,
+      "maxprice": 60,
+      "minprice": 40,
+      "expiration": "2020-06-26T03:21:12.898347Z",
       "userid": 1,
       "categoryid": 2,
-      "timestamp": "2019-06-13T09:28:42.411752Z"
+      "timestamp": "2019-06-25T22:21:12.898347Z",
+      "telephone": "1234-1234",
+      "email": "user@gmail.com",
+      "InterestedUsers": []
     }
   ],
-  "last": 1560418122
+  "last": 1561501272
 }
 ```
 
@@ -202,29 +210,37 @@ You'll get
 {
   "offers": [
     {
-      "id": 4,
-      "name": "Aula",
-      "description": "Fisica IV",
+      "id": "a74c4694-8eb2-11e9-bc42-526af7764a88",
+      "name": "ICC I",
+      "description": "Problemas com trabalhos ou provas de ICC I? Estou aqui para te ajudar!!",
       "extrainfo": "",
       "maxprice": 40,
       "minprice": 30,
+      "expiration": "2020-06-26T03:21:12.898347Z",
       "userid": 1,
-      "categoryid": 1,
-      "timestamp": "2019-06-13T08:28:42.411752Z"
+      "categoryid": 2,
+      "timestamp": "2019-06-25T21:21:12.898347Z",
+      "telephone": "1234-1234",
+      "email": "user@gmail.com",
+      "InterestedUsers": []
     },
     {
-      "id": 3,
-      "name": "Aula",
-      "description": "Fisica III",
+      "id": "a74c4694-8eb2-11e9-bc42-526af7764a87",
+      "name": "Álgebra Linear",
+      "description": "ou Mestrando em Matemática no ICMC. Posso ajudar com provas, listas, dúvidas teóricas etc",
       "extrainfo": "",
       "maxprice": 40,
       "minprice": 30,
+      "expiration": "2020-06-26T03:21:12.898347Z",
       "userid": 1,
-      "categoryid": 1,
-      "timestamp": "2019-06-13T07:28:42.411752Z"
+      "categoryid": 2,
+      "timestamp": "2019-06-25T20:21:12.898347Z",
+      "telephone": "1234-1234",
+      "email": "user@gmail.com",
+      "InterestedUsers": []
     }
   ],
-  "last": 1560410922
+  "last": 1561494072
 }
 ```
 
@@ -423,8 +439,11 @@ So far, the search endpoint doesn't accept pagination, always returning all matc
     "extrainfo": <string>
     "maxprice": <int>
     "minprice": <int>
+    "expiration": <string data as ISO8601>
     "userid": <int>
     "categoryid": <int>
+    "telephone": <bool>
+    "email": <bool>
 }
 ```
 
@@ -451,9 +470,12 @@ For size = 2
             "extrainfo": "",
             "maxprice": 40,
             "minPrice": 20,
+            "expiration": "2020-06-20T03:00:13.250602Z"
             "userid": 1,
             "categoryid": 2,
-            "timestamp": "2019-05-31T16:59:57.728024Z"
+            "timestamp": "2019-05-31T16:59:57.728024Z",
+            "telephone": "0000-0000",
+            "email": "user@user.com"
             },
             {
             "id": 5,
@@ -462,9 +484,12 @@ For size = 2
             "extrainfo": "",
             "maxprice": 40,
             "minPrice": 20,
+            "expiration": "2020-06-20T03:00:13.250602Z"
             "userid": 1,
             "categoryid": 2,
-            "timestamp": "2019-05-31T15:59:57.728024Z"
+            "timestamp": "2019-05-31T15:59:57.728024Z",
+            "telephone": "0000-0000",
+            "email": "user@user.com"
             }
         ],
         "last": 1559318397
@@ -489,9 +514,12 @@ You'll get
         "extrainfo": "",
         "maxprice": 40,
         "minPrice": 20,
+        "expiration": "2020-06-20T03:00:13.250602Z"
         "userid": 1,
         "categoryid": 1,
-        "timestamp": "2019-05-31T14:59:57.728024Z"
+        "timestamp": "2019-05-31T14:59:57.728024Z",
+        "telephone": "0000-0000",
+        "email": "user@user.com"
         },
         {
         "id": 3,
@@ -500,16 +528,162 @@ You'll get
         "extrainfo": "",
         "maxprice": 40,
         "minPrice": 20,
+        "expiration": "2020-06-20T03:00:13.250602Z"
         "userid": 1,
         "categoryid": 1,
-        "timestamp": "2019-05-31T13:59:57.728024Z"
+        "timestamp": "2019-05-31T13:59:57.728024Z",
+        "telephone": "0000-0000",
+        "email": "user@user.com"
         }
     ],
     "last": 1559311197
 }
 ```
 
+## Get Offers with Match Information
 
+The alternative route can be used to return information regarding the match of an offer.
+Pagination can be also used the same way when getting offers without this information.
+
+### GET 
+```
+/offers/users/<userid>?size=2
+```
+
+#### Expected Response
+
+```
+{
+    "offers": [
+        {
+            "id": "a74c4694-8eb2-11e9-bc42-526af7764a89",
+            "name": "ICC II",
+            "description": "Posso te ajudar em provas e trabalhos de ICCII",
+            "extrainfo": "",
+            "maxprice": 40,
+            "minprice": 30,
+            "expiration": "2020-06-24T17:00:36.477801Z",
+            "userid": 1,
+            "categoryid": 2,
+            "timestamp": "2019-06-24T12:00:36.477801Z",
+            "telephone": "1234-1234",
+            "email": "user@gmail.com",
+            "matched": false
+        },
+        {
+            "id": "a74c4694-8eb2-11e9-bc42-526af7764a90",
+            "name": "Aulas de Física",
+            "description": "Dou aulas particulares de Física I, II, III e IV",
+            "extrainfo": "",
+            "maxprice": 60,
+            "minprice": 40,
+            "expiration": "2020-06-24T17:00:36.477801Z",
+            "userid": 1,
+            "categoryid": 2,
+            "timestamp": "2019-06-24T12:00:36.477801Z",
+            "telephone": "1234-1234",
+            "email": "user@gmail.com",
+            "matched": false
+        }
+    ],
+    "last": 1561377636
+}
+```
+
+## Search for Offers in the platform
+
+### GET
+
+To search for offers based on a query, use the following URL:
+
+```
+/offers?q=<string>
+```
+
+The query parameter is used to match offers based in their name and their description. Name match has a higher score
+than description match.
+
+You might want to filter the fetched offers by one or more categories IDs. The categories ID must be separed by comma.
+
+```
+/offers?q=<string>&cat=<catID1>,<catID2>,...
+```
+
+#### Expected Reponse
+
+For the following request
+
+```
+/offers?q=prova
+```
+
+the server returns:
+
+```
+{
+  "offers": [
+    {
+      "id": "a74c4694-8eb2-11e9-bc42-526af7764a89",
+      "name": "ICC II",
+      "description": "Posso te ajudar em provas e trabalhos de ICCII",
+      "extrainfo": "",
+      "maxprice": 40,
+      "minprice": 30,
+      "expiration": "2020-06-20T23:35:45.460566Z",
+      "userid": 1,
+      "categoryid": 2,
+      "timestamp": "2019-06-20T18:35:45.460566Z",
+      "telephone": "1234-1234",
+      "email": "user@gmail.com"
+    },
+    {
+      "id": "a74c4694-8eb2-11e9-bc42-526af7764a88",
+      "name": "ICC I",
+      "description": "Problemas com trabalhos ou provas de ICC I? Estou aqui para te ajudar!!",
+      "extrainfo": "",
+      "maxprice": 40,
+      "minprice": 30,
+      "expiration": "2020-06-20T23:35:45.460566Z",
+      "userid": 1,
+      "categoryid": 2,
+      "timestamp": "2019-06-20T17:35:45.460566Z",
+      "telephone": "1234-1234",
+      "email": "user@gmail.com"
+    },
+    {
+      "id": "a74c4694-8eb2-11e9-bc42-526af7764a87",
+      "name": "Álgebra Linear",
+      "description": "ou Mestrando em Matemática no ICMC. Posso ajudar com provas, listas, dúvidas teóricas etc",
+      "extrainfo": "",
+      "maxprice": 40,
+      "minprice": 30,
+      "expiration": "2020-06-20T23:35:45.460566Z",
+      "userid": 1,
+      "categoryid": 2,
+      "timestamp": "2019-06-20T16:35:45.460566Z",
+      "telephone": "1234-1234",
+      "email": "user@gmail.com"
+    },
+    {
+      "id": "a74c4694-8eb2-11e9-bc42-526af7764a86",
+      "name": "Aula de Cálculo III",
+      "description": "Aulas de preparação para provas e resolução de listas",
+      "extrainfo": "",
+      "maxprice": 40,
+      "minprice": 30,
+      "expiration": "2020-06-20T23:35:45.460566Z",
+      "userid": 1,
+      "categoryid": 2,
+      "timestamp": "2019-06-20T15:35:45.460566Z",
+      "telephone": "1234-1234",
+      "email": "user@gmail.com"
+    }
+  ],
+  "last": 0
+}
+```
+
+So far, the search endpoint doesn't accept pagination, always returning all matched offers.
 
 # Category API
 
@@ -540,3 +714,21 @@ You'll get
   }
 ]
 ```
+
+# Match API
+
+## Insert offer match into database
+
+### POST
+To match the offer with id \<offerid\> with the user <userid>
+```
+/offers/<offerid>/users/<userid>
+```
+#### Expected Response 
+A valid insert returns a 201 HTTP Status Code.
+```
+HTTP/1.1 201 Created
+Date: Wed, 05 Jun 2019 12:00:59 GMT
+Content-Length: 0
+```
+

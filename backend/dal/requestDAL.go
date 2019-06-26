@@ -1,15 +1,16 @@
 package dal
 
 import (
-	"github.com/mbotarro/unijobs/backend/tools"
-	"time"
 	"context"
 	"fmt"
+	"time"
 
-	"github.com/jmoiron/sqlx"
-	"github.com/mbotarro/unijobs/backend/models"
-	"github.com/mbotarro/unijobs/backend/errors"
+	"github.com/mbotarro/unijobs/backend/tools"
+
 	"github.com/google/uuid"
+	"github.com/jmoiron/sqlx"
+	"github.com/mbotarro/unijobs/backend/errors"
+	"github.com/mbotarro/unijobs/backend/models"
 	"github.com/olivere/elastic/v7"
 )
 
@@ -42,8 +43,9 @@ func (dal *RequestDAL) GetLastRequests(before time.Time, size int) ([]models.Req
 	return reqs, nil
 }
 
-// InsertRequest Receives a request as a parameter and inserts into the database
-func (dal *RequestDAL) InsertRequest(request models.Request) error {
+// InsertRequestInDB Receives a request as a parameter and inserts into the database
+// It returns the ID of the inserted request
+func (dal *RequestDAL) InsertRequestInDB(request *models.Request) (string, error) {
 	// Generate an uuid for the request
 	request.ID = uuid.New().String()
 
@@ -51,26 +53,26 @@ func (dal *RequestDAL) InsertRequest(request models.Request) error {
 						VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`
 
 	// Gets the controller of the database and executes the query
-	_, err := dal.db.Exec(insertQuery, request.ID, request.Name, request.Description, request.ExtraInfo, 
+	_, err := dal.db.Exec(insertQuery, request.ID, request.Name, request.Description, request.ExtraInfo,
 		request.MinPrice, request.MaxPrice, request.Userid, request.Categoryid, request.Timestamp)
 
 	// Checks if any error happened during the query execution
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	return nil
+	return request.ID, nil
 }
 
 // GetRequestsByID fetch from postgreSQL the requests whose ids are passed in parameter
-func (dal *RequestDAL) GetRequestsByID(ids []string) ([]models.Request, error){
+func (dal *RequestDAL) GetRequestsByID(ids []string) ([]models.Request, error) {
 	reqs := []models.Request{}
-	query, args, err := sqlx.In(`SELECT * FROM request WHERE id IN (?) ORDER BY timestamp DESC`,ids)
-	if err != nil{
+	query, args, err := sqlx.In(`SELECT * FROM request WHERE id IN (?) ORDER BY timestamp DESC`, ids)
+	if err != nil {
 		return nil, err
 	}
-	
-	// Transform (?, ?, ...) in postgres specific ($1, $2, $3) 
+
+	// Transform (?, ?, ...) in postgres specific ($1, $2, $3)
 	query = dal.db.Rebind(query)
 
 	rows, err := dal.db.Queryx(query, args...)
@@ -84,27 +86,27 @@ func (dal *RequestDAL) GetRequestsByID(ids []string) ([]models.Request, error){
 		err = rows.StructScan(&r)
 		reqs = append(reqs, r)
 	}
-	
+
 	return reqs, nil
 }
 
-// InsertRequestInES inserts a Request in the ES
-func (dal *RequestDAL) InsertRequestInES(request models.Request) error{
+// InsertRequestInES inserts a Request in ES
+func (dal *RequestDAL) InsertRequestInES(request models.Request) error {
 	rES := models.RequestES{
-		ID: request.ID,
-		Name: request.Name,
+		ID:          request.ID,
+		Name:        request.Name,
 		Description: request.Description,
-		Category: request.Categoryid,
-		Timestamp: request.Timestamp.Unix(),
+		Category:    request.Categoryid,
+		Timestamp:   request.Timestamp.Unix(),
 	}
 
 	_, err := dal.es.Index().
-				Index("request").
-				Id(rES.ID).
-				BodyJson(rES).
-				Refresh("true").
-				Do(context.Background())
-	if err != nil{
+		Index("request").
+		Id(rES.ID).
+		BodyJson(rES).
+		Refresh("true").
+		Do(context.Background())
+	if err != nil {
 		return fmt.Errorf("%s:%s", errors.ESInsertError, err.Error())
 	}
 
@@ -113,51 +115,24 @@ func (dal *RequestDAL) InsertRequestInES(request models.Request) error{
 
 // SearchInES searches for Requests in ES given a query.
 // If one or more category ID is informed, the results are filtered to only contain requests beloging to them.
-// A slice with the IDs of the matched queries are returned
-func (dal *RequestDAL) SearchInES(query string, categoryIDs ...int) ([]string, error){
-	q := elastic.NewMultiMatchQuery(query).
-		Type("most_fields"). // The final score is the sum of the matched fields with their respective weight
-		FieldWithBoost("name", 2.5). // The match in the name should has a higher score than a match in the description
-		FieldWithBoost("description", 1)
-	
-	b := elastic.NewBoolQuery() // A Bool query is needed to filter the results
-	b.Must(q)
-
-	// If any categoryID is passed by the variadic parameter
-	if len(categoryIDs) != 0{
-		// categoryIDs is an int slice. To use NewTermsQuery, we need an interface{} slice. We need to convert them!
-		ids := make([]interface{}, 0, len(categoryIDs))
-		for _, id := range categoryIDs{
-			ids = append(ids, id)
-		}
-
-		// Passes ids to a variadic function
-		b.Filter(elastic.NewTermsQuery("category", ids...))
-	}
-
-	searchResult, err := dal.es.Search().
-			Index("request").
-			Query(b).
-			Size(30). // TODO: enable pagination
-			Sort("_score", false). // Documents with higher score come first
-			Sort("timestamp", false). // Sort in descending order by timestamp for documents with same score
-			Do(context.Background())
-	if err != nil{
-		return nil, fmt.Errorf("%s:%s", errors.ESSearchError, err.Error())
+// A slice with the IDs of the matched requests are returned
+func (dal *RequestDAL) SearchInES(query string, categoryIDs ...int) ([]string, error) {
+	searchResult, err := searchDocumentInES(dal.es, "request", query, categoryIDs...)
+	if err != nil {
+		return nil, err
 	}
 
 	// Get the matched Requests
-	reqs, err := tools.GetRequestFromSearchResult(searchResult)
-	if err != nil{
+	reqs, err := tools.GetRequestsFromSearchResult(searchResult)
+	if err != nil {
 		return nil, err
 	}
 
 	// Get the UUIDs of the matched requests
 	ids := make([]string, 0, len(reqs))
-	for _, req := range reqs{
+	for _, req := range reqs {
 		ids = append(ids, req.ID)
 	}
 
-	return ids, nil;
+	return ids, nil
 }
-

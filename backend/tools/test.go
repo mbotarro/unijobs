@@ -8,6 +8,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
+
+	// Pq is the postgres interface library
 	_ "github.com/lib/pq"
 	"github.com/mbotarro/unijobs/backend/models"
 	"github.com/olivere/elastic/v7"
@@ -44,7 +46,7 @@ func CleanES(es *elastic.Client) {
 	// Delete in all documents in elasticSearch
 	query := elastic.NewMatchAllQuery()
 	es.DeleteByQuery().
-		Index("request").
+		Index("request,offer").
 		Query(query).
 		Refresh("true").
 		Do(context.Background())
@@ -52,6 +54,7 @@ func CleanES(es *elastic.Client) {
 
 // CleanDB delete all rows from all DB tables
 func CleanDB(db *sqlx.DB) {
+	db.MustExec("DELETE FROM match")
 	db.MustExec("DELETE FROM request")
 	db.MustExec("DELETE FROM offer")
 	db.MustExec("DELETE FROM category")
@@ -70,8 +73,8 @@ const (
 
 	getRequest = `SELECT * FROM request WHERE id = $1`
 
-	insertOffer = `INSERT INTO offer (id, name, description, extrainfo, minprice, maxprice, userid, categoryid, timestamp) 
-						VALUES ($1, $2, $3, '', $4, $5, $6, $7, $8)`
+	insertOffer = `INSERT INTO offer (id, name, description, extrainfo, minprice, maxprice, expiration, userid, categoryid, timestamp, telephone, email) 
+						VALUES ($1, $2, $3, '', $4, $5, $6, $7, $8, $9, $10, $11)`
 	getOffer = `SELECT * FROM offer WHERE id = $1`
 )
 
@@ -120,9 +123,15 @@ func CreateFakeRequest(t *testing.T, db *sqlx.DB, name, description string, user
 
 // CreateFakeOffer creates a fake request in the db
 func CreateFakeOffer(t *testing.T, db *sqlx.DB, name, description string, user, category int, timestamp time.Time) models.Offer {
+	return CreateFakeOfferWithTelAndMail(t, db, name, description, user, category, timestamp, "(34)9999-9999", "user@teste.com")
+}
+
+// CreateFakeOfferWithTelAndMail creates a fake offer with a specified email and telephone
+func CreateFakeOfferWithTelAndMail(t *testing.T, db *sqlx.DB, name, description string, user,
+	category int, timestamp time.Time, tel, email string) models.Offer {
 	id := uuid.New().String()
 
-	db.MustExec(insertOffer, id, name, description, 20, 30, user, category, timestamp.UTC())
+	db.MustExec(insertOffer, id, name, description, 20, 30, time.Now().Add(8760*time.Hour).UTC(), user, category, timestamp.UTC(), tel, email)
 
 	off := models.Offer{}
 	err := db.Get(&off, getOffer, id)
@@ -130,4 +139,14 @@ func CreateFakeOffer(t *testing.T, db *sqlx.DB, name, description string, user, 
 
 	return off
 
+}
+
+// CreateFakeMatch creates a fake match in the db
+func CreateFakeMatch(t *testing.T, db *sqlx.DB, user models.User, offer models.Offer) {
+	insertQuery := `INSERT INTO match(userid, offerid) 
+						VALUES ($1, $2)`
+
+	// Gets the controller of the database and executes the query
+	_, err := db.Exec(insertQuery, user.Userid, offer.ID)
+	assert.Equal(t, nil, err)
 }

@@ -32,7 +32,7 @@ async function getUserData (id, onResponse) {
 };
 
 async function getUserPicture (id, onResponse) {
-    onResponse(require('../assets/_test_categories/rectangle.png'));
+    onResponse(require('../assets/_users/student.png'));
 }
 
 module.exports = { tryLogin, getUserData, getUserPicture };

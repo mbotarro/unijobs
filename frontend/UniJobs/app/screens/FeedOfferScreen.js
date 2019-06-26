@@ -3,78 +3,73 @@
 import React from 'react';
 import { Platform, StyleSheet, Text, TextInput, View, Image, ScrollView, TouchableHighlight, ActivityIndicator } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { Dimensions } from "react-native";
+import { Dimensions,AsyncStorage } from "react-native";
 
 import { populateRequestMiniCards } from '../components/FeedMiniCards';
-import { loadRequests, loadCategories } from '../actions/FeedActions'
-import FeedRequestCard from '../components/FeedRequestCard'
+import { loadOffers, loadCategories } from '../actions/FeedActions'
+import FeedCard from '../components/FeedCard'
 import FloatActionButton from '../components/FloatActionButton'
+
+import { searchOffers } from '../actions/SearchActions'
+import FilterBar from '../components/FilterBar'
 
 import UniStyles from '../constants/UniStyles'
 import UniColors from '../constants/UniColors'
 import UniText from '../constants/UniText'
+import UniData from '../constants/UniData'
 
 
 
-export default class FeedRequestScreen extends React.Component {
+export default class FeedOfferScreen extends React.Component {
     static navigationOptions = { title: 'Ofertas' };
     
     state = {
         isLoading : true,
-        isMyFeedOpen: false,
+
+        userid: null,
 
         searchBarText: '',
         
-        allFeedRequests: {},
-        myFeedRequests: {},
-        categories: {},
+        allFeedOffers: {},
+        categoriesHash: {},
 
-        isRequestCardOpen: false,
-        openRequest: null,
+        isOfferCardOpen: false,
+        openOffer: null,
+        
+        isSearching: false,
+        categories: {},
+        searchCategories: [],
+        foundOffers: {},
     }
 
     textStrings = {
         searchBarPlaceHolder: 'Buscar Ofertas',
-        myFeedHeader: 'Minhas Ofertas',
         allFeedHeader: 'Últimas Ofertas'
     }
 
+    isOffer = true
 
     async componentDidMount() {
-        // use for fetching data to show
-        loadCategories((categories) => {
-            var hash = {}
-            for (var i = 0; i < categories.length; i++)
-                hash[categories[i].id] = categories[i];
-            this.setState({categories: hash})
+        try {
+            const userid = parseInt(await AsyncStorage.getItem(UniData.userid));
+            this.setState({userid: userid})
+            // use for fetching data to show
+            loadCategories((categories) => {
+                var hash = {}
+                for (var i = 0; i < categories.length; i++)
+                    hash[categories[i].id] = categories[i];
+                this.setState({categoriesHash: hash, categories: categories})
 
-            loadRequests((requests) => {
-                this.setState({allFeedRequests: requests, myFeedRequests: myFeedTestRequests});
-                this.setState({isLoading: false});
-            })
-        });
+                loadOffers(userid, (offers) => {
+                    this.setState({allFeedOffers: offers, isLoading: false});
+                }, userid)
+            });
+        } catch (error) {
+        }
     }
 
-    onMenuButtonPress(navigate) {
-        navigate.openDrawer();
-    }
-
-    onSearchBarChangeText(navigate, text) {
-        this.setState({searchBarText: text})
-    }
-
-    onSearch (navigate) {
-        alert('TODO: Search');
-    }
-
-    onMyFeedPress(self, navigate) {
-        // !! self here is because something is overriding 'this', and
-        // I don't know why! (maybe the arrow function... :/)
-        self.setState({isMyFeedOpen: !self.state.isMyFeedOpen})
-    }
-
-    onMyFeedFilterPress(self, navigate) {
-        alert('TODO: Filters');
+    onMenuButtonPress(navigation) {
+        navigation.openDrawer();
     }
 
     onAllFeedPress(self, navigate) {
@@ -92,15 +87,52 @@ export default class FeedRequestScreen extends React.Component {
         navigate('AddRequest')
     }
 
+    updateFeed() {
+        loadOffers(this.state.userid, (offers) => {
+            this.setState({allFeedOffers: offers});
+        }, this.state.userid)
+    }
+
+    // =================================================================
+    // search actions
+    // =================================================================
+    onSearchBarChangeText(navigate, text) {
+        this.setState({searchBarText: text})
+        if (text == '')
+            this.setState({isSearching: false})
+    }
+
+    onSearch () {
+        if (this.state.searchBarText == '') return
+
+        searchOffers(this.state.searchBarText, this.state.searchCategories,
+            (offers) => {
+                this.setState({isSearching: true, foundOffers: offers})
+            }
+        )
+    }
+
+    onSearchAddCategory(categoryId) {
+        this.state.searchCategories.push(categoryId)
+        this.onSearch()
+    }
+    
+    onSearchRemoveCategory(categoryId) {
+        this.state.searchCategories = 
+            this.state.searchCategories.filter((v, i, obj) => {return v != categoryId})
+        this.onSearch()
+    }
+
+
     render() {
         const { navigate } = this.props.navigation;
-
+        const isTyping = !this.state.isSearching && !this.state.isLoading && this.state.searchBarText != ''
 
         // header
         const menuButton = (
             <TouchableHighlight
                 underlayColor={UniColors.main}
-                onPress={() => this.onMenuButtonPress(navigate)}
+                onPress={() => this.onMenuButtonPress(this.props.navigation)}
             >
                 <Image source={require('../assets/icons/line-menu.png')}  style={styles.menuButton} />
             </TouchableHighlight>
@@ -112,11 +144,11 @@ export default class FeedRequestScreen extends React.Component {
                     style={styles.searchBarText}
                     placeholder={this.textStrings.searchBarPlaceHolder}
                     onChangeText={(text) => { this.onSearchBarChangeText(navigate, text) }}
-                    onSubmitEditing={(event) => this.onSearch(navigate)}
+                    onSubmitEditing={(event) => this.onSearch()}
                 />
                 <TouchableHighlight
                     underlayColor= {UniColors.transparent}
-                    onPress = {(event) => this.onSearch(navigate)}
+                    onPress = {(event) => this.onSearch()}
                 >
                     <Image
                         source={require('../assets/icons/search.png')}
@@ -127,16 +159,36 @@ export default class FeedRequestScreen extends React.Component {
         );
 
         const searchHeader = (
-            <View style={styles.searchHeader} >
-                {menuButton}
-                {searchBar}
+            <View>
+                <View style={styles.searchHeader} >
+                    {menuButton}
+                    {searchBar}
+                </View>
+                {!this.state.isSearching || this.state.isLoading ?
+                    null
+                    :
+                    <FilterBar
+                        categories={this.state.categories}
+                        onAddCategory={(categoryId) => this.onSearchAddCategory(categoryId)}
+                        onRemoveCategory = {(categoryId) => this.onSearchRemoveCategory(categoryId)}
+                    />
+                }
+                {
+                    !isTyping ?
+                    null
+                    :
+                    <View style = {styles.feedBar} >
+                        <Text style = {styles.feedBarText}>
+                            {'Buscar \'' + this.state.searchBarText + '\' em Ofertas'}
+                        </Text>
+                    </View>
+                }
             </View>
         );
 
 
         // feed headers
-        const feedHeader = (text, onPress, onFilter, showFilter, showDropDown) => {
-            return (
+        const feedHeader = (text, onPress, onFilter, showFilter) => (
             <View style = {styles.feedBar}>
                 <TouchableHighlight 
                     underlayColor = {UniColors.transparent}
@@ -144,21 +196,6 @@ export default class FeedRequestScreen extends React.Component {
                     style={{flexGrow: 1, alignSelf: 'stretch'}}
                 >
                     <View style={{flexDirection: 'row'}}>
-                        {
-                            showDropDown ?
-                                <Image
-                                    source = {require('../assets/icons/arrow-down.png')}
-                                    style = {styles.feedBarLeftIcon}
-                                />
-                                :
-                                this.state.isMyFeedOpen ?
-                                    <Image 
-                                        source = {require('../assets/icons/arrow-up.png')}
-                                        style = {styles.feedBarLeftIcon}
-                                    />
-                                    :
-                                    <View style = {{marginLeft: 43}} />            
-                        }
                         <Text style = {styles.feedBarText}>
                             {text}
                         </Text>
@@ -179,48 +216,49 @@ export default class FeedRequestScreen extends React.Component {
                         null
                 }
             </View>
-        )};
-
-        const myFeedHeader = feedHeader(
-            this.textStrings.myFeedHeader,
-            this.onMyFeedPress,
-            this.onMyFeedFilterPress,
-            this.state.isMyFeedOpen,
-            !this.state.isMyFeedOpen
-        );
+        )
         
-        const allFeedHeader = feedHeader(
-            this.textStrings.allFeedHeader,
-            this.onAllFeedPress,
-            this.onAllFeedFilterPress,
-            !this.state.isMyFeedOpen,
-            this.state.isMyFeedOpen
-        );
+        const allFeedHeader =
+            this.state.isSearching || isTyping ?
+            null
+            : feedHeader(
+                this.textStrings.allFeedHeader,
+                this.onAllFeedPress,
+                this.onAllFeedFilterPress,
+                true,
+            );
         
 
         // feed
-        const feedView = this.state.isLoading ?
-            <ActivityIndicator style={{ marginTop: 10 }} />
+        const feedView = 
+            isTyping ?
+            null
             :
-            populateRequestMiniCards(
-                this.state.isMyFeedOpen ? this.state.myFeedRequests : this.state.allFeedRequests,
-                this.state.categories,
-                (request) => this.setState({isRequestCardOpen: true, openRequest: request})
-            );
+            this.state.isLoading ?
+                <ActivityIndicator style={{ marginTop: 10 }} />
+                :
+                populateRequestMiniCards(
+                    this.state.isSearching ? this.state.foundOffers : this.state.allFeedOffers,
+                    this.state.categoriesHash,
+                    (offer) => this.setState({isOfferCardOpen: true, openOffer: offer})
+                );
 
         const openCard = 
-            this.state.isRequestCardOpen ?
+            this.state.isOfferCardOpen ?
                 <View style = {styles.openCard}>
                 {
                     this.state.isLoading ?
                     <ActivityIndicator style={{ marginTop: 10 }} />
                     :
-                    <FeedRequestCard
-                        request = {this.state.openRequest}
-                        categories = {this.state.categories}
+                    <FeedCard
+                        offer = {this.state.openOffer}
+                        categories = {this.state.categoriesHash}
                         onCreateOfferPress = {() => {}}
-                        onShowRequester = {() => {}}
-                        onQuit = {() => this.setState({isRequestCardOpen: false})}
+                        onShowOfferer = {() => {}}
+                        onQuit = {() => this.setState({isOfferCardOpen: false})}
+                        isOffer = {this.isOffer}
+                        updateFeed={() => this.updateFeed()}
+                        loggedUserid={this.state.userid}
                     />
                 }
                 </View>
@@ -236,15 +274,7 @@ export default class FeedRequestScreen extends React.Component {
                 <View style={styles.container} >
                     <View style={styles.headerContainer}>
                         {searchHeader}
-                        {myFeedHeader}
-                        {
-                            !this.state.isMyFeedOpen ?
-                                <View style={{ marginTop: 2 }}>
-                                    {allFeedHeader}
-                                </View>
-                                :
-                                null
-                        }
+                        {allFeedHeader}
                     </View>
                     <ScrollView contentContainerStyle={styles.feedContainer}>
                         {feedView}
@@ -372,105 +402,3 @@ const styles = StyleSheet.create({
         height: Dimensions.get('window').height
     }
 });
-
-
-
-
-
-
-
-
-// TEST !!! (TODO: REMOVE)
-const myFeedTestRequests = [
-    {
-        id : 0,
-        name : 'Titulo Solicitação',
-        description : 'Descrição bem grande o suficiente para usar todo o espaço disponível em preview limitado em espaço máximo e restrito!!!!!!!!!!!!!!!!!!!!!!!!!!',
-        extrainfo : '',
-        minprice : 'XXXXX',
-        maxprice: 'XXXXX',
-        userid : 0,
-        categoryid : 5,
-    },
-    {
-        id : 1,
-        name : 'Aula de Cálculo Numérico',
-        description : 'Correção de exercícios e revisão teórica. Aulas em grupos de 3 a 4 pessoas',
-        extrainfo : '',
-        minprice : '50',
-        maxprice: '50',
-        userid : 0,
-        categoryid : 1,
-    },
-    {
-        id : 2,
-        name : 'Aula de Piano',
-        description : 'Teoria da música, leitura de partituras e exercícios de dedo. Aprenda suas músicas favoritas!',
-        extrainfo : '',
-        minprice : '100',
-        maxprice: '100',
-        userid : 0,
-        categoryid : 2,
-    },
-    {
-        id : 3,
-        name : 'Tradução Chinês - Português',
-        description : 'Tradução em chinês tradicional ou simplificado. Preço por página em português.',
-        extrainfo : '',
-        minprice : '30',
-        maxprice: '30',
-        userid : 0,
-        categoryid : 3,
-    },
-    {
-        id : 4,
-        name : 'Aula de Mandarim',
-        description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
-        extrainfo : '',
-        minprice : '80',
-        maxprice: '80',
-        userid : 0,
-        categoryid : 2,
-    },
-    {
-        id : 4,
-        name : 'Aula de Mandarim',
-        description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
-        extrainfo : '',
-        minprice : '80',
-        maxprice: '80',
-        userid : 0,
-        categoryid : 12,
-    },
-    {
-        id : 4,
-        name : 'Aula de Mandarim',
-        description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
-        extrainfo : '',
-        minprice : '80',
-        maxprice: '80',
-        userid : 0,
-        categoryid : 8,
-    },
-    {
-        id : 4,
-        name : 'Aula de Mandarim',
-        description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
-        extrainfo : '',
-        minprice : '80',
-        maxprice: '80',
-        userid : 0,
-        categoryid : 9,
-    },
-    {
-        id : 4,
-        name : 'Aula de Mandarim',
-        description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
-        extrainfo : '',
-        minprice : '80',
-        maxprice: '80',
-        userid : 0,
-        categoryid : 7,
-    },
-]
-

@@ -1,20 +1,34 @@
 { "create" : { "_index" : "request", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764f64" } }
-{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f64", "name": "Aula de Cálculo I", "description": "Preciso de ajuda na matéria", "category": "1" }
+{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f64", "name": "Calculo I", "description": "Preciso de ajuda na matéria", "category": 2 }
 { "create" : { "_index" : "request", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764f65" } }
-{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f65", "name": "Aula de Cálculo II", "description": "Tenho prova semana que vem", "category": "1" }
+{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f65", "name": "Física I", "description": "Tenho prova semana que vem. Preciso de ajuda pra estudar.", "category": 2 }
 { "create" : { "_index" : "request", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764f66" } }
-{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f66", "name": "Aula de Cálculo III", "description": "Teorema de Green", "category": "1" }
+{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f66", "name": "Geometria Analítica", "description": "Alguém pode me explicar cônicas e quádricas?", "category": 2 }
 { "create" : { "_index" : "request", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764f67" } }
-{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f67", "name": "Álgebra Linear", "description": "Preciso de ajuda para prova", "category": "1" }
+{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f67", "name": "Acompanhante", "description": "Alguém poderia ficar com minha avó toda segunda à tarde", "category": 10 }
 { "create" : { "_index" : "request", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764f68" } }
-{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f68", "name": "Aula de ICC I", "description": "Ajuda em trabalho", "category": "2" }
+{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f68", "name": "Aula de ICC II", "description": "Ajuda na matéria", "category": 2 }
 { "create" : { "_index" : "request", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764f69" } }
-{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f69", "name": "Aula de ICC II", "description": "Ajuda na matéria", "category": "2" }
+{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f69", "name": "Física I", "description": "Ajuda em Conservação de Movimento Linear", "category": 2 }
 { "create" : { "_index" : "request", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764f70" } }
-{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f70", "name": "Física I", "description": "Ajuda em Conservação de Movimento Linear", "category": "3" }
+{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f70", "name": "Piano", "description": "Procuro aula para iniciantes", "category": 4 }
 { "create" : { "_index" : "request", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764f71" } }
-{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f71", "name": "Aula de Piano", "description": "Procuro aula para iniciantes", "category": "4" }
+{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f71", "name": "Pet Care", "description": "Procuro alguém para passear com meu cachorro", "category": 8 }
 { "create" : { "_index" : "request", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764f72" } }
-{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f72", "name": "Pet Care", "description": "Procuro alguém para passear com meu cachorro", "category": "5" }
+{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f72", "name": "Limpeza", "description": "Procuro alguém para me ajudar a limpar a casa", "category": 6 }
 { "create" : { "_index" : "request", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764f73" } }
-{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f73", "name": "Limpeza", "description": "Procuro alguém para me ajudar a limpar a casa", "category": "5" }
+{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f73", "name": "Entrega de Carta", "description": "Procuro alguém para entregar uma carta para mim", "category": 7 }
+{ "create" : { "_index" : "request", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764f74" } }
+{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f74", "name": "Cuidador de gatinho", "description": "Procuro alguém para ficar com o Bilu aos fins de semana", "category": 8 }
+{ "create" : { "_index" : "request", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764f75" } }
+{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f75", "name": "Epistemologia", "description": "Procuro alguém para me ajudar com tema para minha tese", "category": 3 }
+{ "create" : { "_index" : "request", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764f76" } }
+{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f76", "name": "Entrega Mercado", "description": "Preciso de alguém para pegar minhas compras no mercado toda semana", "category": 7 }
+{ "create" : { "_index" : "request", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764f77" } }
+{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f77", "name": "Citologia", "description": "Preciso de ajuda no tema", "category": 1 }
+{ "create" : { "_index" : "request", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764f78" } }
+{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f78", "name": "Babá para meu filho", "description": "Meu filho tem 2 anos. Procuro alguém para ficar com ele no próxio fim de semana", "category": 9 }
+{ "create" : { "_index" : "request", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764f79" } }
+{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f79", "name": "Aulas de Inglês", "description": "Procuro professor de inglês para nível avançado", "category": 4 }
+{ "create" : { "_index" : "request", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764f80" } }
+{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764f80", "name": "Aulas de Francês", "description": "Quero aprender Francês!", "category": 4 }

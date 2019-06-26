@@ -9,7 +9,7 @@ import { AsyncStorage } from 'react-native';
 
 import Button from '../components/Button'
 import UniColors from '../constants/UniColors'
-import UniText from '../constants/UniColors'
+import UniText from '../constants/UniText'
 
 import { tryAddOffer } from '../actions/AddOfferRequestActions'
 
@@ -54,10 +54,10 @@ export default class AddSolicitationScreen extends React.Component {
         const { navigate } = this.props.navigation;
 
         const CategoryMenu = () => (
-            <View style={[styles.categoryBox, {marginTop: 25}]}>
                 <Picker
                     selectedValue={this.state.category}
                     onValueChange={(itemValue, itemPosition) =>  this.setState({category: itemValue, categoryIndex: itemPosition})}
+                    style={[styles.categoryBox, {marginTop: 25, overflow: 'hidden', height: 40, justifyContent: 'center', paddingVertical: 10}]}
                 >   
                     <Picker.Item label='Categoria' value='categoria' />
                     <Picker.Item label='Aulas de Exatas' value='exatas'/>
@@ -72,7 +72,6 @@ export default class AddSolicitationScreen extends React.Component {
                     <Picker.Item label='Culinária' value='culinária'/>
                     <Picker.Item label='Outros' value='outros'/>
                 </Picker>
-            </View>
         );
 
         const ContactOptionEmail = () => (
@@ -197,12 +196,12 @@ const styles = StyleSheet.create({
     headerText: {
         fontSize: 20,
         color: UniColors.white,
-        fontWeight: 'bold',
+        fontWeight: UniText.semibold,
     },
 
     title:  {
         fontSize: 17,
-        fontWeight: 'bold',
+        fontWeight: UniText.bold,
         color: UniColors.main,
     },
 
@@ -214,7 +213,8 @@ const styles = StyleSheet.create({
     titleInput: {
         borderBottomWidth: 0.2, 
         borderBottomColor: UniColors.dark_grey,
-        fontSize: UniText.nomral,
+        fontSize: UniText.big,
+        fontWeight: UniText.semibold,
         color: UniColors.dark,
     },
 
