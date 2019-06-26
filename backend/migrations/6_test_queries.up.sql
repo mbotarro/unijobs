@@ -1,9 +1,9 @@
-insert into userdata(username, password, email, address, telephone, student) values ('Monica', 'monica','monica@usp.com', 'Rua do Céu, 616', '(16)3509-1290', TRUE);
-insert into userdata(username, password, email, address, telephone, student) values ('Diego', 'diego','diego@usp.com', 'Av. São Carlos, 320', '(16)3509-1010', TRUE);
-insert into userdata(username, password, email, address, telephone, student) values ('Paulo Sergio', 'paulosergio','ps@usp.com', 'Condomínio Dama, 12', '(16)3509-8712', TRUE);
-insert into userdata(username, password, email, address, telephone, student) values ('Marcos', 'marcos','marcos@usp.com', 'Rua Jacinto Favoretto, 406', '(16)3509-1214', TRUE);
-insert into userdata(username, password, email, address, telephone, student) values ('Daniel', 'daniel','daniel@usp.com', 'Rua César Ricomi, 20', '(16)3509-1155', TRUE);
-insert into userdata(username, password, email, address, telephone, student) values ('Adilson', 'adilson','adilson@usp.com', 'Rua Achile Bassi, 450', '(16)3509-2060', TRUE);
+insert into userdata(username, password, email, address, telephone, student) values ('Monica', 'monica','monica@usp.br', 'Rua do Céu, 616', '(16)3509-1290', TRUE);
+insert into userdata(username, password, email, address, telephone, student) values ('Diego', 'diego','diego@usp.br', 'Av. São Carlos, 320', '(16)3509-1010', TRUE);
+insert into userdata(username, password, email, address, telephone, student) values ('Paulo Sergio', 'paulosergio','ps@usp.br', 'Condomínio Dama, 12', '(16)3509-8712', TRUE);
+insert into userdata(username, password, email, address, telephone, student) values ('Marcos', 'marcos','marcos@usp.br', 'Rua Jacinto Favoretto, 406', '(16)3509-1214', TRUE);
+insert into userdata(username, password, email, address, telephone, student) values ('Daniel', 'daniel','daniel@usp.br', 'Rua César Ricomi, 20', '(16)3509-1155', TRUE);
+insert into userdata(username, password, email, address, telephone, student) values ('Adilson', 'adilson','adilson@usp.br', 'Rua Achile Bassi, 450', '(16)3509-2060', TRUE);
 
 insert into offer (id, name, description, extrainfo, minprice, maxprice, expiration, userid, categoryid, timestamp, telephone, email) values ('a74c4694-8eb2-11e9-bc42-526af7764a84' ,'Aula de Cálculo I', 'Derivada, Integral, posso te ajudar como  que você quiser!!', '', 30, 40, NOW() + INTERVAL '1 YEAR', 5, 2, NOW() - INTERVAL '20 HOUR', '(16)3509-1214', 'daniel@usp.com');
 insert into offer (id, name, description, extrainfo, minprice, maxprice, expiration, userid, categoryid, timestamp, telephone, email) values ('a74c4694-8eb2-11e9-bc42-526af7764a85' ,'Aula de Cálculo II', 'Ofereço aulas de Cálculo 2', '', 30, 40, NOW() + INTERVAL '1 YEAR', 5, 2, NOW() - INTERVAL '19 HOUR', '(16)3509-1214', 'daniel@usp.com');
