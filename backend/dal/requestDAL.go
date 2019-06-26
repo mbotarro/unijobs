@@ -49,12 +49,12 @@ func (dal *RequestDAL) InsertRequestInDB(request *models.Request) (string, error
 	// Generate an uuid for the request
 	request.ID = uuid.New().String()
 
-	insertQuery := `INSERT INTO request (id, name, description, extrainfo, minprice, maxprice, userid, categoryid, timestamp) 
-						VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`
+	insertQuery := `INSERT INTO request (id, name, description, extrainfo, minprice, maxprice, userid, categoryid, timestamp, telephone, email) 
+						VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`
 
 	// Gets the controller of the database and executes the query
 	_, err := dal.db.Exec(insertQuery, request.ID, request.Name, request.Description, request.ExtraInfo,
-		request.MinPrice, request.MaxPrice, request.Userid, request.Categoryid, request.Timestamp)
+		request.MinPrice, request.MaxPrice, request.Userid, request.Categoryid, request.Timestamp, request.Telephone, request.Email)
 
 	// Checks if any error happened during the query execution
 	if err != nil {
