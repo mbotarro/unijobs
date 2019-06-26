@@ -8,8 +8,8 @@ CREATE TABLE IF NOT EXISTS request (
 	userid      integer NOT NULL,
 	categoryid  integer,
 	timestamp	timestamp NOT NULL,
-	telephone 	text,
-	email		text, 
+	telephone 	text NOT NULL,
+	email		text NOT NULL, 
 	CONSTRAINT pk_request PRIMARY KEY (id),
     FOREIGN KEY (userid) REFERENCES userdata(userid),
     FOREIGN KEY (categoryid) REFERENCES category(id)

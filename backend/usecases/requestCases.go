@@ -33,7 +33,6 @@ func (rc *RequestController) GetLastRequests(before time.Time, size int) ([]mode
 // InsertRequest inserts the given request into the databases (postgres + ES), calling the DAL package function.
 // It returns error != nil in case some error occured.
 func (rc *RequestController) InsertRequest(req models.Request, telephone bool, email bool) (string, error) {
-
 	u, err := rc.userDAL.GetUserInfo(req.Userid)
 	if err != nil {
 		return "", nil
