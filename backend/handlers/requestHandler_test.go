@@ -50,7 +50,7 @@ func TestGetLastRequest(t *testing.T) {
 	})
 
 	// Populate the database with some fake requests
-	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234", "9999-1111")
+	u := tools.CreateFakeUser(t, db, "user", "user@teste.com", "1234", "(34)9999-9999")
 	c := tools.CreateFakeCategory(t, db, "Aula Matemática", "Matemática")
 
 	reqs := []models.Request{
@@ -202,7 +202,7 @@ func TestInsertRequest(t *testing.T) {
 	rh := handlers.NewRequestHandler(ctrl.Request)
 
 	// Creates fake user and category to be used at the request
-	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234", "9999-1111")
+	u := tools.CreateFakeUser(t, db, "user", "user@teste.com", "1234", "(34)9999-9999")
 	c := tools.CreateFakeCategory(t, db, "Aula Matemática", "Matemática")
 
 	handler := http.HandlerFunc(rh.InsertRequest)
@@ -214,7 +214,10 @@ func TestInsertRequest(t *testing.T) {
 								"maxPrice": 50,
 								"minPrice": 0,
 								"userid": %d,
-								"categoryid": %d}`, u.Userid, c.ID)
+								"categoryid": %d,
+								"telephone": true,
+								"email": false
+								}`, u.Userid, c.ID)
 	jsonReq := []byte(jsonStr)
 
 	req, err := http.NewRequest("POST", "/requests", bytes.NewBuffer(jsonReq))
@@ -240,7 +243,7 @@ func TestSearchRequest(t *testing.T) {
 	handler := http.HandlerFunc(rh.SearchRequests)
 
 	// Fake Data
-	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234", "9999-1111")
+	u := tools.CreateFakeUser(t, db, "user", "user@teste.com", "1234", "(34)9999-9999")
 	c1 := tools.CreateFakeCategory(t, db, "Aula Matemática", "Matemática")
 	c2 := tools.CreateFakeCategory(t, db, "Aula Computação", "Ciência de Computação")
 
@@ -253,7 +256,7 @@ func TestSearchRequest(t *testing.T) {
 
 	// Insert requests in ES
 	for _, req := range []*models.Request{&req1, &req2, &req3, &req4, &req5, &req6} {
-		id, err := ctrl.Request.InsertRequest(*req)
+		id, err := ctrl.Request.InsertRequest(*req, true, true)
 		assert.Equal(t, nil, err)
 		req.ID = id
 	}

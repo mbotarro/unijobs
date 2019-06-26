@@ -13,12 +13,14 @@ import (
 // RequestController wraps all Requests' usecases
 type RequestController struct {
 	requestDAL *dal.RequestDAL
+	userDAL    *dal.UserDAL
 }
 
 // NewRequestController returns a new RequestController
 func NewRequestController(db *sqlx.DB, es *elastic.Client) *RequestController {
 	return &RequestController{
 		requestDAL: dal.NewRequestDAL(db, es),
+		userDAL:    dal.NewUserDAL(db),
 	}
 }
 
@@ -30,7 +32,23 @@ func (rc *RequestController) GetLastRequests(before time.Time, size int) ([]mode
 
 // InsertRequest inserts the given request into the databases (postgres + ES), calling the DAL package function.
 // It returns error != nil in case some error occured.
-func (rc *RequestController) InsertRequest(req models.Request) (string, error) {
+func (rc *RequestController) InsertRequest(req models.Request, telephone bool, email bool) (string, error) {
+	u, err := rc.userDAL.GetUserInfo(req.Userid)
+	if err != nil {
+		return "", nil
+	}
+
+	if telephone {
+		req.Telephone = u.Telephone
+	} else {
+		req.Telephone = ""
+	}
+	if email {
+		req.Email = u.Email
+	} else {
+		req.Email = ""
+	}
+
 	id, err := rc.requestDAL.InsertRequestInDB(&req)
 	if err != nil {
 		return "", err
