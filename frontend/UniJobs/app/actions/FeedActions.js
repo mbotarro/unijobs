@@ -78,8 +78,9 @@ async function loadUserInfo(id, onResponse) {
     })
 }
 
-async function makeMatch(offerid, userid) {
+async function makeMatch(offerid, userid, onRequest) {
     fetch(UniData.matchApi(offerid, userid), {method: 'POST'})
+    .then(onRequest())
     .catch((error) => {
         console.log("Error while making the match");
         alert(error.message)
