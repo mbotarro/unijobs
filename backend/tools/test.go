@@ -68,8 +68,8 @@ const (
 	getUser        = `SELECT * FROM userdata WHERE email = $1`
 	insertCategory = `INSERT INTO category (name, description) VALUES ($1, $2)`
 	getCategory    = `SELECT * FROM category WHERE name = $1`
-	insertRequest  = `INSERT INTO request (id, name, description, extrainfo, minprice, maxprice, userid, categoryid, timestamp) 
-						VALUES ($1, $2, $3, '', $4, $5, $6, $7, $8)`
+	insertRequest  = `INSERT INTO request (id, name, description, extrainfo, minprice, maxprice, userid, categoryid, timestamp, telephone, email) 
+						VALUES ($1, $2, $3, '', $4, $5, $6, $7, $8, $9, $10)`
 
 	getRequest = `SELECT * FROM request WHERE id = $1`
 
@@ -112,7 +112,7 @@ func CreateFakeCategory(t *testing.T, db *sqlx.DB, name, description string) mod
 // CreateFakeRequest creates a fake request in the db
 func CreateFakeRequest(t *testing.T, db *sqlx.DB, name, description string, user, category int, timestamp time.Time) models.Request {
 	id := uuid.New().String()
-	db.MustExec(insertRequest, id, name, description, 20, 30, user, category, timestamp.UTC())
+	db.MustExec(insertRequest, id, name, description, 20, 30, user, category, timestamp.UTC(), "(34)9999-9999", "user@teste.com")
 
 	r := models.Request{}
 	err := db.Get(&r, getRequest, id)

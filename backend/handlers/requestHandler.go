@@ -45,6 +45,8 @@ type RequestInsertion struct {
 	MinPrice    int    `json:"minprice"`
 	Userid      int    `json:"userid"`
 	Categoryid  int    `json:"categoryid"`
+	Telephone   bool   `db:"telephone" json:"telephone"`
+	Email       bool   `db:"email" json:"email"`
 }
 
 // GetLastRequests sends the last requests created in the unijobs service
@@ -113,7 +115,7 @@ func (handler *RequestHandler) InsertRequest(w http.ResponseWriter, r *http.Requ
 	req.Categoryid = reqInserted.Categoryid
 	req.Timestamp = time.Now()
 
-	_, err = handler.requestController.InsertRequest(req)
+	_, err = handler.requestController.InsertRequest(req, reqInserted.Telephone, reqInserted.Email)
 	if err != nil {
 		http.Error(w, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error()).Error(), http.StatusInternalServerError)
 		return

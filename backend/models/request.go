@@ -13,6 +13,8 @@ type Request struct {
 	Userid      int       `db:"userid" json:"userid"`
 	Categoryid  int       `db:"categoryid" json:"categoryid"`
 	Timestamp   time.Time `db:"timestamp" json:"timestamp"`
+	Telephone   string    `db:"telephone" json:"telephone"`
+	Email       string    `db:"email" json:"email"`
 }
 
 // RequestES represents a Request in the ES
