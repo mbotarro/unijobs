@@ -1,6 +1,7 @@
 package dal_test
 
 import (
+	"context"
 	"testing"
 	"time"
 
@@ -8,16 +9,19 @@ import (
 	"github.com/mbotarro/unijobs/backend/dal"
 	"github.com/mbotarro/unijobs/backend/models"
 	"github.com/mbotarro/unijobs/backend/tools"
+	"github.com/olivere/elastic/v7"
 	"gotest.tools/assert"
 )
 
-func getOfferDAL(db *sqlx.DB) *dal.OfferDAL {
-	return dal.NewOfferDAL(db)
+func getOfferDAL(db *sqlx.DB, es *elastic.Client) *dal.OfferDAL {
+	return dal.NewOfferDAL(db, es)
 }
 
 func TestGetLastOffers(t *testing.T) {
 	db := tools.GetTestDB()
+	es := tools.GetTestES()
 	defer tools.CleanDB(db)
+	defer tools.CleanES(es)
 
 	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234", "9999-1111")
 	c := tools.CreateFakeCategory(t, db, "Aula Matemática Avancada", "Matemática")
@@ -28,7 +32,7 @@ func TestGetLastOffers(t *testing.T) {
 		tools.CreateFakeOffer(t, db, "Aula Cálculo 6", "", u.Userid, c.ID, time.Now()),
 	}
 
-	offerDAL := getOfferDAL(db)
+	offerDAL := getOfferDAL(db, es)
 
 	t.Run("without size limit", func(t *testing.T) {
 		gotOffers, err := offerDAL.GetLastOffers(time.Now(), 30)
@@ -62,7 +66,9 @@ func TestGetLastOffers(t *testing.T) {
 
 func TestGetLastOffersBeforeTimestamp(t *testing.T) {
 	db := tools.GetTestDB()
+	es := tools.GetTestES()
 	defer tools.CleanDB(db)
+	defer tools.CleanES(es)
 
 	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234", "9999-1111")
 	c := tools.CreateFakeCategory(t, db, "Aula Matemática Avancada", "Matemática")
@@ -75,7 +81,7 @@ func TestGetLastOffersBeforeTimestamp(t *testing.T) {
 		tools.CreateFakeOffer(t, db, "Aula Cálculo 7", "", u.Userid, c.ID, time.Now()),
 	}
 
-	offerDAL := getOfferDAL(db)
+	offerDAL := getOfferDAL(db, es)
 
 	t.Run("without size limit", func(t *testing.T) {
 		// Get only the offers created before 1 hour ago
@@ -126,8 +132,11 @@ func CompareOffers(off1, off2 models.Offer) bool {
 func TestInsertOffer(t *testing.T) {
 	// Get connection to test database and cleans it
 	db := tools.GetTestDB()
+	es := tools.GetTestES()
 	defer tools.CleanDB(db)
-	offerDAL := getOfferDAL(db)
+	defer tools.CleanES(es)
+
+	offerDAL := getOfferDAL(db, es)
 
 	// Create the fake offer
 	var off models.Offer
@@ -136,6 +145,7 @@ func TestInsertOffer(t *testing.T) {
 	off.ExtraInfo = "Informacao X"
 	off.MinPrice = 20
 	off.MaxPrice = 50
+	off.Expiration = time.Now().Add(8760 * time.Hour)
 
 	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234", "9999-1111")
 	c := tools.CreateFakeCategory(t, db, "Aula Matemática", "Matemática")
@@ -143,7 +153,7 @@ func TestInsertOffer(t *testing.T) {
 	off.Categoryid = c.ID
 
 	// Executes the test query
-	err := offerDAL.InsertOffer(off)
+	_, err := offerDAL.InsertOfferInDB(&off)
 
 	// Checks the expected results
 	assert.Equal(t, nil, err)
@@ -155,5 +165,227 @@ func TestInsertOffer(t *testing.T) {
 
 		equalReqs := CompareOffers(gotReqs[0], off)
 		assert.Equal(t, equalReqs, true)
+	})
+}
+
+func TestInsertOfferInES(t *testing.T) {
+	db := tools.GetTestDB()
+	es := tools.GetTestES()
+	defer tools.CleanDB(db)
+	defer tools.CleanES(es)
+
+	offerDAL := getOfferDAL(db, es)
+
+	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234", "9999-1111")
+	c := tools.CreateFakeCategory(t, db, "Aula Matemática", "Matemática")
+
+	// Create fake offer in db and insert the same offer in ES
+	off := tools.CreateFakeOffer(t, db, "Aula de Cálculo I", "Dou aulas particulares de Cálculo I", u.Userid, c.ID, time.Now())
+
+	// Executes the test query
+	err := offerDAL.InsertOfferInES(off)
+
+	// We expect no error in the insertion
+	assert.Equal(t, nil, err)
+
+	// Checks if the offer was inserted successfully
+	t.Run("1 insertion", func(t *testing.T) {
+		termQuery := elastic.NewTermQuery("db_id", off.ID)
+		searchResult, err := es.Search().
+			Index("offer").
+			Query(termQuery).
+			Do(context.Background())
+
+		// We expect no error
+		assert.Equal(t, nil, err)
+		assert.Equal(t, 1, int(searchResult.TotalHits()))
+
+		gotOffs, err := tools.GetOffersFromSearchResult(searchResult)
+		assert.Equal(t, nil, err)
+		assert.Equal(t, 1, len(gotOffs))
+	})
+
+	off2 := tools.CreateFakeOffer(t, db, "Algebra Linear", "Sou mestrando no ICMC", u.Userid, c.ID, time.Now())
+	err = offerDAL.InsertOfferInES(off2)
+	assert.Equal(t, nil, err)
+
+	t.Run("2 insertions", func(t *testing.T) {
+		termsQuery := elastic.NewTermsQuery("db_id", off.ID, off2.ID)
+		searchResult, err := es.Search().
+			Index("offer").
+			Query(termsQuery).
+			Do(context.Background())
+
+		// We expect no error
+		assert.Equal(t, nil, err)
+		assert.Equal(t, 2, int(searchResult.TotalHits()))
+
+		gotOffs, err := tools.GetOffersFromSearchResult(searchResult)
+		assert.Equal(t, nil, err)
+		assert.Equal(t, 2, len(gotOffs))
+	})
+}
+
+func TestSearchOfferInES(t *testing.T) {
+	db := tools.GetTestDB()
+	es := tools.GetTestES()
+	defer tools.CleanDB(db)
+	defer tools.CleanES(es)
+
+	offerDAL := getOfferDAL(db, es)
+
+	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234", "9999-1111")
+	c1 := tools.CreateFakeCategory(t, db, "Aula Matemática", "Matemática")
+	c2 := tools.CreateFakeCategory(t, db, "Aula Física", "Física")
+	c3 := tools.CreateFakeCategory(t, db, "Aula Computação", "Ciência de Computação")
+	c4 := tools.CreateFakeCategory(t, db, "Extracurricular", "Extracurricular")
+	c5 := tools.CreateFakeCategory(t, db, "Serviços Gerais", "Serviços Gerais")
+
+	off1 := tools.CreateFakeOffer(t, db, "Aula de Cálculo I", "Dou aula de cálculo I", u.Userid, c1.ID, time.Now().Add(-10*time.Hour))
+	off2 := tools.CreateFakeOffer(t, db, "Aula de Cálculo II", "Ajudo em provas e listas", u.Userid, c1.ID, time.Now().Add(-9*time.Hour))
+	off3 := tools.CreateFakeOffer(t, db, "Aula de Cálculo III", "Dou aula de cálculo III", u.Userid, c1.ID, time.Now().Add(-8*time.Hour))
+	off4 := tools.CreateFakeOffer(t, db, "Álgebra Linear", "Sou mestrando em Matemática no ICMC", u.Userid, c1.ID, time.Now().Add(-7*time.Hour))
+	off5 := tools.CreateFakeOffer(t, db, "Aula de ICC I", "Posso ajudar em provas e trabalhos", u.Userid, c3.ID, time.Now().Add(-6*time.Hour))
+	off6 := tools.CreateFakeOffer(t, db, "Aula de ICC II", "Posso ajudar em todos os tópicos da matéria", u.Userid, c3.ID, time.Now().Add(-5*time.Hour))
+	off7 := tools.CreateFakeOffer(t, db, "Aulas de Física", "Dou aula de Física I, II, III, e IV", u.Userid, c2.ID, time.Now().Add(-4*time.Hour))
+	off8 := tools.CreateFakeOffer(t, db, "Aula de Piano", "Dou aula de piano para todos os níveis", u.Userid, c4.ID, time.Now().Add(-3*time.Hour))
+	off9 := tools.CreateFakeOffer(t, db, "Pet Care", "Posso passear com seu cachorro!!", u.Userid, c5.ID, time.Now().Add(-2*time.Hour))
+	off10 := tools.CreateFakeOffer(t, db, "Limpeza", "Ajudo na limpeza de casas e apartamentos", u.Userid, c5.ID, time.Now().Add(-time.Hour))
+
+	for _, off := range []models.Offer{off1, off2, off3, off4, off5, off6, off7, off8, off9, off10} {
+		err := offerDAL.InsertOfferInES(off)
+		assert.Equal(t, nil, err)
+	}
+
+	t.Run("get offers in es without category", func(t *testing.T) {
+		t.Run("get only one offer", func(t *testing.T) {
+			ids, err := offerDAL.SearchInES("limpeza")
+
+			// We expect to get documents that matches aula or calculo. A higher score is given to docs that matches both name and description
+			assert.Equal(t, nil, err)
+			assert.Equal(t, 1, len(ids))
+			assert.Equal(t, off10.ID, ids[0])
+		})
+
+		t.Run("get lot of offers", func(t *testing.T) {
+			ids, err := offerDAL.SearchInES("aula calculo")
+
+			// We expect to get documents that matches aula or calculo. A higher score is given to docs that matches both name and description
+			assert.Equal(t, nil, err)
+			assert.Equal(t, 7, len(ids))
+			assert.Equal(t, off3.ID, ids[0])
+			assert.Equal(t, off1.ID, ids[1])
+			assert.Equal(t, off2.ID, ids[2])
+			assert.Equal(t, off8.ID, ids[3])
+			assert.Equal(t, off7.ID, ids[4])
+			assert.Equal(t, off6.ID, ids[5])
+			assert.Equal(t, off5.ID, ids[6])
+		})
+
+	})
+
+	t.Run("get offers in es with categories", func(t *testing.T) {
+		t.Run("only math offers", func(t *testing.T) {
+			ids, err := offerDAL.SearchInES("aula calculo", c1.ID)
+
+			// We expect get documents that matches aula or calculo but only belonging to the Math category
+			assert.Equal(t, nil, err)
+			assert.Equal(t, 3, len(ids))
+			assert.Equal(t, off3.ID, ids[0])
+			assert.Equal(t, off1.ID, ids[1])
+			assert.Equal(t, off2.ID, ids[2])
+		})
+
+		t.Run("only math and extraclass offers", func(t *testing.T) {
+			ids, err := offerDAL.SearchInES("aula calculo", c1.ID, c4.ID)
+
+			// We expect get documents that matches aula or calculo but only belonging to the Math or Extraclass categories
+			assert.Equal(t, nil, err)
+			assert.Equal(t, 4, len(ids))
+			assert.Equal(t, off3.ID, ids[0])
+			assert.Equal(t, off1.ID, ids[1])
+			assert.Equal(t, off2.ID, ids[2])
+			assert.Equal(t, off8.ID, ids[3])
+		})
+	})
+}
+
+func TestGetOffersByID(t *testing.T) {
+	db := tools.GetTestDB()
+	es := tools.GetTestES()
+	defer tools.CleanDB(db)
+	defer tools.CleanES(es)
+
+	offerDAL := getOfferDAL(db, es)
+
+	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234", "9999-1111")
+	c1 := tools.CreateFakeCategory(t, db, "Aula Matemática", "Matemática")
+	c2 := tools.CreateFakeCategory(t, db, "Aula Computação", "Ciência de Computação")
+
+	off1 := tools.CreateFakeOffer(t, db, "Aula de Cálculo I", "Oferecço aula particular", u.Userid, c1.ID, time.Now().Add(-10*time.Hour))
+	off2 := tools.CreateFakeOffer(t, db, "Aula de Cálculo II", "Ajudo em provas e listas", u.Userid, c1.ID, time.Now().Add(-9*time.Hour))
+	off3 := tools.CreateFakeOffer(t, db, "Aula de Cálculo III", "Ajudo em Cálculo III", u.Userid, c1.ID, time.Now().Add(-8*time.Hour))
+	off4 := tools.CreateFakeOffer(t, db, "Álgebra Linear", "Sou mestrando no ICMC", u.Userid, c1.ID, time.Now().Add(-7*time.Hour))
+	off5 := tools.CreateFakeOffer(t, db, "Aula de ICC I", "Ajuda em matéria e trabalhos", u.Userid, c2.ID, time.Now().Add(-6*time.Hour))
+	off6 := tools.CreateFakeOffer(t, db, "Aula de ICC II", "Ajudo em ICC II", u.Userid, c2.ID, time.Now().Add(-5*time.Hour))
+
+	t.Run("Get offer with 1 ID", func(t *testing.T) {
+		offs, err := offerDAL.GetOffersByID([]string{off1.ID})
+		assert.Equal(t, nil, err)
+		assert.Equal(t, off1, offs[0])
+	})
+
+	t.Run("Get offers with 3 IDs", func(t *testing.T) {
+		offs, err := offerDAL.GetOffersByID([]string{off1.ID, off2.ID, off3.ID})
+		assert.Equal(t, nil, err)
+		assert.Equal(t, off3, offs[0])
+		assert.Equal(t, off2, offs[1])
+		assert.Equal(t, off1, offs[2])
+	})
+
+	t.Run("Get offers with 6 IDs", func(t *testing.T) {
+		offs, err := offerDAL.GetOffersByID([]string{off1.ID, off2.ID, off3.ID, off4.ID, off5.ID, off6.ID})
+		assert.Equal(t, nil, err)
+		assert.Equal(t, off6, offs[0])
+		assert.Equal(t, off5, offs[1])
+		assert.Equal(t, off4, offs[2])
+		assert.Equal(t, off3, offs[3])
+		assert.Equal(t, off2, offs[4])
+		assert.Equal(t, off1, offs[5])
+	})
+}
+
+func TestInsertOfferMatch(t *testing.T) {
+	db := tools.GetTestDB()
+	es := tools.GetTestES()
+	defer tools.CleanDB(db)
+	defer tools.CleanES(es)
+
+	offerDAL := getOfferDAL(db, es)
+
+	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234", "9999-1111")
+	c1 := tools.CreateFakeCategory(t, db, "Aula Matemática", "Matemática")
+
+	off1 := tools.CreateFakeOffer(t, db, "Aula de Cálculo I", "Oferecço aula particular", u.Userid, c1.ID, time.Now().Add(-10*time.Hour))
+
+	t.Run("Get match ok", func(t *testing.T) {
+		err := offerDAL.InsertOfferMatch(u.Userid, off1.ID)
+		assert.Equal(t, nil, err)
+		status, err := offerDAL.GetOfferMatchStatus(u.Userid, off1.ID)
+		assert.Equal(t, true, status)
+	})
+
+	t.Run("Offer does not exist", func(t *testing.T) {
+		err := offerDAL.InsertOfferMatch(u.Userid, "a")
+		assert.Error(t, err, "sql: no rows in result set")
+		status, err := offerDAL.GetOfferMatchStatus(u.Userid, "a")
+		assert.Equal(t, false, status)
+	})
+
+	t.Run("User does not exist", func(t *testing.T) {
+		err := offerDAL.InsertOfferMatch(-1, off1.ID)
+		assert.Error(t, err, "sql: no rows in result set")
+		status, err := offerDAL.GetOfferMatchStatus(-1, off1.ID)
+		assert.Equal(t, false, status)
 	})
 }

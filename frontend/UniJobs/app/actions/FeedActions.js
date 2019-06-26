@@ -15,7 +15,7 @@ import UniData from '../constants/UniData'
 // categoryid
 // timestamp
 async function loadRequests (onResponse) {
-    fetch(UniData.allRequestsApi(10), { method: 'GET' })
+    fetch(UniData.allRequestsApi(50), { method: 'GET' })
     .then((response) => response.json())
     .then((response) => onResponse(response.requests))
     .catch((error) => {
@@ -25,11 +25,31 @@ async function loadRequests (onResponse) {
 };
 
 async function loadMyRequests (id, onResponse) {
-    fetch(UniData.userRequestsApi(id, 10), { method: 'GET' })
+    fetch(UniData.userRequestsApi(id, 50), { method: 'GET' })
     .then((response) => response.json())
     .then((response) => onResponse(response.requests))
     .catch((error) => {
-        console.log("Load All Requests Error!");
+        console.log("Load User Requests Error!");
+        alert(error.message);
+    });
+};
+
+async function loadOffers (id, onResponse) {
+    fetch(UniData.allOffersApi(id, 50), { method: 'GET' })
+    .then((response) => response.json())
+    .then((response) => onResponse(response.offers))
+    .catch((error) => {
+        console.log("Load All Offers Error!");
+        alert(error.message);
+    });
+};
+
+async function loadMyOffers (id, onResponse) {
+    fetch(UniData.userOffersApi(id, 50), { method: 'GET' })
+    .then((response) => response.json())
+    .then((response) => onResponse(response.offers))
+    .catch((error) => {
+        console.log("Load User Offers Error!");
         alert(error.message);
     });
 };
@@ -48,17 +68,44 @@ async function loadCategories (onResponse) {
     });
 }
 
+async function loadUserInfo(id, onResponse) {
+    fetch(UniData.userDataApi(id), {method: 'GET'})
+    .then((response) => response.json())
+    .then((response) => onResponse(response))
+    .catch((error) => {
+        console.log("Error while getting user info");
+        alert(error.message)
+    })
+}
+
+async function makeMatch(offerid, userid, onRequest) {
+    fetch(UniData.matchApi(offerid, userid), {method: 'POST'})
+    .then(onRequest())
+    .catch((error) => {
+        console.log("Error while making the match");
+        alert(error.message)
+    })
+}
+
 
 function getCategoryImage(id) {
     switch (id) {
-        case 1 : return require('../assets/_test_categories/genetics.png');
-        case 2 : return require('../assets/_test_categories/the-sum-of.png');
-        case 2 : return require('../assets/_test_categories/piano.png');
-        case 4 : return require('../assets/_test_categories/translate.png');
+        case 1 : return require('../assets/_test_categories/cat_1.png');
+        case 2 : return require('../assets/_test_categories/cat_2.png');
+        case 3 : return require('../assets/_test_categories/cat_3.png');
+        case 4 : return require('../assets/_test_categories/cat_4.png');
+        case 5 : return require('../assets/_test_categories/cat_5.png');
+        case 6 : return require('../assets/_test_categories/cat_6.png');
+        case 7 : return require('../assets/_test_categories/cat_7.png');
+        case 8 : return require('../assets/_test_categories/cat_8.png');
+        case 9 : return require('../assets/_test_categories/cat_9.png');
+        case 10 : return require('../assets/_test_categories/cat_10.png');
+        case 11 : return require('../assets/_test_categories/cat_11.png');
+        case 12 : return require('../assets/_test_categories/cat_12.png');
     }
     
     return require('../assets/_test_categories/rectangle.png');
 };
 
 
-module.exports = { loadRequests, loadCategories, loadMyRequests };
+module.exports = { loadRequests,loadOffers, loadCategories, loadMyRequests, loadMyOffers, loadUserInfo, makeMatch };

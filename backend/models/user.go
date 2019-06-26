@@ -10,3 +10,10 @@ type User struct {
 	Userid    int    `db:"userid" json:"userid"`
 	Student   bool   `db:"student" json:"student"`
 }
+
+// UserContact wraps all user information that we share with another one
+type UserContact struct {
+	Username  string `db:"username" json:"username"`
+	Email     string `db:"email" json:"email"`
+	Telephone string `db:"telephone" json:"telephone"`
+}
