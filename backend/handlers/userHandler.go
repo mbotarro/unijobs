@@ -186,8 +186,8 @@ func (handler *UserHandler) GetUserOffers(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	offerRes := OfferResponse{
-		Offers: offers,
+	offerRes := HistoryOfferResponse{
+		HistoryOffers: offers,
 	}
 
 	if l := len(offers); l > 0 {

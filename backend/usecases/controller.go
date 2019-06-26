@@ -16,7 +16,7 @@ type Controller struct {
 // NewController returns a new Controller
 func NewController(db *sqlx.DB, es *elastic.Client) *Controller {
 	return &Controller{
-		User:     NewUserController(db),
+		User:     NewUserController(db, es),
 		Category: NewCategoryController(db),
 		Request:  NewRequestController(db, es),
 		Offer:    NewOfferController(db, es),

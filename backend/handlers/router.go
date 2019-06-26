@@ -81,6 +81,17 @@ func NewRouter(ctrl *usecases.Controller) *mux.Router {
 	// Categories API
 	route.r.HandleFunc("/categories", categoryHandler.getAllCategories).Methods("GET")
 
+	// Matches API
+	route.r.Path("/offers/users/{userid:[0-9]+}").
+		Queries("size", "{size:[0-9]+}", "before", "{before:[0-9]+}").
+		HandlerFunc(offerHandler.GetMatchedFeed).
+		Methods("GET")
+
+	route.r.Path("/offers/users/{userid:[0-9]+}").
+		Queries("size", "{size:[0-9]+}").
+		HandlerFunc(offerHandler.GetMatchedFeed).
+		Methods("GET")
+
 	// Offers APIs
 	// Get last offers
 	route.r.Path("/offers").
@@ -109,6 +120,11 @@ func NewRouter(ctrl *usecases.Controller) *mux.Router {
 	// Send new offer
 	route.r.Path("/offers").
 		HandlerFunc(offerHandler.InsertOffer).
+		Methods("POST")
+
+	// Inserts a new match of the offer-id and user-id given
+	route.r.Path("/offers/{offerid:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}/users/{userid:[0-9]+}").
+		HandlerFunc(offerHandler.InsertOfferMatch).
 		Methods("POST")
 
 	return &route.r

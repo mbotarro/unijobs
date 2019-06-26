@@ -6,7 +6,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { Dimensions,AsyncStorage } from "react-native";
 
 import { populateRequestMiniCards } from '../components/FeedMiniCards';
-import { loadOffers, loadMyOffers, loadCategories } from '../actions/FeedActions'
+import { loadOffers, loadCategories } from '../actions/FeedActions'
 import FeedCard from '../components/FeedCard'
 import FloatActionButton from '../components/FloatActionButton'
 
@@ -25,12 +25,12 @@ export default class FeedOfferScreen extends React.Component {
     
     state = {
         isLoading : true,
-        isMyFeedOpen: false,
+
+        userid: null,
 
         searchBarText: '',
         
         allFeedOffers: {},
-        myFeedOffers: {},
         categoriesHash: {},
 
         isOfferCardOpen: false,
@@ -52,6 +52,7 @@ export default class FeedOfferScreen extends React.Component {
     async componentDidMount() {
         try {
             const userid = parseInt(await AsyncStorage.getItem(UniData.userid));
+            this.setState({userid: userid})
             // use for fetching data to show
             loadCategories((categories) => {
                 var hash = {}
@@ -59,13 +60,9 @@ export default class FeedOfferScreen extends React.Component {
                     hash[categories[i].id] = categories[i];
                 this.setState({categoriesHash: hash, categories: categories})
 
-                loadOffers((offers) => {
-                    this.setState({allFeedOffers: offers});
-                })
-                loadMyOffers(userid, (myOffers) => {
-                    this.setState({myFeedOffers: myOffers});
-                    this.setState({isLoading: false});
-                })
+                loadOffers(userid, (offers) => {
+                    this.setState({allFeedOffers: offers, isLoading: false});
+                }, userid)
             });
         } catch (error) {
         }
@@ -73,16 +70,6 @@ export default class FeedOfferScreen extends React.Component {
 
     onMenuButtonPress(navigation) {
         navigation.openDrawer();
-    }
-
-    onMyFeedPress(self, navigate) {
-        // !! self here is because something is overriding 'this', and
-        // I don't know why! (maybe the arrow function... :/)
-        self.setState({isMyFeedOpen: !self.state.isMyFeedOpen})
-    }
-
-    onMyFeedFilterPress(self, navigate) {
-        alert('TODO: Filters');
     }
 
     onAllFeedPress(self, navigate) {
@@ -96,8 +83,14 @@ export default class FeedOfferScreen extends React.Component {
         navigate('AddOffer')
     }
 
-    onAddOfferPress(self, navigate) {
-        navigate('AddOffer')
+    onAddRequestPress(self, navigate) {
+        navigate('AddRequest')
+    }
+
+    updateFeed() {
+        loadOffers(this.state.userid, (offers) => {
+            this.setState({allFeedOffers: offers});
+        }, this.state.userid)
     }
 
     // =================================================================
@@ -134,7 +127,6 @@ export default class FeedOfferScreen extends React.Component {
     render() {
         const { navigate } = this.props.navigation;
         const isTyping = !this.state.isSearching && !this.state.isLoading && this.state.searchBarText != ''
-
 
         // header
         const menuButton = (
@@ -196,7 +188,7 @@ export default class FeedOfferScreen extends React.Component {
 
 
         // feed headers
-        const feedHeader = (text, onPress, onFilter, showFilter, showDropDown) => (
+        const feedHeader = (text, onPress, onFilter, showFilter) => (
             <View style = {styles.feedBar}>
                 <TouchableHighlight 
                     underlayColor = {UniColors.transparent}
@@ -204,21 +196,6 @@ export default class FeedOfferScreen extends React.Component {
                     style={{flexGrow: 1, alignSelf: 'stretch'}}
                 >
                     <View style={{flexDirection: 'row'}}>
-                        {
-                            showDropDown ?
-                                <Image
-                                    source = {require('../assets/icons/arrow-down.png')}
-                                    style = {styles.feedBarLeftIcon}
-                                />
-                                :
-                                this.state.isMyFeedOpen ?
-                                    <Image 
-                                        source = {require('../assets/icons/arrow-up.png')}
-                                        style = {styles.feedBarLeftIcon}
-                                    />
-                                    :
-                                    <View style = {{marginLeft: 43}} />            
-                        }
                         <Text style = {styles.feedBarText}>
                             {text}
                         </Text>
@@ -248,8 +225,7 @@ export default class FeedOfferScreen extends React.Component {
                 this.textStrings.allFeedHeader,
                 this.onAllFeedPress,
                 this.onAllFeedFilterPress,
-                !this.state.isMyFeedOpen,
-                this.state.isMyFeedOpen
+                true,
             );
         
 
@@ -281,6 +257,8 @@ export default class FeedOfferScreen extends React.Component {
                         onShowOfferer = {() => {}}
                         onQuit = {() => this.setState({isOfferCardOpen: false})}
                         isOffer = {this.isOffer}
+                        updateFeed={() => this.updateFeed()}
+                        loggedUserid={this.state.userid}
                     />
                 }
                 </View>

@@ -34,8 +34,8 @@ async function loadMyRequests (id, onResponse) {
     });
 };
 
-async function loadOffers (onResponse) {
-    fetch(UniData.allOffersApi(50), { method: 'GET' })
+async function loadOffers (id, onResponse) {
+    fetch(UniData.allOffersApi(id, 50), { method: 'GET' })
     .then((response) => response.json())
     .then((response) => onResponse(response.offers))
     .catch((error) => {
@@ -78,6 +78,15 @@ async function loadUserInfo(id, onResponse) {
     })
 }
 
+async function makeMatch(offerid, userid, onResponse) {
+    fetch(UniData.matchApi(offerid, userid), {method: 'POST'})
+    .then((response) => onResponse(true))
+    .catch((error) => {
+        console.log("Error while making the match");
+        alert(error.message)
+    })
+}
+
 
 function getCategoryImage(id) {
     switch (id) {
@@ -99,4 +108,4 @@ function getCategoryImage(id) {
 };
 
 
-module.exports = { loadRequests,loadOffers, loadCategories, loadMyRequests, loadMyOffers, loadUserInfo };
+module.exports = { loadRequests,loadOffers, loadCategories, loadMyRequests, loadMyOffers, loadUserInfo, makeMatch };

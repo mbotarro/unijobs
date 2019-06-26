@@ -7,7 +7,7 @@ import { Dimensions ,AsyncStorage} from "react-native";
 
 import { populateRequestMiniCards } from '../components/FeedMiniCards';
 import FloatActionButton from '../components/FloatActionButton'
-import { loadRequests, loadCategories, loadMyRequests } from '../actions/FeedActions'
+import { loadRequests, loadCategories } from '../actions/FeedActions'
 import { searchRequests } from '../actions/SearchActions'
 import FeedCard from '../components/FeedCard'
 
@@ -26,12 +26,10 @@ export default class FeedRequestScreen extends React.Component {
     
     state = {
         isLoading : true,
-        isMyFeedOpen: false,
 
         searchBarText: '',
         
         allFeedRequests: {},
-        myFeedRequests: {},
         categoriesHash: {},
 
         isRequestCardOpen: false,
@@ -61,11 +59,7 @@ export default class FeedRequestScreen extends React.Component {
                 this.setState({categoriesHash: hash, categories: categories})
 
                 loadRequests((requests) => {
-                    this.setState({allFeedRequests: requests});
-                })
-                loadMyRequests(userid, (myRequests) => {
-                    this.setState({myFeedRequests: myRequests});
-                    this.setState({isLoading: false});
+                    this.setState({allFeedRequests: requests, isLoading: false});
                 })
             });
         } catch (error) {
@@ -74,16 +68,6 @@ export default class FeedRequestScreen extends React.Component {
 
     onMenuButtonPress(navigation) {
         navigation.openDrawer();
-    }
-
-    onMyFeedPress(self, navigate) {
-        // !! self here is because something is overriding 'this', and
-        // I don't know why! (maybe the arrow function... :/)
-        self.setState({isMyFeedOpen: !self.state.isMyFeedOpen})
-    }
-
-    onMyFeedFilterPress(self, navigate) {
-        alert('TODO: Filters');
     }
 
     onAllFeedPress(self, navigate) {
@@ -196,7 +180,7 @@ export default class FeedRequestScreen extends React.Component {
 
 
         // feed headers
-        const feedHeader = (text, onPress, onFilter, showFilter, showDropDown) => (
+        const feedHeader = (text, onPress, onFilter, showFilter) => (
             <View style = {styles.feedBar}>
                 <TouchableHighlight 
                     underlayColor = {UniColors.transparent}
@@ -204,21 +188,6 @@ export default class FeedRequestScreen extends React.Component {
                     style={{flexGrow: 1, alignSelf: 'stretch'}}
                 >
                     <View style={{flexDirection: 'row'}}>
-                        {
-                            showDropDown ?
-                                <Image
-                                    source = {require('../assets/icons/arrow-down.png')}
-                                    style = {styles.feedBarLeftIcon}
-                                />
-                                :
-                                this.state.isMyFeedOpen ?
-                                    <Image 
-                                        source = {require('../assets/icons/arrow-up.png')}
-                                        style = {styles.feedBarLeftIcon}
-                                    />
-                                    :
-                                    <View style = {{marginLeft: 43}} />          
-                        }
                         <Text style = {styles.feedBarText}>
                             {text}
                         </Text>
@@ -248,8 +217,7 @@ export default class FeedRequestScreen extends React.Component {
                 this.textStrings.allFeedHeader,
                 this.onAllFeedPress,
                 this.onAllFeedFilterPress,
-                !this.state.isMyFeedOpen,
-                this.state.isMyFeedOpen
+                true,
             );
 
 

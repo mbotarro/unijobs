@@ -81,3 +81,35 @@ func (oc *OfferController) SearchOffers(query string, categoryIDs ...int) ([]mod
 
 	return reqs, nil
 }
+
+// InsertOfferMatch receives the id of the user and the offer and inserts the match into the match table
+func (oc *OfferController) InsertOfferMatch(userid int, offerid string) error {
+	err := oc.offerDAL.InsertOfferMatch(userid, offerid)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// GetMatchOffers receives the time, size and the userid and it returns the offers with the information that is has matched or not
+func (oc *OfferController) GetMatchOffers(before time.Time, size, userid int) ([]models.MatchedOffer, error) {
+	offers, err := oc.offerDAL.GetLastOffers(before, size) // retorna offers
+	if err != nil {
+		return nil, err
+	}
+
+	// For each offer checks if it has matched and then updates the status
+	moffs := []models.MatchedOffer{}
+	for _, o := range offers {
+		status, err := oc.offerDAL.GetOfferMatchStatus(userid, o.ID)
+		if err != nil {
+			return nil, err
+		}
+		mo := models.MatchedOffer{
+			Offer:   o,
+			Matched: status,
+		}
+		moffs = append(moffs, mo)
+	}
+	return moffs, nil
+}
