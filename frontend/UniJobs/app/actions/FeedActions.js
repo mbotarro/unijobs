@@ -15,7 +15,7 @@ import UniData from '../constants/UniData'
 // categoryid
 // timestamp
 async function loadRequests (onResponse) {
-    fetch(UniData.allRequestsApi(10), { method: 'GET' })
+    fetch(UniData.allRequestsApi(50), { method: 'GET' })
     .then((response) => response.json())
     .then((response) => onResponse(response.requests))
     .catch((error) => {
@@ -25,7 +25,7 @@ async function loadRequests (onResponse) {
 };
 
 async function loadMyRequests (id, onResponse) {
-    fetch(UniData.userRequestsApi(id, 10), { method: 'GET' })
+    fetch(UniData.userRequestsApi(id, 50), { method: 'GET' })
     .then((response) => response.json())
     .then((response) => onResponse(response.requests))
     .catch((error) => {
@@ -35,7 +35,7 @@ async function loadMyRequests (id, onResponse) {
 };
 
 async function loadOffers (onResponse) {
-    fetch(UniData.allOffersApi(10), { method: 'GET' })
+    fetch(UniData.allOffersApi(50), { method: 'GET' })
     .then((response) => response.json())
     .then((response) => onResponse(response.offers))
     .catch((error) => {
@@ -45,7 +45,7 @@ async function loadOffers (onResponse) {
 };
 
 async function loadMyOffers (id, onResponse) {
-    fetch(UniData.userOffersApi(id, 10), { method: 'GET' })
+    fetch(UniData.userOffersApi(id, 50), { method: 'GET' })
     .then((response) => response.json())
     .then((response) => onResponse(response.offers))
     .catch((error) => {
