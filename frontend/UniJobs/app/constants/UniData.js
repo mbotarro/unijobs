@@ -30,6 +30,19 @@ const AWS_SERVER = {
         
         return  'http://ec2-3-92-175-230.compute-1.amazonaws.com:8080/requests?q=' + text + '&cat=' + cats
     },
+    
+    searchOfferApi: (text, categories) => {
+        if (categories.length == 0)
+            return 'http://ec2-3-92-175-230.compute-1.amazonaws.com:8080/offers?q=' + text
+        
+        var cats = categories[0]
+        for (var i = 1; i < categories.length; i++)
+            cats += ',' + categories[i]
+
+        console.log('http://ec2-3-92-175-230.compute-1.amazonaws.com:8080/offers?q=' + text + '&cat=' + cats)
+        
+        return  'http://ec2-3-92-175-230.compute-1.amazonaws.com:8080/offers?q=' + text + '&cat=' + cats
+    },
 }
 
 module.exports = {

@@ -12,13 +12,13 @@ async function searchRequests (text, categories, onResponse) {
 };
 
 async function searchOffers (text, categories, onResponse) {
-    // fetch(UniData.searchRequestApi(text.toLowerCase(), categories), { method: 'GET' })
-    // .then((response) => response.json())
-    // .then((response) => onResponse(response.offers))
-    // .catch((error) => {
-    //     console.log("Search Offers Api Error!");
-    //     alert(error.message);
-    // });
+    fetch(UniData.searchOfferApi(text.toLowerCase(), categories), { method: 'GET' })
+    .then((response) => response.json())
+    .then((response) => onResponse(response.offers))
+    .catch((error) => {
+        console.log("Search Requests Api Error!");
+        alert(error.message);
+    });
 };
 
 

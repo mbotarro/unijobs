@@ -115,7 +115,6 @@ export default class FeedRequestScreen extends React.Component {
 
         searchRequests(this.state.searchBarText, this.state.searchCategories,
             (requests) => {
-                console.log(requests)
                 this.setState({isSearching: true, foundRequests: requests})
             }
         )
@@ -188,7 +187,7 @@ export default class FeedRequestScreen extends React.Component {
                     :
                     <View style = {styles.feedBar} >
                         <Text style = {styles.feedBarText}>
-                            {'Pesquisar \'' + this.state.searchBarText + '\''}
+                            {'Buscar \'' + this.state.searchBarText + '\' em Solicitações'}
                         </Text>
                     </View>
                 }
@@ -413,19 +412,6 @@ const styles = StyleSheet.create({
         fontSize:       UniText.big,
         color:          UniColors.dark,
         marginVertical: 10,
-    },
-
-    actionButtonIcon: {
-        fontSize: 20,
-        height: 22,
-        color: 'white',
-    },
-
-    ImageIconStyle: {
-        padding: 5,
-        height: 20,
-        width: 20,
-        resizeMode: 'stretch',
     },
 
     openCard: {
