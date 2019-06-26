@@ -660,3 +660,20 @@ So far, the search endpoint doesn't accept pagination, always returning all matc
   }
 ]
 ```
+
+# Match API
+
+### Insert offer match into database
+
+### POST
+To match the offer with id \<offerid\> with the user <userid>
+```
+/offers/<offerid>/users/<userid>
+```
+#### Expected Response 
+A valid insert returns a 201 HTTP Status Code.
+```
+HTTP/1.1 201 Created
+Date: Wed, 05 Jun 2019 12:00:59 GMT
+Content-Length: 0
+```
