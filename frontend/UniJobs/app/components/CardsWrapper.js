@@ -77,6 +77,9 @@ export default class CardsWrapper extends React.Component {
 
         const CardDescription = () => {
             return(
+
+
+
                 <View style={{flexDirection: 'column'}}>
                     <View style={{flexDirection: 'row', width: window.width, justifyContent: 'space-between', marginTop: -25}}>
                         <View style={[containerStyles.photoPriceContainer]}>
@@ -113,6 +116,7 @@ export default class CardsWrapper extends React.Component {
         )
     }
 }
+
 
 
 

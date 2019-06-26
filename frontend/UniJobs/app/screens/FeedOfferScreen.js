@@ -241,6 +241,7 @@ export default class FeedOfferScreen extends React.Component {
                         isOffer = {this.isOffer}
                         updateFeed={() => this.updateFeed()}
                         loggedUserid={this.state.userid}
+                        myFeedOpen ={this.state.isMyFeedOpen}
                     />
                 }
                 </View>
@@ -392,6 +393,7 @@ const styles = StyleSheet.create({
         height: Dimensions.get('window').height
     }
 });
+
 
 // TEST !!! (TODO: REMOVE)
 const myFeedTestOffers = [

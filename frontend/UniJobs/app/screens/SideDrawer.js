@@ -1,23 +1,37 @@
 import React from 'react'
-import { StyleSheet, Text, View, Image,TouchableHighlight } from 'react-native'
+import { StyleSheet, Text, View, Image,TouchableHighlight,TouchableOpacity } from 'react-native'
 import UniStyles from '../constants/UniStyles'
 import UniColors from '../constants/UniColors'
 import UniData from '../constants/UniData'
 import Button from '../components/Button'
 import { AsyncStorage } from 'react-native';
+import { getUserData, getUserPicture } from '../actions/LoginActions'
 export default class SideDrawer extends React.Component {
     static navigationOptions = { header: null}
     state = {
-        username: '',
+        username:"",
+        isLoading: true,
+        userid: null,
+        userdata: null,
+        userpicture: null,
     }
 
     async componentDidMount() {
         try {
+            const userid = await AsyncStorage.getItem(UniData.userid);
             const username = await AsyncStorage.getItem(UniData.username);
-            if (username !== null)
-                this.setState({ username: username });
+            if (userid !== null)
+                this.setState({ userid: userid });
+                this.setState({username:username});
+                getUserData (this.state.userid, (userdata) => {
+                    getUserPicture(this.state.userid, (userpicture) => {
+                        this.setState({isLoading: false, userdata: userdata, userpicture: userpicture});
+                        
+                    });
+                });
         } catch (error) {
         }
+
     }
 
 
@@ -52,18 +66,22 @@ export default class SideDrawer extends React.Component {
         const { navigate } = this.props.navigation;
         // SideMenu Components
         const Header = () => {
+          
             return (
                 <TouchableHighlight
                     onPress={() => this.onUserOptions(navigate)}
                     //underlayColor={UniColors.light}
                 >
                     <View style={styles.headerContent}> 
-                        <Image style={[UniStyles.useravatar]} source={require('../assets/icons/user.png')}/>
+                        <Image style={[UniStyles.useravatar]} source={ require('../assets/icons/user.png') }/> 
+                        {/* <Image style={[UniStyles.useravatar]} source={this.state.userpicture}/>  */}
                         <View style={[{flexDirection: 'column',paddingTop:28}]}>
                             <Text style={[UniStyles.username]}>
+                                {/* {this.state.userdata.username} */}
                                 usuário
                             </Text>
                             <Text style={[UniStyles.username]}>
+                                {/* {this.state.userdata.email} */}
                                 {this.state.username}
                             </Text>
                         </View>
