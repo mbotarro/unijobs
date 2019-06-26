@@ -24,7 +24,7 @@ export default class AddSolicitationScreen extends React.Component {
 
         title: '',
 
-        categories: {},
+        categories: null,
         selectedCategoryId: 1,
         
         description: '',
@@ -66,14 +66,20 @@ export default class AddSolicitationScreen extends React.Component {
                       parseInt(this.state.minPrice), 
                       parseInt(this.state.maxPrice),
                       () => {
-                          this.props.navigation.goBack();
+                          this.leaveScreen(this.props.navigation)
                       }
             );
     };
 
-    render() {
-        const { navigate } = this.props.navigation;
+    leaveScreen(navigation) {
+        this.setState({title: '', selectedCategoryId: this.state.categories[0].id,
+            description: '', minPrice: '', maxPrice: '', checkedEmail: false, checkedTelefone: false})
+        console.log(this.state)
+        navigation.goBack()
+    }
 
+    render() {
+        
         const AddButton = () => (
             <Button
                 text={'Adicionar'}
@@ -86,7 +92,7 @@ export default class AddSolicitationScreen extends React.Component {
             <View style= {{flex: 1}}>
                 <Header 
                     backgroundColor={UniColors.main}
-                    leftComponent={{ icon: 'navigate-before', color: '#FFFFFF', onPress: () => this.props.navigation.goBack() }}
+                    leftComponent={{ icon: 'navigate-before', color: '#FFFFFF', onPress: () => this.leaveScreen(this.props.navigation) }}
                     centerComponent={{text: 'Adicionar Solicitação', style: styles.headerText}}
                 />
                 <KeyboardAwareScrollView 
@@ -99,7 +105,8 @@ export default class AddSolicitationScreen extends React.Component {
                         <View style = {{marginTop: 36}}>
                             {/*Title Box*/}
                             <TextInput
-                                style={styles.titleInput} 
+                                style={styles.titleInput}
+                                value = {this.state.title}
                                 multiline={false}
                                 placeholder={'Título'}
                                 onChangeText = {(title) => this.setState({title: title})}
@@ -123,6 +130,7 @@ export default class AddSolicitationScreen extends React.Component {
                             <Text style={[styles.title, {marginTop: 20}]}> Descrição </Text>
                             <TextInput
                                 style = {[styles.descriptionInput, {marginTop: 5}]}
+                                value = {this.state.description}
                                 multiline = {true}
                                 autoCorrect = {true}
                                 onChangeText={(description) => this.setState({description: description})}
@@ -133,6 +141,7 @@ export default class AddSolicitationScreen extends React.Component {
                         <View style = {{flexDirection: 'row', alignSelf: 'stretch', flexGrow: 1, marginTop: 25}}>
                             <TextInput
                                 style = {[styles.priceInput]}
+                                value = {this.state.minPrice}
                                 placeholder = {'Preço Mínimo'}
                                 autoCorrect = {false}
                                 onChangeText = {(minPrice) => this.setState({minPrice: minPrice})}
@@ -141,6 +150,7 @@ export default class AddSolicitationScreen extends React.Component {
                             <View style = {{width: 100}} />
                             <TextInput
                                 style = {[styles.priceInput]}
+                                value = {this.state.maxPrice}
                                 placeholder = {'Preço Máximo'}
                                 autoCorrect = {false}
                                 onChangeText = {(maxPrice) => this.setState({maxPrice: maxPrice})}
