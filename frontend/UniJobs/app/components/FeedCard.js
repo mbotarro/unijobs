@@ -169,7 +169,7 @@ function getInterested(offer) {
     if(typeof offer.interestedusers === 'undefined'||offer.interestedusers.length === 0){
         return(
             <View>
-                <Text style={{color: '#00A5F2',marginHorizontal: 15,marginBottom:20}}>
+                <Text style={{color: '#00A5F2',marginHorizontal: 15,marginBottom:20,marginLeft:25}}>
                     Nenhum interessado até o momento.
                 </Text>
             </View>
@@ -177,8 +177,8 @@ function getInterested(offer) {
     }
 
     return (
-        <View>
-            <Text style={{color: '#00A5F2',marginHorizontal: 15}}>
+        <View style={{marginBottom:20}}>
+            <Text style={{color: '#00A5F2',marginTop: 15,marginLeft:25}}>
                 Tiveram interesse na sua oferta!
             </Text>
             {offer.interestedusers.map((person, index) => (             
@@ -196,7 +196,7 @@ function interestedPerson(person){
             <TouchableOpacity >
                 <View style={{
                     flexDirection: 'row', width: window.width, alignItems: 'center',
-                    marginHorizontal: 25
+                    marginHorizontal: 20,
                 }}>
                     <View style={{ justifyContent: 'center' }}>
                         <Image
@@ -219,7 +219,7 @@ function interestedPerson(person){
 const containerStyles = StyleSheet.create({
     cardsContainer: {
         marginTop: 10,
-        marginBottom: 30,
+        marginBottom: 10,
         flexDirection: 'column',
         flex: 1,
     },

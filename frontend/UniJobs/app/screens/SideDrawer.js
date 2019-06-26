@@ -26,15 +26,12 @@ export default class SideDrawer extends React.Component {
             }
         } catch (error) {
         }
-        console.log(this.state.userid)
         getUserData (this.state.userid, (userdata) => {
             getUserPicture(this.state.userid, (userpicture) => {
                 this.setState({isLoading: false, userdata: userdata, userpicture: userpicture});
                 
             });
         });
-        console.log(this.state.userdata) 
-
      }
 
     /* components callbacks */
