@@ -427,9 +427,8 @@ func TestGetMatchedFeed(t *testing.T) {
 	defer tools.CleanES(es)
 
 	ctrl := usecases.NewController(db, es)
-	rh := handlers.NewOfferHandler(ctrl.Offer)
 
-	handler := http.HandlerFunc(rh.GetLastOffers)
+	router := handlers.NewRouter(ctrl)
 
 	// Creates fake user and category to be used at the offer
 	c := tools.CreateFakeCategory(t, db, "Aula Matemática", "Matemática")
@@ -441,8 +440,6 @@ func TestGetMatchedFeed(t *testing.T) {
 		models.MatchedOffer{Offer: off, Matched: false},
 	}
 
-	fmt.Println("TEST")
-
 	t.Run("get no matched offer", func(t *testing.T) {
 		myoff, err := http.NewRequest("GET", fmt.Sprintf("/offers/users/%d?size=1", u.Userid), nil)
 		if err != nil {
@@ -451,7 +448,7 @@ func TestGetMatchedFeed(t *testing.T) {
 
 		rr := httptest.NewRecorder()
 
-		handler.ServeHTTP(rr, myoff)
+		router.ServeHTTP(rr, myoff)
 
 		if status := rr.Code; status != http.StatusOK {
 			t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
@@ -482,7 +479,7 @@ func TestGetMatchedFeed(t *testing.T) {
 		}
 		rr := httptest.NewRecorder()
 
-		handler.ServeHTTP(rr, off)
+		router.ServeHTTP(rr, off)
 
 		expected := handlers.MatchedOfferResponse{
 			MatchedOffers: []models.MatchedOffer{offs[0]},
