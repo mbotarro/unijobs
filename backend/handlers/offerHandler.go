@@ -37,6 +37,14 @@ type OfferResponse struct {
 	Last int64 `json:"last"`
 }
 
+// HistoryOfferResponse contains the response sent to the frontend with information of the users that matched the offer
+type HistoryOfferResponse struct {
+	HistoryOffers []models.HistoryOffer `json:"offers"`
+
+	// Last is the timestamp of the last offer sent to the front. It can be used to get the offers created before it
+	Last int64 `json:"last"`
+}
+
 // OfferInsertion contains the expected input from the frontend
 type OfferInsertion struct {
 	Name        string    `json:"name"`
