@@ -56,7 +56,7 @@ export default class CardsWrapper extends React.Component {
         OfferInfo = () => {return(null)}
         if(isOffer) {
             //experition format :   2020-06-20T03:00:13.250602Z , output format : DD / MM / AAAA às 19hrs
-            var date = request.expiration.substring(8,10) + ' / ' + request.expiration.substring(5,7) + ' / ' + request.expiration.substring(0,4)+ '  às   '+ request.expiration.substring(11,13)+ ' h.';
+            var date = request.expiration.substring(8,10) + ' / ' + request.expiration.substring(5,7) + ' / ' + request.expiration.substring(0,4)+ '  às   '+ request.expiration.substring(11,13)+ ' hrs';
             OfferInfo = () => {
                 return (
                     <View style={{flexDirection: 'column', marginHorizontal: 26}}>
@@ -64,7 +64,7 @@ export default class CardsWrapper extends React.Component {
                             <Text style={[textStyles.requestInfoText, {color: '#00A5F2'}]}>
                                 Disponível até:
                             </Text>
-                            <Text style={{marginLeft: 25, fontSize: UniText.small}}>
+                            <Text style={{marginLeft: 25, color: UniColors.dark_grey, fontSize: UniText.small, fontWeight: UniText.semibold}}>
                                 {date}
                             </Text>
                         </View>
@@ -72,7 +72,7 @@ export default class CardsWrapper extends React.Component {
                             <Text  style={[textStyles.requestInfoText, {color: '#00A5F2'}]}>
                                 Informações Adicionais
                             </Text>
-                            <Text numberOfLines={1} style={{fontSize: UniText.small}}>
+                            <Text numberOfLines={1} style={{color: UniColors.dark_grey, fontSize: UniText.small}}>
                                 {request.extrainfo}
                             </Text>
                         </View>
@@ -166,8 +166,10 @@ const textStyles = StyleSheet.create({
     },
     mainDescText: {
         flex: 1,
+        color: UniColors.dark, 
         marginHorizontal: 26,
         fontSize: UniText.normal,
+
         textAlign: 'justify'
     },
     cardsViewTitle: {
