@@ -4,6 +4,8 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, ActivityIn
 import { getUserData, getUserPicture } from '../actions/LoginActions'
 
 import UniText from '../constants/UniText'
+import UniColors from '../constants/UniColors'
+
 import Button from './Button'
 import ButtonWithIcon from './ButtonWithIcon'
 
@@ -51,15 +53,17 @@ export default class FeedCard extends React.Component {
             if (isOffer) {
                 return(
                     <View style={{flexDirection: 'column', flex: 1}}>
-                        <Text numberOfLines={1} style={[textStyles.userOfferName]}>{this.state.userdata.username}</Text>
-                        <Text numberOfLines={1} style={{fontSize: UniText.small}}>{this.state.userdata.telephone}</Text>
-                        <Text numberOfLines={1} style={{fontSize: UniText.small}}>{this.state.userdata.email}</Text>
+                        <Text numberOfLines={1} style={[textStyles.userName]}>{this.state.userdata.username}</Text>
+                        <Text numberOfLines={1} style={{fontSize: UniText.small, color: UniColors.dark_grey, marginTop: 2}}>{this.state.userdata.telephone}</Text>
+                        <Text numberOfLines={1} style={{fontSize: UniText.small, color: UniColors.dark_grey, marginTop: 2}}>{this.state.userdata.email}</Text>
                     </View>
                 )
             }
 
             return (
-                <Text numberOfLines={1} style={[textStyles.userRequestName]}>{this.state.userdata.username}</Text>
+                <View style={{flexDirection: 'column', flex: 1}}>
+                    <Text numberOfLines={1} style={[textStyles.userName]}>{this.state.userdata.username}</Text>
+                </View>
             )
         }
 
@@ -92,11 +96,11 @@ export default class FeedCard extends React.Component {
         const createRoundButton = (isCheck, onPress) => {
             if(isCheck){
                 imageSource = require('../assets/icons/check-mark.png')
-                color = '#4ED124'
+                color = '#2FCE4D'
                 imageSize = 20
             } else {
                 imageSource = require('../assets/icons/exit_white.png')
-                color = '#FF431B'
+                color = '#F73B3B'
                 imageSize = 15
             }
             return (
@@ -154,7 +158,7 @@ export default class FeedCard extends React.Component {
 
 const containerStyles = StyleSheet.create({
     cardsContainer: {
-        marginTop: 20,
+        marginTop: 10,
         marginBottom: 30,
         flexDirection: 'column',
         flex: 1,
@@ -162,74 +166,12 @@ const containerStyles = StyleSheet.create({
 });
 
 const textStyles = StyleSheet.create({
-    userRequestName: {
-        marginBottom: 5,
-        alignSelf: 'center',
-        marginHorizontal: 12,
-        textAlign: 'left',
-        marginTop: 8,
-        color: '#00A5F2',
-        fontSize: UniText.normal,
-        fontWeight: '600'
-    },
-    userOfferName: {
+    userName: {
         alignSelf: 'flex-start',
         textAlign: 'left',
-        color: '#00A5F2',
+        color: UniColors.main,
         fontSize: UniText.small,
-        fontWeight: '400'
+        fontWeight: UniText.semibold
     }
 })
 
-const myFeedCategoriesTest = [
-    { Name: 'category1' },
-    { Name: 'category2' },
-    { Name: 'category3' },
-    { Name: 'category4' },
-    { Name: 'category5' },
-    { Name: 'category6' },
-    { Name: 'category7' },
-]
-
-const myFeedTestRequests = [
-    {
-        ID: 0,
-        Name: 'Titulo Solicitação',
-        Description: 'Descrição bem grande o suficiente para usar todo o espaço disponível em preview limitado em espaço máximo e restrito!!!!!!!!!!!!!!!!!!!!!!!!!!',
-        ExtraInfo: '',
-        MinPrice: 'XXXXX',
-        MaxPrice: 'XXXXX',
-        Userid: 0,
-        Categoryid: 0,
-    },
-    {
-        ID: 1,
-        Name: '***Aula de Cálculo Numérico***',
-        Description: 'Correção de exercícios e revisão teórica. Aulas em grupos de 3 a 4 pessoas',
-        ExtraInfo: '',
-        MinPrice: '50',
-        MaxPrice: '50',
-        Userid: 0,
-        Categoryid: 1,
-    },
-    {
-        ID: 2,
-        Name: 'Aula de Piano',
-        Description: 'Teoria da música, leitura de partituras e exercícios de dedo. Aprenda suas músicas favoritas!',
-        ExtraInfo: '',
-        MinPrice: '100',
-        MaxPrice: '100',
-        Userid: 0,
-        Categoryid: 2,
-    },
-    {
-        ID: 3,
-        Name: 'Tradução Chinês - Português',
-        Description: 'Tradução em chinês tradicional ou simplificado. Preço por página em português.',
-        ExtraInfo: '',
-        MinPrice: '30',
-        MaxPrice: '30',
-        Userid: 0,
-        Categoryid: 3,
-    }
-]
