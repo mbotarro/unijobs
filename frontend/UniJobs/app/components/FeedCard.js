@@ -8,13 +8,12 @@ import Button from './Button'
 import ButtonWithIcon from './ButtonWithIcon'
 
 import CardsWrapper from './CardsWrapper'
+import {makeMatch} from '../actions/FeedActions'
 
 export default class FeedCard extends React.Component {
     state = {
         isLoading: true,
         userid: null,
-        isInterested: false,
-
         userdata: null,
         userpicture: null,
     }
@@ -32,8 +31,16 @@ export default class FeedCard extends React.Component {
         });
     }
 
+    doMatch(offer, updateFeed, loggedUserid) {
+        offer.matched = true
+        makeMatch(offer.id, loggedUserid)
+        updateFeed()
+    }
+
     render() {
-        const { offer, request, categories, onCreateOfferPress, onShowRequester, onQuit, isOffer } = this.props;
+        const { offer, request, categories, onCreateOfferPress, onShowRequester, onQuit, isOffer, updateFeed, loggedUserid } = this.props;
+        console.log(offer.matched)
+ 
 
         const ActionButton = (text, onPress, color) => (
             <Button
@@ -60,7 +67,7 @@ export default class FeedCard extends React.Component {
         }
 
         const CardView = () => {
-            if (((isOffer && this.state.isInterested) || isOffer === false) && this.state.isLoading === false){
+            if (((isOffer && offer.matched) || isOffer === false) && this.state.isLoading === false){
                 return(
                     <View style={[containerStyles.cardsContainer]}>
                         <TouchableOpacity onPress={onShowRequester}>
@@ -89,15 +96,15 @@ export default class FeedCard extends React.Component {
             if(isCheck){
                 imageSource = require('../assets/icons/check-mark.png')
                 color = '#4ED124'
-                imageSize = 25
+                imageSize = 20
             } else {
                 imageSource = require('../assets/icons/exit_white.png')
                 color = '#FF431B'
-                imageSize = 20
+                imageSize = 15
             }
             return (
                 <TouchableOpacity onPress={onPress} style={{backgroundColor: color, borderRadius: 35}}>
-                    <View style={{justifyContent: 'center', alingItems: 'center', height: 70, width: 70}}>
+                    <View style={{justifyContent: 'center', alingItems: 'center', height: 55, width: 55}}>
                         <Image
                             source={imageSource}
                             style={[{height: imageSize, width: imageSize, alignSelf: 'center'}]}
@@ -106,8 +113,14 @@ export default class FeedCard extends React.Component {
                 </TouchableOpacity>
             )
         }
+
         const ButtonWrapper = () => {
             if (isOffer) {
+                if (offer.matched){
+                    return (
+                        null
+                    )
+                }
                 return (
                     <View 
                         style={{
@@ -115,8 +128,8 @@ export default class FeedCard extends React.Component {
                             justifyContent: 'space-evenly', marginBottom: 30, marginTop: 10
                         }}
                     >
-                        {createRoundButton(false, () => {this.setState({isInterested: true})})}
-                        {createRoundButton(true, () => {this.setState({isInterested: true})})}
+                        {createRoundButton(false, () => {onQuit()})}
+                        {createRoundButton(true, () => {this.doMatch(offer, updateFeed, loggedUserid)})}
                     </View>
                 )
             } else {

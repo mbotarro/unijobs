@@ -24,6 +24,8 @@ export default class FeedOfferScreen extends React.Component {
         isLoading : true,
         isMyFeedOpen: false,
 
+        userid: null,
+
         searchBarText: '',
         
         allFeedOffers: {},
@@ -45,6 +47,8 @@ export default class FeedOfferScreen extends React.Component {
     async componentDidMount() {
         try {
             const userid = parseInt(await AsyncStorage.getItem(UniData.userid));
+            console.log(userid)
+            this.setState({userid: userid})
             // use for fetching data to show
             loadCategories((categories) => {
                 var hash = {}
@@ -54,7 +58,7 @@ export default class FeedOfferScreen extends React.Component {
 
                 loadOffers((offers) => {
                     this.setState({allFeedOffers: offers});
-                })
+                }, userid)
                 loadMyOffers(userid, (myOffers) => {
                     this.setState({myFeedOffers: myOffers});
                     this.setState({isLoading: false});
@@ -101,9 +105,14 @@ export default class FeedOfferScreen extends React.Component {
         navigate('AddOffer')
     }
 
+    updateFeed() {
+        loadOffers((offers) => {
+            this.setState({allFeedOffers: offers});
+        }, this.state.userid)
+    }
+
     render() {
         const { navigate } = this.props.navigation;
-
 
         // header
         const menuButton = (
@@ -231,6 +240,8 @@ export default class FeedOfferScreen extends React.Component {
                         onShowOfferer = {() => {}}
                         onQuit = {() => this.setState({isOfferCardOpen: false})}
                         isOffer = {this.isOffer}
+                        updateFeed={() => this.updateFeed()}
+                        loggedUserid={this.state.userid}
                     />
                 }
                 </View>
