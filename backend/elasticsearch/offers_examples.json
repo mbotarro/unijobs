@@ -5,16 +5,28 @@
 { "create" : { "_index" : "offer", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764a86" } }
 { "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764a86", "name": "Aula de Cálculo III", "description": "Aulas de preparação para provas e resolução de listas", "category": 2 }
 { "create" : { "_index" : "offer", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764a87" } }
-{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764a87", "name": "Álgebra Linear", "description": "Sou Mestrando em Matemática no ICMC. Posso ajudar com provas, listas, dúvidas teóricas etc", "category": 2 }
+{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764a87", "name": "Álgebra Linear", "description": "Sou doutorando em Matemática no ICMC. Posso ajudar com provas, listas, dúvidas teóricas etc", "category": 2 }
 { "create" : { "_index" : "offer", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764a88" } }
 { "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764a88", "name": "ICC I", "description": "Problemas com trabalhos ou provas de ICC I? Estou aqui para te ajudar!!", "category": 2 }
 { "create" : { "_index" : "offer", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764a89" } }
 { "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764a89", "name": "ICC II", "description": "Posso te ajudar em provas e trabalhos de ICCII", "category": 2 }
 { "create" : { "_index" : "offer", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764a90" } }
-{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764a90", "name": "Aulas de Física", "description": "Dou aulas particulares de Física I, II, III e IV", "category": 2 }
+{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764a90", "name": "Organização de Computadores", "description": "Ensino arquitetura MIPS e x86", "category": 2 }
 { "create" : { "_index" : "offer", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764a91" } }
 { "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764a91", "name": "Aula de Piano", "description": "Sou músico formado e dou aula particulares de piano para todos os níveis", "category": 4 }
 { "create" : { "_index" : "offer", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764a92" } }
 { "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764a92", "name": "Pet Care", "description": "Adoro cachorros!! Aceito cuidar do seu pet na minha casa e passear com ele!!", "category": 8 }
 { "create" : { "_index" : "offer", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764a93" } }
 { "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764a93", "name": "Serviços Domésticos", "description": "Posso te ajudar com limpeza de casa, apartamento. Também lavo e passo roupa!", "category": 6 }
+{ "create" : { "_index" : "offer", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764a94" } }
+{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764a94", "name": "Aulas de Culinária", "description": "Dou aulas particulares de culinária!", "category": 11 }
+{ "create" : { "_index" : "offer", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764a95" } }
+{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764a95", "name": "Rádio Amador", "description": "Posso te ajudar a construir o seu rádio amador!", "category": 12 }
+{ "create" : { "_index" : "offer", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764a96" } }
+{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764a96", "name": "Ajuda em Mudanças", "description": "Ajudo em durante a mudança e alugo caminhonete para carregar seus móveis!", "category": 5 }
+{ "create" : { "_index" : "offer", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764a97" } }
+{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764a97", "name": "Limpeza de Casa", "description": "Arrumo, lavo e passo!", "category": 6 }
+{ "create" : { "_index" : "offer", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764a98" } }
+{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764a98", "name": "Entrega de Encomendas", "description": "Entrego encomendas particulares em qualquer lugar de São Carlos!", "category": 7 }
+{ "create" : { "_index" : "offer", "_id" : "a74c4694-8eb2-11e9-bc42-526af7764a99" } }
+{ "db_id" : "a74c4694-8eb2-11e9-bc42-526af7764a99", "name": "Babysitter", "description": "Cuido de crianças de 1 a 6 anos. Tenho recomendações", "category": 9 }
