@@ -8,12 +8,14 @@ import { Dimensions } from "react-native";
 
 import { populateRequestMiniCards } from '../components/FeedMiniCards';
 import { loadMyOffers, loadCategories } from '../actions/FeedActions'
+import FeedCard from '../components/FeedCard'
 //import MyOfferCard from '../components/MyOfferCard'
 
 import UniStyles from '../constants/UniStyles'
 import UniColors from '../constants/UniColors'
 import UniText from '../constants/UniText'
 import UniData from '../constants/UniData'
+import TestScreen from './TestScreen';
 
 
 export default class MinhasOfertasScreen extends React.Component {
@@ -30,7 +32,7 @@ export default class MinhasOfertasScreen extends React.Component {
     }
 
     textStrings = {
-        header: 'Minhas Solicitações',
+        header: 'Minhas Ofertas',
     }
 
 
@@ -87,7 +89,7 @@ export default class MinhasOfertasScreen extends React.Component {
             populateRequestMiniCards(
                 this.state.myOffers,
                 this.state.categories,
-                (request) => this.setState({isOfferCardOpen: true, openOffer: offer})
+                (offer) => this.setState({isOfferCardOpen: true, openOffer: offer})
                 );
 
         const openCard = 
@@ -97,25 +99,16 @@ export default class MinhasOfertasScreen extends React.Component {
                 this.state.isLoading ?
                 <ActivityIndicator style={{ marginTop: 10 }} />
                 :
-                // <MyOfferCard
-                //     request = {this.state.openOffer}
-                //     categories = {this.state.categories}
-                //     onHidePress = {() => {alert("TODO: Hide Offer")}}
-                //     onEditPress = {() => {alert("TODO: Edit Offer")}}
-                //     onRemovePress = {() =>{alert("TODO: Remove Offer")}}
-                //     onQuit = {() => this.setState({isOfferCardOpen: false})}
-
-                // />
                 <FeedCard
                     offer = {this.state.openOffer}
                     categories = {this.state.categories}
                     onCreateOfferPress = {() => {}}
                     onShowOfferer = {() => {}}
                     onQuit = {() => this.setState({isOfferCardOpen: false})}
-                    isOffer = {this.isOffer}
+                    isOffer = {true}
                     updateFeed={() => this.updateFeed()}
                     loggedUserid={this.state.userid}
-                    myFeedOpen ={this.state.isMyFeedOpen}
+                    myFeedOpen ={true}
                 />
             }
             </View>

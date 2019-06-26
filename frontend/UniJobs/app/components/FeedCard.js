@@ -88,7 +88,7 @@ export default class FeedCard extends React.Component {
             else if(isOffer && myFeedOpen && this.state.isLoading === false){
                 return(
                     <View>
-                        {getInterested(this.state.request)}
+                        {getInterested(offer)}
                     </View>
                     
 
@@ -162,10 +162,10 @@ export default class FeedCard extends React.Component {
 }
 
 function getInterested(offer) {
-    if(offer.InterestedUsers.length === 0){
+    if(typeof offer.interestedusers === 'undefined'||offer.interestedusers.length === 0){
         return(
             <View>
-                <Text style={{color: '#00A5F2',marginHorizontal: 15}}>
+                <Text style={{color: '#00A5F2',marginHorizontal: 15,marginBottom:20}}>
                     Nenhum interessado até o momento.
                 </Text>
             </View>
@@ -177,7 +177,7 @@ function getInterested(offer) {
             <Text style={{color: '#00A5F2',marginHorizontal: 15}}>
                 Tiveram interesse na sua oferta!
             </Text>
-            {offer.InterestedUsers.map((person, index) => (             
+            {offer.interestedusers.map((person, index) => (             
                 <View key = {index} style = {{marginTop: 3}} >
                     {interestedPerson(person)}
                 </View>
@@ -196,14 +196,14 @@ function interestedPerson(person){
                 }}>
                     <View style={{ justifyContent: 'center' }}>
                         <Image
-                            source={person.userdata.userpicture}
+                            source={require('../assets/_users/student.png')}
                             style={[{ marginHorizontal: 15, width: 50, height: 50, alignSelf: 'center', borderRadius: 25 }]}
                         />
                     </View>
                     <View style={{flexDirection: 'column', flex: 1}}>
-                        <Text numberOfLines={1} style={[textStyles.userOfferName]}>{person.userdata.username}</Text>
-                        <Text numberOfLines={1} style={{fontSize: UniText.small}}>{person.userdata.telephone}</Text>
-                        <Text numberOfLines={1} style={{fontSize: UniText.small}}>{person.userdata.email}</Text>
+                        <Text numberOfLines={1} style={[textStyles.userOfferName]}>{person.username}</Text>
+                        <Text numberOfLines={1} style={{fontSize: UniText.small}}>{person.telephone}</Text>
+                        <Text numberOfLines={1} style={{fontSize: UniText.small}}>{person.email}</Text>
                     </View>
 
                 </View>
@@ -211,41 +211,6 @@ function interestedPerson(person){
         </View>
     )
 }
-
-
-const userdata ={
-    username:"",
-    telephone:"",
-    email:"",
-    userpicture:"",
-
-}
-const peopleList = [
-    {
-        userid: 0 ,
-        userdata:{username:'Joao',telephone:'0000-0000',email: 'user@user.com', userpicture:require('../assets/icons/user.png')},
-    },
-    {
-        userid: 0 ,
-        userdata:{username:'Maria',telephone:'0000-0000',email: 'user@user.com', userpicture:require('../assets/icons/user.png')},
-    },
-    {
-        userid: 0 ,
-        userdata:{username:'Matheus',telephone:'0000-0000',email: 'user@user.com', userpicture:require('../assets/icons/user.png')},
-    },
-    {
-        userid: 0 ,
-        userdata:{username:'Joao3',telephone:'0000-0000',email: 'user@user.com', userpicture:require('../assets/icons/user.png')},
-    },
-    {
-        userid: 0 ,
-        userdata:{username:'Joao4',telephone:'0000-0000',email: 'user@user.com', userpicture:require('../assets/icons/user.png')},
-    },
-    {
-        userid: 0 ,
-        userdata:{username:'Joao5',telephone:'0000-0000',email: 'user@user.com', userpicture:require('../assets/icons/user.png')},
-    },
-]
 
 const containerStyles = StyleSheet.create({
     cardsContainer: {

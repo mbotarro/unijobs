@@ -18,22 +18,24 @@ export default class SideDrawer extends React.Component {
 
     async componentDidMount() {
         try {
-            const userid = await AsyncStorage.getItem(UniData.userid);
+            const userid = parseInt(await AsyncStorage.getItem(UniData.userid));
             const username = await AsyncStorage.getItem(UniData.username);
-            if (userid !== null)
+            if (userid !== null){
                 this.setState({ userid: userid });
                 this.setState({username:username});
-                getUserData (this.state.userid, (userdata) => {
-                    getUserPicture(this.state.userid, (userpicture) => {
-                        this.setState({isLoading: false, userdata: userdata, userpicture: userpicture});
-                        
-                    });
-                });
+            }
         } catch (error) {
         }
+        console.log(this.state.userid)
+        getUserData (this.state.userid, (userdata) => {
+            getUserPicture(this.state.userid, (userpicture) => {
+                this.setState({isLoading: false, userdata: userdata, userpicture: userpicture});
+                
+            });
+        });
+        console.log(this.state.userdata) 
 
-    }
-
+     }
 
     /* components callbacks */
     onUserOptions(navigate){
@@ -66,15 +68,15 @@ export default class SideDrawer extends React.Component {
         const { navigate } = this.props.navigation;
         // SideMenu Components
         const Header = () => {
-          
+
             return (
                 <TouchableHighlight
                     onPress={() => this.onUserOptions(navigate)}
                     //underlayColor={UniColors.light}
                 >
                     <View style={styles.headerContent}> 
-                        <Image style={[UniStyles.useravatar]} source={ require('../assets/icons/user.png') }/> 
-                        {/* <Image style={[UniStyles.useravatar]} source={this.state.userpicture}/>  */}
+                        {/* <Image style={[UniStyles.useravatar]} source={ require('../assets/icons/user.png') }/>  */}
+                        <Image style={[UniStyles.useravatar]} source={this.state.userpicture}/> 
                         <View style={[{flexDirection: 'column',paddingTop:28}]}>
                             <Text style={[UniStyles.username]}>
                                 {/* {this.state.userdata.username} */}
