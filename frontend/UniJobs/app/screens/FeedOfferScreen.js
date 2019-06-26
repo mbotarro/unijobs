@@ -114,7 +114,6 @@ export default class FeedOfferScreen extends React.Component {
 
         searchOffers(this.state.searchBarText, this.state.searchCategories,
             (offers) => {
-                console.log(offers)
                 this.setState({isSearching: true, foundOffers: offers})
             }
         )
