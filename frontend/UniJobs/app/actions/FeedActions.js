@@ -60,7 +60,6 @@ async function loadCategories (onResponse) {
     .then((response) => {
         for (var i = 0; i < response.length; i++)
             response[i].image = getCategoryImage(response[i].id)
-        console.log(response)
         onResponse(response)
     })
     .catch((error) => {
