@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from 'react-native';
 
 import UniText from '../constants/UniText'
+import UniColors from '../constants/UniColors'
 
 
 export default class CardsWrapper extends React.Component {
@@ -40,8 +41,13 @@ export default class CardsWrapper extends React.Component {
                         <QuitButton/>
                     </View>
                     <Text style={textStyles.textTitle}>{request.name}</Text>
-                    <View style={{justifyContent: 'flex-end', width: iconStyles.exitIcon.width, height: iconStyles.exitIcon.height,
-                        marginRight: iconStyles.exitIcon.marginLeft, alignSelf: 'center'}}
+                    <View style={{
+                        justifyContent: 'flex-end',
+                        width: iconStyles.exitIcon.width,
+                        height: iconStyles.exitIcon.height,
+                        marginRight:iconStyles.exitIcon.marginLeft,
+                        alignSelf: 'center'
+                    }}
                     />
                 </View>
             )
@@ -53,7 +59,7 @@ export default class CardsWrapper extends React.Component {
             var date = request.expiration.substring(8,10) + ' / ' + request.expiration.substring(5,7) + ' / ' + request.expiration.substring(0,4)+ '  às   '+ request.expiration.substring(11,13)+ ' h.';
             OfferInfo = () => {
                 return (
-                    <View style={{flexDirection: 'column', marginLeft: 15, marginRight: 10, marginBottom: 15}}>
+                    <View style={{flexDirection: 'column', marginHorizontal: 26}}>
                         <View style={{flexDirection: 'row', marginBottom: 5}}>
                             <Text style={[textStyles.requestInfoText, {color: '#00A5F2'}]}>
                                 Disponível até:
@@ -78,22 +84,18 @@ export default class CardsWrapper extends React.Component {
         const CardDescription = () => {
             return(
                 <View style={{flexDirection: 'column'}}>
-                    <View style={{flexDirection: 'row', width: window.width, justifyContent: 'space-between', marginTop: -25}}>
-                        <View style={[containerStyles.photoPriceContainer]}>
+                    <Text style={[textStyles.mainDescText]}>
+                        {(request.description.length > 290) ? (((request.description).substring(0,290-3)) + '...') : request.description}
+                    </Text>    
+                    <View style={{flexDirection: 'row', alignSelf: 'stretch', marginHorizontal: 26, marginTop: 15, marginBottom: 28}}>
                             <Image
                                 source={Images('profile')}
                                 style={[iconStyles.profileImage]}
                             />
-                            <View style={{flex: 1, justifyContent: 'center', flexDirection: 'column'}}>
-                                <Text style={[textStyles.categoryText, {marginVertical: 5}]}>{categoryName}</Text>
-                                <Text style={[textStyles.categoryText]}>{price}</Text>
-                            </View>
-                        </View>
-                        <Text style={[textStyles.mainDescText]}>
-                            {(request.description.length > 290) ? (((request.description).substring(0,290-3)) + '...') : request.description}
-                        </Text>
+                            <Text style={[textStyles.categoryText, {marginLeft: 10, flexGrow: 1}]}>{categoryName}</Text>
+                            <Text style={[textStyles.categoryText, {fontWeight: UniText.semibold}]}>{price}</Text>
                     </View>
-                    <OfferInfo/>
+                    <OfferInfo />
                 </View>
             )
         }
@@ -129,14 +131,6 @@ const containerStyles = StyleSheet.create({
         borderRadius: 20,
         flexDirection: 'column',
     },
-    photoPriceContainer: {
-        flexDirection: 'column',
-        marginVertical: 10,
-        marginRight: 10,
-        marginLeft: 15,
-        alignContent: 'center',
-        justifyContent: 'center',
-    },  
     cardsContainer: {
         marginTop: 20,
         marginBottom: 30,
@@ -153,8 +147,8 @@ const iconStyles = StyleSheet.create({
         marginLeft: 5,
     },
     profileImage: {
-        width: 85,
-        height: 85,
+        width: 30,
+        height: 30,
         alignSelf: 'center',
     },
 })
@@ -162,20 +156,17 @@ const iconStyles = StyleSheet.create({
 const textStyles = StyleSheet.create({
     textTitle: {
         fontSize: UniText.big,
-        fontWeight: 'bold',
-        color: '#00A5F2',
+        fontWeight: UniText.semibold,
+        color: UniColors.main,
     },
     categoryText: {
-        width: 0.95*iconStyles.profileImage.width,
-        textAlign: 'center',
+        color: UniColors.main,
         fontSize: UniText.small,
-        fontWeight: '500',
+        alignSelf: 'center',
     },
     mainDescText: {
         flex: 1,
-        marginRight: 20,
-        marginLeft: 20,
-        marginTop: 5,
+        marginHorizontal: 26,
         fontSize: UniText.small,
         textAlign: 'justify'
     },
