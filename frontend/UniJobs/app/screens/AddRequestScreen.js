@@ -9,8 +9,10 @@ import { AsyncStorage } from 'react-native';
 
 import Button from '../components/Button'
 import UniColors from '../constants/UniColors'
-import UniText from '../constants/UniColors'
+import UniText from '../constants/UniText'
+import UniData from '../constants/UniData'
 
+import { loadCategories } from '../actions/FeedActions'
 import { tryAddRequest } from '../actions/AddOfferRequestActions'
 
 
@@ -18,23 +20,32 @@ export default class AddSolicitationScreen extends React.Component {
     static navigationOptions = { header: null };
 
     state = {
+        isLoading: true,
+
         title: '',
-        category: 'categoria',
-        categoryIndex: 0,
+
+        categories: {},
+        selectedCategoryId: 0,
+        
         description: '',
         minPrice: '',
         maxPrice: '',
         checkedEmail:false,
         checkedTelefone:false,
-        userid: 0,
+        userid: '',
     }
 
     async componentDidMount(){
         try{
             const userid = parseInt(await AsyncStorage.getItem(UniData.userid));
-            this.setState({userid: userid}) 
+            this.setState({userid: userid})
+
+            loadCategories((categories) => {
+                this.setState({categories: categories, isLoading: false})
+            });
         } 
         catch (error) {
+            console.log('Error retrieving data - AddRequestScreen')
         }
     };
 
@@ -56,24 +67,19 @@ export default class AddSolicitationScreen extends React.Component {
     render() {
         const { navigate } = this.props.navigation;
 
+        if (this.state.isLoading) return null
+
         const CategoryMenu = () => (
             <View style={[styles.categoryBox, {marginTop: 25}]}>
                 <Picker
                     selectedValue={this.state.category}
-                    onValueChange={(itemValue, itemPosition) =>  this.setState({category: itemValue, categoryIndex: itemPosition})}
-                >   
-                    <Picker.Item label='Categoria' value='categoria' />
-                    <Picker.Item label='Aulas de Exatas' value='exatas'/>
-                    <Picker.Item label='Aulas de Humanas' value='humanas'/>
-                    <Picker.Item label='Aulas de Biológicas' value='biológicas'/>
-                    <Picker.Item label='Aulas Extracurriculares' value='extra'/>
-                    <Picker.Item label='Mudanças' value='mudanças'/>
-                    <Picker.Item label='Domésticos' value='domésticos'/>
-                    <Picker.Item label='Entrega' value='entrega'/>
-                    <Picker.Item label='PetCare' value='petcare'/>
-                    <Picker.Item label='Cuidador de Idosos' value='cuidador'/>
-                    <Picker.Item label='Culinária' value='culinaria'/>
-                    <Picker.Item label='Outros' value='outros'/>
+                    onValueChange={(itemValue, itemPosition) =>  this.setState({selectedCategoryId: itemValue})}
+                >      
+                    { 
+                        this.state.categories.map((cat, index) => (
+                            <Picker.Item label={cat.name.replace('.', ' ')} value={index} key = {index} />
+                        ))
+                    }
                 </Picker>
             </View>
         );

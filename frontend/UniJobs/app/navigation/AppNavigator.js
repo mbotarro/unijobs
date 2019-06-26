@@ -10,7 +10,7 @@ import MyRequestScreen from "../screens/MyRequestScreen"
 import MyInterestScreen from "../screens/MyInterestScreen"
 import SettingScreen from "../screens/SettingScreen"
 import AddOfferScreen from "../screens/AddOfferScreen"
-import AddSolicitationScreen from "../screens/AddSolicitationScreen"
+import AddRequestScreen from "../screens/AddRequestScreen"
 
 import FeedNavigator from  "./FeedNavigator"
 import TestScreen from "../screens/TestScreen";
@@ -30,7 +30,7 @@ const DrawerStack = createDrawerNavigator(
         navigationOptions: { header: null },
     },
     AddOffer: { screen: AddOfferScreen },
-    AddRequest: { screen: AddSolicitationScreen },
+    AddRequest: { screen: AddRequestScreen },
 },
 {
     initialRouteName: 'TabStack',
