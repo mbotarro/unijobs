@@ -164,35 +164,37 @@ For `size` = 2
 {
   "offers": [
     {
-      "id": 6,
-      "name": "Aula",
-      "description": "Verb To Be",
+      "id": "a74c4694-8eb2-11e9-bc42-526af7764a89",
+      "name": "ICC II",
+      "description": "Posso te ajudar em provas e trabalhos de ICCII",
       "extrainfo": "",
       "maxprice": 40,
       "minprice": 30,
-      "expiration": "2020-06-20T03:00:13.250602Z",
+      "expiration": "2020-06-26T03:21:12.898347Z",
       "userid": 1,
       "categoryid": 2,
-      "timestamp": "2019-06-13T10:28:42.411752Z",
-      "telephone": "0000-0000",
-      "email": "user@user.com"
+      "timestamp": "2019-06-25T22:21:12.898347Z",
+      "telephone": "1234-1234",
+      "email": "user@gmail.com",
+      "InterestedUsers": []
     },
     {
-      "id": 5,
-      "name": "Aula",
-      "description": "False Friends",
+      "id": "a74c4694-8eb2-11e9-bc42-526af7764a90",
+      "name": "Aulas de Física",
+      "description": "Dou aulas particulares de Física I, II, III e IV",
       "extrainfo": "",
-      "maxprice": 40,
-      "minprice": 30,
-      "expiration": "2020-06-20T03:00:13.250602Z",
+      "maxprice": 60,
+      "minprice": 40,
+      "expiration": "2020-06-26T03:21:12.898347Z",
       "userid": 1,
       "categoryid": 2,
-      "timestamp": "2019-06-13T09:28:42.411752Z",
-      "telephone": "0000-0000",
-      "email": "user@user.com"
+      "timestamp": "2019-06-25T22:21:12.898347Z",
+      "telephone": "1234-1234",
+      "email": "user@gmail.com",
+      "InterestedUsers": []
     }
   ],
-  "last": 1560418122
+  "last": 1561501272
 }
 ```
 
@@ -208,35 +210,37 @@ You'll get
 {
   "offers": [
     {
-      "id": 4,
-      "name": "Aula",
-      "description": "Fisica IV",
+      "id": "a74c4694-8eb2-11e9-bc42-526af7764a88",
+      "name": "ICC I",
+      "description": "Problemas com trabalhos ou provas de ICC I? Estou aqui para te ajudar!!",
       "extrainfo": "",
       "maxprice": 40,
       "minprice": 30,
-      "expiration": "2020-06-20T03:00:13.250602Z",
+      "expiration": "2020-06-26T03:21:12.898347Z",
       "userid": 1,
-      "categoryid": 1,
-      "timestamp": "2019-06-13T08:28:42.411752Z",
-      "telephone": "0000-0000",
-      "email": "user@user.com"
+      "categoryid": 2,
+      "timestamp": "2019-06-25T21:21:12.898347Z",
+      "telephone": "1234-1234",
+      "email": "user@gmail.com",
+      "InterestedUsers": []
     },
     {
-      "id": 3,
-      "name": "Aula",
-      "description": "Fisica III",
+      "id": "a74c4694-8eb2-11e9-bc42-526af7764a87",
+      "name": "Álgebra Linear",
+      "description": "ou Mestrando em Matemática no ICMC. Posso ajudar com provas, listas, dúvidas teóricas etc",
       "extrainfo": "",
       "maxprice": 40,
       "minprice": 30,
-      "expiration": "2020-06-20T03:00:13.250602Z",
+      "expiration": "2020-06-26T03:21:12.898347Z",
       "userid": 1,
-      "categoryid": 1,
-      "timestamp": "2019-06-13T07:28:42.411752Z",
-      "telephone": "0000-0000",
-      "email": "user@user.com"
+      "categoryid": 2,
+      "timestamp": "2019-06-25T20:21:12.898347Z",
+      "telephone": "1234-1234",
+      "email": "user@gmail.com",
+      "InterestedUsers": []
     }
   ],
-  "last": 1560410922
+  "last": 1561494072
 }
 ```
 

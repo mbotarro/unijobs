@@ -191,3 +191,14 @@ func (dal *OfferDAL) GetOfferMatchStatus(userid int, offerid string) (bool, erro
 	}
 	return true, nil
 }
+
+// GetMatchedUsers return the ids from users that have matched the offer which id is passed in parameter
+func (dal *OfferDAL) GetMatchedUsers(offerid string) ([]int, error){
+	ids := []int{}
+	err := dal.db.Select(&ids, 
+		`SELECT userid FROM match WHERE offerid = $1`, offerid)
+	if err != nil {
+		return nil, err
+	}
+	return ids, nil
+}

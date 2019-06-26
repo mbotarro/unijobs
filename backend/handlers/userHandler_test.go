@@ -353,6 +353,7 @@ func TestGetUserOffers(t *testing.T) {
 		tools.CreateFakeOffer(t, db, "Aula Cálculo IV", "", u1.Userid, c1.ID, time.Now().Add(-21*time.Hour)),
 	}
 
+	// User2
 	u2 := tools.CreateFakeUser(t, db, "user2", "user2@user.com", "2222", "2222-2222")
 	c2 := tools.CreateFakeCategory(t, db, "Aula Física", "Física")
 
@@ -373,8 +374,13 @@ func TestGetUserOffers(t *testing.T) {
 
 		router.ServeHTTP(uor, uoffer)
 
-		expected := handlers.OfferResponse{
-			Offers: []models.Offer{offers1[4]},
+		expected := handlers.HistoryOfferResponse{
+			HistoryOffers: []models.HistoryOffer{
+				models.HistoryOffer{
+					Offer:offers1[4],
+					InterestedUsers: []models.UserContact{},
+				},
+			},
 			Last:   offers1[4].Timestamp.Unix(),
 		}
 		expectedJs, err := json.Marshal(expected)
@@ -391,8 +397,13 @@ func TestGetUserOffers(t *testing.T) {
 
 		router.ServeHTTP(uor, uoffer)
 
-		expected = handlers.OfferResponse{
-			Offers: []models.Offer{offers1[3]},
+		expected = handlers.HistoryOfferResponse{
+			HistoryOffers: []models.HistoryOffer{
+				models.HistoryOffer{
+					Offer:offers1[3],
+					InterestedUsers: []models.UserContact{},
+				},
+			},
 			Last:   offers1[3].Timestamp.Unix(),
 		}
 		expectedJs, err = json.Marshal(expected)
@@ -409,8 +420,13 @@ func TestGetUserOffers(t *testing.T) {
 
 		router.ServeHTTP(uor, uoffer)
 
-		expected = handlers.OfferResponse{
-			Offers: []models.Offer{offers1[2]},
+		expected = handlers.HistoryOfferResponse{
+			HistoryOffers: []models.HistoryOffer{
+				models.HistoryOffer{
+					Offer:offers1[2],
+					InterestedUsers: []models.UserContact{},
+				},
+			},
 			Last:   offers1[2].Timestamp.Unix(),
 		}
 		expectedJs, err = json.Marshal(expected)
@@ -427,8 +443,13 @@ func TestGetUserOffers(t *testing.T) {
 
 		router.ServeHTTP(uor, uoffer)
 
-		expected = handlers.OfferResponse{
-			Offers: []models.Offer{offers1[1]},
+		expected = handlers.HistoryOfferResponse{
+			HistoryOffers: []models.HistoryOffer{
+				models.HistoryOffer{
+					Offer:offers1[1],
+					InterestedUsers: []models.UserContact{},
+				},
+			},
 			Last:   offers1[1].Timestamp.Unix(),
 		}
 		expectedJs, err = json.Marshal(expected)
@@ -445,8 +466,13 @@ func TestGetUserOffers(t *testing.T) {
 
 		router.ServeHTTP(uor, uoffer)
 
-		expected = handlers.OfferResponse{
-			Offers: []models.Offer{offers1[0]},
+		expected = handlers.HistoryOfferResponse{
+			HistoryOffers: []models.HistoryOffer{
+				models.HistoryOffer{
+					Offer:offers1[0],
+					InterestedUsers: []models.UserContact{},
+				},
+			},
 			Last:   offers1[0].Timestamp.Unix(),
 		}
 		expectedJs, err = json.Marshal(expected)
@@ -463,8 +489,13 @@ func TestGetUserOffers(t *testing.T) {
 
 		router.ServeHTTP(uor, uoffer)
 
-		expected = handlers.OfferResponse{
-			Offers: []models.Offer{offers2[3]},
+		expected = handlers.HistoryOfferResponse{
+			HistoryOffers: []models.HistoryOffer{
+				models.HistoryOffer{
+					Offer:offers2[3],
+					InterestedUsers: []models.UserContact{},
+				},
+			},
 			Last:   offers2[3].Timestamp.Unix(),
 		}
 		expectedJs, err = json.Marshal(expected)
@@ -481,8 +512,13 @@ func TestGetUserOffers(t *testing.T) {
 
 		router.ServeHTTP(uor, uoffer)
 
-		expected = handlers.OfferResponse{
-			Offers: []models.Offer{offers2[2]},
+		expected = handlers.HistoryOfferResponse{
+			HistoryOffers: []models.HistoryOffer{
+				models.HistoryOffer{
+					Offer:offers2[2],
+					InterestedUsers: []models.UserContact{},
+				},
+			},
 			Last:   offers2[2].Timestamp.Unix(),
 		}
 		expectedJs, err = json.Marshal(expected)
@@ -499,8 +535,13 @@ func TestGetUserOffers(t *testing.T) {
 
 		router.ServeHTTP(uor, uoffer)
 
-		expected = handlers.OfferResponse{
-			Offers: []models.Offer{offers2[1]},
+		expected = handlers.HistoryOfferResponse{
+			HistoryOffers: []models.HistoryOffer{
+				models.HistoryOffer{
+					Offer:offers2[1],
+					InterestedUsers: []models.UserContact{},
+				},
+			},
 			Last:   offers2[1].Timestamp.Unix(),
 		}
 		expectedJs, err = json.Marshal(expected)
@@ -517,8 +558,13 @@ func TestGetUserOffers(t *testing.T) {
 
 		router.ServeHTTP(uor, uoffer)
 
-		expected = handlers.OfferResponse{
-			Offers: []models.Offer{offers2[0]},
+		expected = handlers.HistoryOfferResponse{
+			HistoryOffers: []models.HistoryOffer{
+				models.HistoryOffer{
+					Offer:offers2[0],
+					InterestedUsers: []models.UserContact{},
+				},
+			},
 			Last:   offers2[0].Timestamp.Unix(),
 		}
 		expectedJs, err = json.Marshal(expected)
@@ -537,8 +583,21 @@ func TestGetUserOffers(t *testing.T) {
 
 		router.ServeHTTP(uor, uoffer)
 
-		expected := handlers.OfferResponse{
-			Offers: []models.Offer{offers1[4], offers1[3], offers1[2]},
+		expected := handlers.HistoryOfferResponse{
+			HistoryOffers: []models.HistoryOffer{
+				models.HistoryOffer{
+					Offer:offers1[4],
+					InterestedUsers: []models.UserContact{},
+				},
+				models.HistoryOffer{
+					Offer:offers1[3],
+					InterestedUsers: []models.UserContact{},
+				},
+				models.HistoryOffer{
+					Offer:offers1[2],
+					InterestedUsers: []models.UserContact{},
+				},
+			},
 			Last:   offers1[2].Timestamp.Unix(),
 		}
 		expectedJs, err := json.Marshal(expected)
@@ -555,8 +614,17 @@ func TestGetUserOffers(t *testing.T) {
 
 		router.ServeHTTP(uor, uoffer)
 
-		expected = handlers.OfferResponse{
-			Offers: []models.Offer{offers1[1], offers1[0]},
+		expected = handlers.HistoryOfferResponse{
+			HistoryOffers: []models.HistoryOffer{
+				models.HistoryOffer{
+					Offer:offers1[1],
+					InterestedUsers: []models.UserContact{},
+				},
+				models.HistoryOffer{
+					Offer:offers1[0],
+					InterestedUsers: []models.UserContact{},
+				},
+			},
 			Last:   offers1[0].Timestamp.Unix(),
 		}
 		expectedJs, err = json.Marshal(expected)
@@ -573,8 +641,21 @@ func TestGetUserOffers(t *testing.T) {
 
 		router.ServeHTTP(uor, uoffer)
 
-		expected = handlers.OfferResponse{
-			Offers: []models.Offer{offers2[3], offers2[2], offers2[1]},
+		expected = handlers.HistoryOfferResponse{
+			HistoryOffers: []models.HistoryOffer{
+				models.HistoryOffer{
+					Offer:offers2[3],
+					InterestedUsers: []models.UserContact{},
+				},
+				models.HistoryOffer{
+					Offer:offers2[2],
+					InterestedUsers: []models.UserContact{},
+				},
+				models.HistoryOffer{
+					Offer:offers2[1],
+					InterestedUsers: []models.UserContact{},
+				},
+			},
 			Last:   offers2[1].Timestamp.Unix(),
 		}
 		expectedJs, err = json.Marshal(expected)
@@ -591,11 +672,73 @@ func TestGetUserOffers(t *testing.T) {
 
 		router.ServeHTTP(uor, uoffer)
 
-		expected = handlers.OfferResponse{
-			Offers: []models.Offer{offers2[0]},
+		expected = handlers.HistoryOfferResponse{
+			HistoryOffers: []models.HistoryOffer{
+				models.HistoryOffer{
+					Offer:offers2[0],
+					InterestedUsers: []models.UserContact{},
+				},
+			},
 			Last:   offers2[0].Timestamp.Unix(),
 		}
 		expectedJs, err = json.Marshal(expected)
+		assert.Equal(t, nil, err)
+
+		assert.Equal(t, string(expectedJs), uor.Body.String())
+	})
+
+	// Populate the database with some more fake offers
+	// User3
+	u3 := tools.CreateFakeUser(t, db, "user3", "user3@user.com", "3333", "3333-3333")
+	tools.CreateFakeMatch(t, db, u3, offers1[4])
+	tools.CreateFakeMatch(t, db, u2, offers1[4])
+	tools.CreateFakeMatch(t, db, u3, offers1[3])
+
+	t.Run("Testing offers with matches", func(t *testing.T){
+		// User1 First Offer
+		uoffer, err := http.NewRequest("GET", fmt.Sprintf("/users/%d/offers?size=3", u1.Userid), nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+		uor := httptest.NewRecorder()
+
+		router.ServeHTTP(uor, uoffer)
+
+		expected := handlers.HistoryOfferResponse{
+			HistoryOffers: []models.HistoryOffer{
+				models.HistoryOffer{
+					Offer:offers1[4],
+					InterestedUsers: []models.UserContact{
+						models.UserContact{
+							Username:u3.Username,
+							Email:u3.Email,
+							Telephone:u3.Telephone,
+						},
+						models.UserContact{
+							Username:u2.Username,
+							Email:u2.Email,
+							Telephone:u2.Telephone,
+						},
+					},
+				},
+				models.HistoryOffer{
+					Offer:offers1[3],
+					InterestedUsers: []models.UserContact{
+						models.UserContact{
+							Username:u3.Username,
+							Email:u3.Email,
+							Telephone:u3.Telephone,
+						},
+					},
+				},
+				models.HistoryOffer{
+					Offer:offers1[2],
+					InterestedUsers: []models.UserContact{},
+				},
+			},
+			Last:   offers1[2].Timestamp.Unix(),
+		}
+		expectedJs, err := json.Marshal(expected)
 		assert.Equal(t, nil, err)
 
 		assert.Equal(t, string(expectedJs), uor.Body.String())
