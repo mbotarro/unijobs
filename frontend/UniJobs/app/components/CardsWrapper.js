@@ -161,13 +161,13 @@ const textStyles = StyleSheet.create({
     },
     categoryText: {
         color: UniColors.main,
-        fontSize: UniText.small,
+        fontSize: UniText.normal,
         alignSelf: 'center',
     },
     mainDescText: {
         flex: 1,
         marginHorizontal: 26,
-        fontSize: UniText.small,
+        fontSize: UniText.normal,
         textAlign: 'justify'
     },
     cardsViewTitle: {
@@ -177,6 +177,6 @@ const textStyles = StyleSheet.create({
         marginBottom: 15,
     },
     requestInfoText: {
-        fontSize: UniText.small,
+        fontSize: UniText.normal,
     }
 })

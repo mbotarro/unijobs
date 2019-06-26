@@ -154,7 +154,7 @@ export default class FeedCard extends React.Component {
 
 const containerStyles = StyleSheet.create({
     cardsContainer: {
-        marginTop: 20,
+        marginTop: 10,
         marginBottom: 30,
         flexDirection: 'column',
         flex: 1,
@@ -169,7 +169,7 @@ const textStyles = StyleSheet.create({
         textAlign: 'left',
         marginTop: 8,
         color: '#00A5F2',
-        fontSize: UniText.normal,
+        fontSize: UniText.small,
         fontWeight: '600'
     },
     userOfferName: {
