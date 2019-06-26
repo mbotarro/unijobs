@@ -492,31 +492,4 @@ func TestGetMatchedFeed(t *testing.T) {
 		assert.Equal(t, string(expectedJs), rr.Body.String())
 
 	})
-
-	off2 := tools.CreateFakeOffer(t, db, "Aula de Cálculo II", "Oferecço aula particular", creator.Userid, c.ID, time.Now().Add(-10*time.Hour))
-	offs = []models.MatchedOffer{
-		models.MatchedOffer{Offer: off, Matched: true},
-		models.MatchedOffer{Offer: off2, Matched: false},
-	}
-	/*
-		t.Run("Two offers one match", func(t *testing.T) {
-			// First Request
-			off, err := http.NewRequest("GET", fmt.Sprintf("/offers/users/%d?size=2", u.Userid), nil)
-			if err != nil {
-				t.Fatal(err)
-			}
-			rr := httptest.NewRecorder()
-
-			handler.ServeHTTP(rr, off)
-
-			expected := handlers.MatchedOfferResponse{
-				MatchedOffers: []models.MatchedOffer{offs[1]},
-				Last:          offs[1].Timestamp.Unix(),
-			}
-			expectedJs, err := json.Marshal(expected)
-			assert.Equal(t, nil, err)
-
-			assert.Equal(t, string(expectedJs), rr.Body.String())
-		})*/
-
 }

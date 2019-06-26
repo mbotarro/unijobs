@@ -1,7 +1,6 @@
 package usecases
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/jmoiron/sqlx"
@@ -109,8 +108,5 @@ func (oc *OfferController) GetMatchOffers(before time.Time, size, userid int) ([
 		}
 		moffs = append(moffs, mo)
 	}
-
-	fmt.Println("RETURNED", moffs)
-
 	return moffs, nil
 }
