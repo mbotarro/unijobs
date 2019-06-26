@@ -112,7 +112,7 @@ export default class FeedRequestScreen extends React.Component {
 
     onSearch () {
         if (this.state.searchBarText == '') return
-        
+
         searchRequests(this.state.searchBarText, this.state.searchCategories,
             (requests) => {
                 console.log(requests)
@@ -134,6 +134,7 @@ export default class FeedRequestScreen extends React.Component {
 
     render() {
         const { navigate } = this.props.navigation;
+        const isTyping = !this.state.isSearching && !this.state.isLoading && this.state.searchBarText != ''
 
 
         // header
@@ -180,6 +181,16 @@ export default class FeedRequestScreen extends React.Component {
                         onAddCategory={(categoryId) => this.onSearchAddCategory(categoryId)}
                         onRemoveCategory = {(categoryId) => this.onSearchRemoveCategory(categoryId)}
                     />
+                }
+                {
+                    !isTyping ?
+                    null
+                    :
+                    <View style = {styles.feedBar} >
+                        <Text style = {styles.feedBarText}>
+                            {'Pesquisar \'' + this.state.searchBarText + '\''}
+                        </Text>
+                    </View>
                 }
             </View>
         );
@@ -231,7 +242,7 @@ export default class FeedRequestScreen extends React.Component {
             </View>
         );
 
-        const allFeedHeader = this.state.isSearching ?
+        const allFeedHeader = this.state.isSearching || isTyping ?
             null
             :
             feedHeader(
@@ -244,14 +255,18 @@ export default class FeedRequestScreen extends React.Component {
 
 
         // feed
-        const feedView = this.state.isLoading ?
-            <ActivityIndicator style={{ marginTop: 10 }} />
+        const feedView = 
+            isTyping ?
+            null
             :
-            populateRequestMiniCards(
-                this.state.isSearching ? this.state.foundRequests : this.state.allFeedRequests,
-                this.state.categoriesHash,
-                (request) => this.setState({isRequestCardOpen: true, openRequest: request})
-           );
+            this.state.isLoading ?
+                <ActivityIndicator style={{ marginTop: 10 }} />
+                :
+                populateRequestMiniCards(
+                    this.state.isSearching ? this.state.foundRequests : this.state.allFeedRequests,
+                    this.state.categoriesHash,
+                    (request) => this.setState({isRequestCardOpen: true, openRequest: request})
+            );
 
         const openCard = 
             this.state.isRequestCardOpen ?
