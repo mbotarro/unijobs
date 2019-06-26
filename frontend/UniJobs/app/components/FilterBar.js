@@ -13,7 +13,7 @@ export default class FilterBar extends React.Component {
 
         const miniButtons = categories.map((cat, index) => (
             <View key={index} style={{ marginHorizontal: 4, flexDirection: 'row', alignSelf: 'stretch' }}>
-                <MiniButton text={cat.name}
+                <MiniButton text={cat.name.replace('.', ' ')}
                     onActivate={() => { onAddCategory(cat.id) }}
                     onDeactivate={() => { onRemoveCategory(cat.id) }} />
             </View>
