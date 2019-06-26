@@ -540,6 +540,56 @@ You'll get
 }
 ```
 
+## Get Offers with Match Information
+
+The alternative route can be used to return information regarding the match of an offer.
+Pagination can be also used the same way when getting offers without this information.
+
+### GET 
+```
+/offers/users/<userid>?size=2
+```
+
+#### Expected Response
+
+```
+{
+    "offers": [
+        {
+            "id": "a74c4694-8eb2-11e9-bc42-526af7764a89",
+            "name": "ICC II",
+            "description": "Posso te ajudar em provas e trabalhos de ICCII",
+            "extrainfo": "",
+            "maxprice": 40,
+            "minprice": 30,
+            "expiration": "2020-06-24T17:00:36.477801Z",
+            "userid": 1,
+            "categoryid": 2,
+            "timestamp": "2019-06-24T12:00:36.477801Z",
+            "telephone": "1234-1234",
+            "email": "user@gmail.com",
+            "matched": false
+        },
+        {
+            "id": "a74c4694-8eb2-11e9-bc42-526af7764a90",
+            "name": "Aulas de Física",
+            "description": "Dou aulas particulares de Física I, II, III e IV",
+            "extrainfo": "",
+            "maxprice": 60,
+            "minprice": 40,
+            "expiration": "2020-06-24T17:00:36.477801Z",
+            "userid": 1,
+            "categoryid": 2,
+            "timestamp": "2019-06-24T12:00:36.477801Z",
+            "telephone": "1234-1234",
+            "email": "user@gmail.com",
+            "matched": false
+        }
+    ],
+    "last": 1561377636
+}
+```
+
 ## Search for Offers in the platform
 
 ### GET
@@ -667,7 +717,7 @@ So far, the search endpoint doesn't accept pagination, always returning all matc
 
 # Match API
 
-### Insert offer match into database
+## Insert offer match into database
 
 ### POST
 To match the offer with id \<offerid\> with the user <userid>
@@ -681,3 +731,4 @@ HTTP/1.1 201 Created
 Date: Wed, 05 Jun 2019 12:00:59 GMT
 Content-Length: 0
 ```
+

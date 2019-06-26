@@ -1,5 +1,5 @@
 ?   	github.com/mbotarro/unijobs/backend	[no test files]
-ok  	github.com/mbotarro/unijobs/backend/dal	(cached)	coverage: 80.8% of statements
+ok  	github.com/mbotarro/unijobs/backend/dal	(cached)	coverage: 83.4% of statements
 ?   	github.com/mbotarro/unijobs/backend/errors	[no test files]
 ok  	github.com/mbotarro/unijobs/backend/handlers	5.135s	coverage: 64.2% of statements
 ?   	github.com/mbotarro/unijobs/backend/migrations	[no test files]

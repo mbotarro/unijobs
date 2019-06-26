@@ -81,6 +81,17 @@ func NewRouter(ctrl *usecases.Controller) *mux.Router {
 	// Categories API
 	route.r.HandleFunc("/categories", categoryHandler.getAllCategories).Methods("GET")
 
+	// Matches API
+	route.r.Path("/offers/users/{userid:[0-9]+}").
+		Queries("size", "{size:[0-9]+}", "before", "{before:[0-9]+}").
+		HandlerFunc(offerHandler.GetMatchedFeed).
+		Methods("GET")
+
+	route.r.Path("/offers/users/{userid:[0-9]+}").
+		Queries("size", "{size:[0-9]+}").
+		HandlerFunc(offerHandler.GetMatchedFeed).
+		Methods("GET")
+
 	// Offers APIs
 	// Get last offers
 	route.r.Path("/offers").
