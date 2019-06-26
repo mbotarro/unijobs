@@ -91,7 +91,7 @@ func (oc *OfferController) InsertOfferMatch(userid int, offerid string) error {
 	return nil
 }
 
-// GetMatchOffers returns the time, size and the userid and it returns the offers with the information that is has matched or not
+// GetMatchOffers receives the time, size and the userid and it returns the offers with the information that is has matched or not
 func (oc *OfferController) GetMatchOffers(before time.Time, size, userid int) ([]models.MatchedOffer, error) {
 	offers, err := oc.offerDAL.GetLastOffers(before, size) // retorna offers
 	if err != nil {
@@ -101,7 +101,10 @@ func (oc *OfferController) GetMatchOffers(before time.Time, size, userid int) ([
 	// For each offer checks if it has matched and then updates the status
 	moffs := []models.MatchedOffer{}
 	for _, o := range offers {
-		status, _ := oc.offerDAL.GetOfferMatchStatus(userid, o.ID)
+		status, err := oc.offerDAL.GetOfferMatchStatus(userid, o.ID)
+		if err != nil {
+			return nil, err
+		}
 		mo := models.MatchedOffer{
 			Offer:   o,
 			Matched: status,
