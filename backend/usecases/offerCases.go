@@ -81,3 +81,12 @@ func (oc *OfferController) SearchOffers(query string, categoryIDs ...int) ([]mod
 
 	return reqs, nil
 }
+
+// InsertOfferMatch receives the id of the user and the offer and inserts the match into the match table
+func (oc *OfferController) InsertOfferMatch(userid int, offerid string) error {
+	err := oc.offerDAL.InsertOfferMatch(userid, offerid)
+	if err != nil {
+		return err
+	}
+	return nil
+}

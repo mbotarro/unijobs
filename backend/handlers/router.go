@@ -111,5 +111,10 @@ func NewRouter(ctrl *usecases.Controller) *mux.Router {
 		HandlerFunc(offerHandler.InsertOffer).
 		Methods("POST")
 
+	// Inserts a new match of the offer-id and user-id given
+	route.r.Path("/offers/{offerid:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}/users/{userid:[0-9]+}").
+		HandlerFunc(offerHandler.InsertOfferMatch).
+		Methods("POST")
+
 	return &route.r
 }

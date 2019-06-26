@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gorilla/mux"
 	"github.com/mbotarro/unijobs/backend/errors"
 	"github.com/mbotarro/unijobs/backend/models"
 	"github.com/mbotarro/unijobs/backend/tools"
@@ -159,4 +160,30 @@ func (handler *OfferHandler) SearchOffers(w http.ResponseWriter, r *http.Request
 	}
 
 	tools.WriteStructOnHTTPResponse(offRes, w)
+}
+
+// InsertOfferMatch inserts the match of a given user with an offer, it receives a json with the offer id
+func (handler *OfferHandler) InsertOfferMatch(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	// Gets offer id
+	offerid := vars["offerid"]
+	// Gets user id
+	idStr := vars["userid"]
+
+	fmt.Print(offerid, "\n")
+
+	uid64, err := strconv.ParseInt(idStr, 10, 32)
+	if err != nil {
+		http.Error(w, fmt.Errorf("%s:%s", errors.QueryParameterError, err.Error()).Error(), http.StatusBadRequest)
+		return
+	}
+	userid := int(uid64)
+
+	err = handler.offerController.InsertOfferMatch(userid, offerid)
+	if err != nil {
+		http.Error(w, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error()).Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
 }
