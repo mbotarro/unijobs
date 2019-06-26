@@ -70,10 +70,10 @@ export default class AddSolicitationScreen extends React.Component {
         if (this.state.isLoading) return null
 
         const CategoryMenu = () => (
-            <View style={[styles.categoryBox, {marginTop: 25}]}>
                 <Picker
                     selectedValue={this.state.category}
                     onValueChange={(itemValue, itemPosition) =>  this.setState({selectedCategoryId: itemValue})}
+                    style = {[styles.categoryBox, {marginTop: 25, overflow: 'hidden', height: 40, justifyContent: 'center', paddingVertical: 10}]}
                 >      
                     { 
                         this.state.categories.map((cat, index) => (
@@ -81,7 +81,6 @@ export default class AddSolicitationScreen extends React.Component {
                         ))
                     }
                 </Picker>
-            </View>
         );
 
         const ContactOptionEmail = () => (
@@ -199,12 +198,12 @@ const styles = StyleSheet.create({
     headerText: {
         fontSize: 20,
         color: UniColors.white,
-        fontWeight: 'bold',
+        fontWeight: UniText.semibold,
     },
 
     title:  {
         fontSize: 17,
-        fontWeight: 'bold',
+        fontWeight: UniText.bold,
         color: UniColors.main,
     },
 
@@ -216,7 +215,8 @@ const styles = StyleSheet.create({
     titleInput: {
         borderBottomWidth: 0.2, 
         borderBottomColor: UniColors.dark_grey,
-        fontSize: UniText.nomral,
+        fontSize: UniText.big,
+        fontWeight: UniText.semibold,
         color: UniColors.dark,
     },
 
@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
         textAlign:  'left',
     },
 
-    priceInput: {
+    infoInput: {
         borderColor:    UniColors.dark_grey,
         borderRadius:   20,
         backgroundColor: '#F4F5F6',
