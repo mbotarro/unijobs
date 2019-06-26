@@ -164,37 +164,59 @@ For `size` = 2
 {
   "offers": [
     {
-      "id": "a74c4694-8eb2-11e9-bc42-526af7764a89",
-      "name": "ICC II",
-      "description": "Posso te ajudar em provas e trabalhos de ICCII",
+      "id": "a74c4694-8eb2-11e9-bc42-526af7764a99",
+      "name": "Babysitter",
+      "description": "Cuido de crianças de 1 a 6 anos. Tenho recomendações",
       "extrainfo": "",
       "maxprice": 40,
       "minprice": 30,
-      "expiration": "2020-06-26T03:21:12.898347Z",
-      "userid": 1,
-      "categoryid": 2,
-      "timestamp": "2019-06-25T22:21:12.898347Z",
-      "telephone": "1234-1234",
-      "email": "user@gmail.com",
-      "InterestedUsers": []
+      "expiration": "2020-06-26T04:00:58.332243Z",
+      "userid": 2,
+      "categoryid": 9,
+      "timestamp": "2019-06-25T23:00:58.332243Z",
+      "telephone": "(16)3509-1010",
+      "email": "diego@usp.com",
+      "interestedusers": [
+        {
+          "username": "Monica",
+          "email": "monica@usp.br",
+          "telephone": "(16)3509-1290"
+        },
+        {
+          "username": "Diego",
+          "email": "diego@usp.br",
+          "telephone": "(16)3509-1010"
+        }
+      ]
     },
     {
-      "id": "a74c4694-8eb2-11e9-bc42-526af7764a90",
-      "name": "Aulas de Física",
-      "description": "Dou aulas particulares de Física I, II, III e IV",
+      "id": "a74c4694-8eb2-11e9-bc42-526af7764a98",
+      "name": "Entrega de Encomendas",
+      "description": "Entrego encomendas particulares em qualquer lugar de São Carlos!",
       "extrainfo": "",
-      "maxprice": 60,
-      "minprice": 40,
-      "expiration": "2020-06-26T03:21:12.898347Z",
-      "userid": 1,
-      "categoryid": 2,
-      "timestamp": "2019-06-25T22:21:12.898347Z",
-      "telephone": "1234-1234",
-      "email": "user@gmail.com",
-      "InterestedUsers": []
+      "maxprice": 40,
+      "minprice": 30,
+      "expiration": "2020-06-26T04:00:58.332243Z",
+      "userid": 2,
+      "categoryid": 7,
+      "timestamp": "2019-06-25T22:00:58.332243Z",
+      "telephone": "(16)3509-1010",
+      "email": "diego@usp.com",
+      "interestedusers": [
+        {
+          "username": "Monica",
+          "email": "monica@usp.br",
+          "telephone": "(16)3509-1290"
+        },
+        {
+          "username": "Diego",
+          "email": "diego@usp.br",
+          "telephone": "(16)3509-1010"
+        }
+      ]
     }
   ],
-  "last": 1561501272
+  "last": 1561500058
 }
 ```
 
@@ -210,37 +232,59 @@ You'll get
 {
   "offers": [
     {
-      "id": "a74c4694-8eb2-11e9-bc42-526af7764a88",
-      "name": "ICC I",
-      "description": "Problemas com trabalhos ou provas de ICC I? Estou aqui para te ajudar!!",
+      "id": "a74c4694-8eb2-11e9-bc42-526af7764a97",
+      "name": "Limpeza de Casa",
+      "description": "Arrumo, lavo e passo!",
       "extrainfo": "",
       "maxprice": 40,
       "minprice": 30,
-      "expiration": "2020-06-26T03:21:12.898347Z",
-      "userid": 1,
-      "categoryid": 2,
-      "timestamp": "2019-06-25T21:21:12.898347Z",
-      "telephone": "1234-1234",
-      "email": "user@gmail.com",
-      "InterestedUsers": []
+      "expiration": "2020-06-26T04:00:58.332243Z",
+      "userid": 2,
+      "categoryid": 6,
+      "timestamp": "2019-06-25T21:00:58.332243Z",
+      "telephone": "(16)3509-1010",
+      "email": "diego@usp.com",
+      "interestedusers": [
+        {
+          "username": "Monica",
+          "email": "monica@usp.br",
+          "telephone": "(16)3509-1290"
+        },
+        {
+          "username": "Diego",
+          "email": "diego@usp.br",
+          "telephone": "(16)3509-1010"
+        }
+      ]
     },
     {
-      "id": "a74c4694-8eb2-11e9-bc42-526af7764a87",
-      "name": "Álgebra Linear",
-      "description": "ou Mestrando em Matemática no ICMC. Posso ajudar com provas, listas, dúvidas teóricas etc",
+      "id": "a74c4694-8eb2-11e9-bc42-526af7764a96",
+      "name": "Ajuda em Mudanças",
+      "description": "Ajudo em durante a mudança e alugo caminhonete para carregar seus móveis!",
       "extrainfo": "",
       "maxprice": 40,
       "minprice": 30,
-      "expiration": "2020-06-26T03:21:12.898347Z",
-      "userid": 1,
-      "categoryid": 2,
-      "timestamp": "2019-06-25T20:21:12.898347Z",
-      "telephone": "1234-1234",
-      "email": "user@gmail.com",
-      "InterestedUsers": []
+      "expiration": "2020-06-26T04:00:58.332243Z",
+      "userid": 2,
+      "categoryid": 5,
+      "timestamp": "2019-06-25T20:00:58.332243Z",
+      "telephone": "(16)3509-1010",
+      "email": "diego@usp.com",
+      "interestedusers": [
+        {
+          "username": "Monica",
+          "email": "monica@usp.br",
+          "telephone": "(16)3509-1290"
+        },
+        {
+          "username": "Diego",
+          "email": "diego@usp.br",
+          "telephone": "(16)3509-1010"
+        }
+      ]
     }
   ],
-  "last": 1561494072
+  "last": 1561492858
 }
 ```
 
