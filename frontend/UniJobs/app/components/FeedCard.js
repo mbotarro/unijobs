@@ -38,9 +38,7 @@ export default class FeedCard extends React.Component {
     }
 
     render() {
-        const { offer, request, categories, onCreateOfferPress, onShowRequester, onQuit, isOffer, updateFeed, loggedUserid } = this.props;
-        console.log(offer.matched)
- 
+        const { offer, request, categories, onCreateOfferPress, onShowRequester, onQuit, isOffer, updateFeed, loggedUserid } = this.props; 
 
         const ActionButton = (text, onPress, color) => (
             <Button

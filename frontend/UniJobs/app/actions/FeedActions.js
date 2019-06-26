@@ -80,7 +80,6 @@ async function loadUserInfo(id, onResponse) {
 
 async function makeMatch(offerid, userid) {
     fetch(UniData.matchApi(offerid, userid), {method: 'POST'})
-    .then((response) => console.log(response))
     .catch((error) => {
         console.log("Error while making the match");
         alert(error.message)

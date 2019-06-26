@@ -47,7 +47,6 @@ export default class FeedOfferScreen extends React.Component {
     async componentDidMount() {
         try {
             const userid = parseInt(await AsyncStorage.getItem(UniData.userid));
-            console.log(userid)
             this.setState({userid: userid})
             // use for fetching data to show
             loadCategories((categories) => {
