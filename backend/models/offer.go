@@ -28,7 +28,7 @@ type MatchedOffer struct {
 // other users that liked it
 type HistoryOffer struct {
 	Offer                         // Get all Offer parameters
-	InterestedUsers []UserContact // Contat of all users who matched this offer
+	InterestedUsers []UserContact `json:"interestedusers"`	// Contat of all users who matched this offer
 }
 
 // OfferES represents an Offer in the ES
