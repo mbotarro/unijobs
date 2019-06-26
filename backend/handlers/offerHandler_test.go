@@ -419,3 +419,77 @@ func TestInsertOfferMatch(t *testing.T) {
 	status := reqRecord.Code
 	assert.Equal(t, 201, status)
 }
+
+func TestGetMatchedFeed(t *testing.T) {
+	db := tools.GetTestDB()
+	es := tools.GetTestES()
+	defer tools.CleanDB(db)
+	defer tools.CleanES(es)
+
+	ctrl := usecases.NewController(db, es)
+
+	router := handlers.NewRouter(ctrl)
+
+	// Creates fake user and category to be used at the offer
+	c := tools.CreateFakeCategory(t, db, "Aula Matemática", "Matemática")
+	u := tools.CreateFakeUser(t, db, "user2", "user2@user.com", "13234", "99993-1111")
+	creator := tools.CreateFakeUser(t, db, "user3", "user3@user.com", "1234", "9999-1111")
+	off := tools.CreateFakeOffer(t, db, "Aula de Cálculo III", "Oferecço aula particular", creator.Userid, c.ID, time.Now().Add(-10*time.Hour))
+
+	offs := []models.MatchedOffer{
+		models.MatchedOffer{Offer: off, Matched: false},
+	}
+
+	t.Run("get no matched offer", func(t *testing.T) {
+		myoff, err := http.NewRequest("GET", fmt.Sprintf("/offers/users/%d?size=1", u.Userid), nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		rr := httptest.NewRecorder()
+
+		router.ServeHTTP(rr, myoff)
+
+		if status := rr.Code; status != http.StatusOK {
+			t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
+		}
+
+		expected := handlers.MatchedOfferResponse{
+			MatchedOffers: []models.MatchedOffer{offs[0]},
+			Last:          offs[0].Timestamp.Unix(),
+		}
+		expectedJs, err := json.Marshal(expected)
+		assert.Equal(t, nil, err)
+
+		assert.Equal(t, string(expectedJs), rr.Body.String())
+
+	})
+
+	// Populate the database with one fake match
+	tools.CreateFakeMatch(t, db, u, off)
+
+	offs = []models.MatchedOffer{
+		models.MatchedOffer{Offer: off, Matched: true},
+	}
+
+	t.Run("One offer one match", func(t *testing.T) {
+		off, err := http.NewRequest("GET", fmt.Sprintf("/offers/users/%d?size=1", u.Userid), nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+		rr := httptest.NewRecorder()
+
+		router.ServeHTTP(rr, off)
+
+		expected := handlers.MatchedOfferResponse{
+			MatchedOffers: []models.MatchedOffer{offs[0]},
+			Last:          offs[0].Timestamp.Unix(),
+		}
+		expectedJs, err := json.Marshal(expected)
+		assert.Equal(t, nil, err)
+
+		//fmt.Print(rr.Body.String())
+		assert.Equal(t, string(expectedJs), rr.Body.String())
+
+	})
+}
