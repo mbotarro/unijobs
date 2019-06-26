@@ -92,7 +92,7 @@ function getCategoryImage(id) {
     switch (id) {
         case 1 : return require('../assets/_test_categories/cat_1.png');
         case 2 : return require('../assets/_test_categories/cat_2.png');
-        case 2 : return require('../assets/_test_categories/cat_3.png');
+        case 3 : return require('../assets/_test_categories/cat_3.png');
         case 4 : return require('../assets/_test_categories/cat_4.png');
         case 5 : return require('../assets/_test_categories/cat_5.png');
         case 6 : return require('../assets/_test_categories/cat_6.png');
