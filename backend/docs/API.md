@@ -244,18 +244,7 @@ You'll get
       "timestamp": "2019-06-25T21:00:58.332243Z",
       "telephone": "(16)3509-1010",
       "email": "diego@usp.com",
-      "interestedusers": [
-        {
-          "username": "Monica",
-          "email": "monica@usp.br",
-          "telephone": "(16)3509-1290"
-        },
-        {
-          "username": "Diego",
-          "email": "diego@usp.br",
-          "telephone": "(16)3509-1010"
-        }
-      ]
+      "interestedusers": []
     },
     {
       "id": "a74c4694-8eb2-11e9-bc42-526af7764a96",
@@ -270,18 +259,7 @@ You'll get
       "timestamp": "2019-06-25T20:00:58.332243Z",
       "telephone": "(16)3509-1010",
       "email": "diego@usp.com",
-      "interestedusers": [
-        {
-          "username": "Monica",
-          "email": "monica@usp.br",
-          "telephone": "(16)3509-1290"
-        },
-        {
-          "username": "Diego",
-          "email": "diego@usp.br",
-          "telephone": "(16)3509-1010"
-        }
-      ]
+      "interestedusers": []
     }
   ],
   "last": 1561492858
