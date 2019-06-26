@@ -2,18 +2,19 @@ import UniData from '../constants/UniData';
 
 async function tryAddRequest (userid, title, categoryIndex, description, minPrice, maxPrice, onResponse) {
 
+    const body = JSON.stringify({
+        name: title,
+        description: description,
+        extrainfo: "",
+        maxprice: maxPrice,
+        minprice: minPrice,
+        userid: userid,
+        categoryid: categoryIndex,
+    });
+    
     fetch(UniData.requestsApi,{
         method: 'POST',
-        body: JSON.stringify({
-            name: title,
-            description: description,
-            extrainfo: "",
-            maxprice: maxPrice,
-            minprice: minPrice,
-            userid: userid,
-            categoryid: categoryIndex,
-        }),
-        headers: {'Content-Type': 'application/json'}
+        body: body,
     })
     .then((json) => {onResponse(); console.log(json)})
     .catch((error) => {

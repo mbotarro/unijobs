@@ -1,7 +1,7 @@
 "use strict";
 
 import React from 'react';
-import { StyleSheet, Text, TextInput, View, Image, Picker, KeyboardAvoidingView} from 'react-native';
+import { StyleSheet, Text, TextInput, View, Image, Picker } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import CheckBox from 'react-native-check-box';
 import { Header } from 'react-native-elements';
@@ -25,7 +25,7 @@ export default class AddSolicitationScreen extends React.Component {
         title: '',
 
         categories: {},
-        selectedCategoryId: 0,
+        selectedCategoryId: 1,
         
         description: '',
         minPrice: '',
@@ -50,137 +50,133 @@ export default class AddSolicitationScreen extends React.Component {
     };
 
     onAdd(){
-        tryAddRequest(this.state.userid,
-                      this.state.title.toLowerCase(), 
-                      this.state.categoryIndex, 
-                      this.state.description.toLowerCase(), 
-                      Number(this.state.minPrice), 
-                      Number(this.state.maxPrice),
+        if (this.state.title == '')
+            alert ('Título não pode ser vazio')
+        else if (this.state.description == '')
+            alert ('Descrição não pode ser vazia')
+        else if (this.state.minPrice == '')
+            alert('Preço mínimo é necessário')
+        else if (parseInt(this.state.minPrice) > parseInt(this.state.maxPrice))
+            alert('Preço mínimo deve ser menor que o máximo')
+        else
+            tryAddRequest(this.state.userid,
+                      this.state.title, 
+                      this.state.selectedCategoryId, 
+                      this.state.description, 
+                      parseInt(this.state.minPrice), 
+                      parseInt(this.state.maxPrice),
                       () => {
-                        this.setState({title: '', category: 'categoria', description: '', minPrice: '', maxPrice: '', 
-                                       checkedEmail: false, checkedTelefone: false});
-                        this.props.navigation.goBack();
+                          this.props.navigation.goBack();
                       }
-        );   
+            );
     };
 
     render() {
         const { navigate } = this.props.navigation;
 
-        if (this.state.isLoading) return null
-
-        const CategoryMenu = () => (
-                <Picker
-                    selectedValue={this.state.category}
-                    onValueChange={(itemValue, itemPosition) =>  this.setState({selectedCategoryId: itemValue})}
-                    style = {[styles.categoryBox, {marginTop: 25, overflow: 'hidden', height: 40, justifyContent: 'center', paddingVertical: 10}]}
-                >      
-                    { 
-                        this.state.categories.map((cat, index) => (
-                            <Picker.Item label={cat.name.replace('.', ' ')} value={index} key = {index} />
-                        ))
-                    }
-                </Picker>
-        );
-
-        const ContactOptionEmail = () => (
-            <CheckBox
-                style={{marginLeft: 4}}
-                onClick={() => this.setState({checkedEmail:!this.state.checkedEmail})}
-                isChecked={this.state.checkedEmail}
-                checkedImage={<Image source={require('../assets/icons/checked.png')}/>}
-                unCheckedImage={<Image source={require('../assets/icons/unchecked.png')}/>}
-                
-            />
-        );
-
-        const ContactOptionTelefone = () => (
-            <CheckBox
-                style={{marginLeft: 50}}
-                onClick={() => this.setState({checkedTelefone:!this.state.checkedTelefone})}
-                isChecked={this.state.checkedTelefone}
-                checkedImage={<Image source={require('../assets/icons/checked.png')}/>}
-                unCheckedImage={<Image source={require('../assets/icons/unchecked.png')}/>}
-                
-            />
-        );
-
         const AddButton = () => (
             <Button
                 text={'Adicionar'}
-                buttonStyle={[{ marginTop: 15, marginBottom: 15}, { paddingHorizontal: 18}]}
+                buttonStyle={[{ marginTop: 44, marginBottom: 15}, { paddingHorizontal: 18}]}
                 onPress={() => this.onAdd()}
-                //onPress={() => this.props.navigation.goBack()}
             />
         );
 
         return (
-            <KeyboardAvoidingView behavior='padding'>    
-                
+            <View style= {{flex: 1}}>
                 <Header 
                     backgroundColor={UniColors.main}
                     leftComponent={{ icon: 'navigate-before', color: '#FFFFFF', onPress: () => this.props.navigation.goBack() }}
                     centerComponent={{text: 'Adicionar Solicitação', style: styles.headerText}}
-                />           
-                               
-                <View style={styles.container}>
-                    
-                    <View style = {{marginTop: 25}}>
-                        {/*Title Box*/}
-                        {/* <Text> {this.state.title} </Text> */}
-                        <TextInput
-                            style={styles.titleInput} 
-                            multiline={true}
-                            placeholder={'Título'}
-                            onChangeText = {(title) => this.state.title = title}
-                        />
-                        {/* <Text> {this.state.categoryIndex} </Text> */}
-                        <CategoryMenu /> 
-                        {/*Description Box*/}
-                        {/* <Text> {this.state.description} </Text> */}
-                        <Text style={[styles.title, {marginTop: 25}]}> Descrição </Text>
-                        <TextInput
-                            style = {[styles.descriptionInput, {textAlignVertical: 'top'}, {marginTop: 5}]}
-                            multiline = {true}
-                            autoCorrect = {true}
-                            onChangeText={(description) => this.setState({description})}
-                        />
-                    </View>
+                />
+                <KeyboardAwareScrollView 
+                    contentContainerStyle={{ flex: 1 }}
+                    resetScrollToCoords={{ x: 0, y: 0 }}
+                    scrollEnabled={true}
+                >               
+                    <View style={styles.container}>
+                        
+                        <View style = {{marginTop: 36}}>
+                            {/*Title Box*/}
+                            <TextInput
+                                style={styles.titleInput} 
+                                multiline={false}
+                                placeholder={'Título'}
+                                onChangeText = {(title) => this.setState({title: title})}
+                            />
+                            <Picker
+                                selectedValue={this.state.selectedCategoryId}
+                                onValueChange={(itemValue, itemPosition) =>  {this.setState({selectedCategoryId: itemValue})}}
+                                style = {[styles.categoryBox, {marginTop: 30, overflow: 'hidden', height: 38, justifyContent: 'center', paddingVertical: 10}]}
+                                itemStyle={{fontSize: UniText.big, fontWeight: UniText.semibold, color: UniColors.dark}}
+                            >      
+                                {   
+                                    this.state.isLoading ?
+                                    null
+                                    :
+                                    this.state.categories.map((cat, index) => (
+                                        <Picker.Item key = {index} label={cat.name.replace('.', ' ')} value={cat.id} />
+                                    ))
+                                }
+                            </Picker>
+                            {/*Description Box*/}
+                            <Text style={[styles.title, {marginTop: 20}]}> Descrição </Text>
+                            <TextInput
+                                style = {[styles.descriptionInput, {marginTop: 5}]}
+                                multiline = {true}
+                                autoCorrect = {true}
+                                onChangeText={(description) => this.setState({description: description})}
+                            />
+                        </View>
 
-                    {/*Price Boxes*/}
-                    {/* <Text> {this.state.minPrice} </Text>
-                    <Text> {this.state.maxPrice} </Text> */}
-                    <View style = {{flexDirection: 'row', justifyContent: 'space-evenly'}}>
-                        <TextInput
-                            style = {[styles.priceInput, {marginTop: 25}]}
-                            placeholder = {'Preço Mínimo'}
-                            autoCorrect = {false}
-                            onChangeText = {(minPrice) => this.state.minPrice = minPrice}
-                        />
-                        <TextInput
-                            style = {[styles.priceInput, {marginTop: 25}]}
-                            placeholder = {'Preço Máximo'}
-                            autoCorrect = {false}
-                            onChangeText = {(maxPrice) => this.state.maxPrice = maxPrice}
-                        />
-                    </View>
-                    
-                    {/*Contact Options*/}
-                    {/* <Text> {(this.state.checkedEmail).toString()} </Text> */}
-                    {/* <Text> {(this.state.checkedTelefone).toString()} </Text> */}
-                    <Text style={[styles.title, {marginTop: 25}]}> Contato </Text>
-                    <View style = {[{flexDirection: 'row'}, {marginTop: 10}]}>           
-                        <ContactOptionEmail />
-                        <Text style={styles.contactLabel}> E-mail </Text>
-                        <ContactOptionTelefone />
-                        <Text style={styles.contactLabel}> Telefone </Text>
-                    </View>
+                        {/*Price Boxes*/}
+                        <View style = {{flexDirection: 'row', alignSelf: 'stretch', flexGrow: 1, marginTop: 25}}>
+                            <TextInput
+                                style = {[styles.priceInput]}
+                                placeholder = {'Preço Mínimo'}
+                                autoCorrect = {false}
+                                onChangeText = {(minPrice) => this.setState({minPrice: minPrice})}
+                                keyboardType= {'numeric'}
+                            />
+                            <View style = {{width: 100}} />
+                            <TextInput
+                                style = {[styles.priceInput]}
+                                placeholder = {'Preço Máximo'}
+                                autoCorrect = {false}
+                                onChangeText = {(maxPrice) => this.setState({maxPrice: maxPrice})}
+                                keyboardType= {'numeric'}
+                            />
+                        </View>
+                        
+                        {/*Contact Options*/}
+                        <Text style={[styles.title, {marginTop: 25}]}> Contato </Text>
+                        <View style = {[{flexDirection: 'row'}, {marginTop: 10}]}>           
+                            <CheckBox
+                                style={{marginLeft: 4}}
+                                onClick={() => this.setState({checkedEmail: !this.state.checkedEmail})}
+                                isChecked={this.state.checkedEmail}
+                                checkedImage={<Image source={require('../assets/icons/checked.png')}/>}
+                                unCheckedImage={<Image source={require('../assets/icons/unchecked.png')}/>}
+                                
+                            />
+                            <Text style={styles.contactLabel}> E-mail </Text>
+                            <CheckBox
+                                style={{marginLeft: 50}}
+                                onClick={() => this.setState({checkedTelefone: !this.state.checkedTelefone})}
+                                isChecked={this.state.checkedTelefone}
+                                checkedImage={<Image source={require('../assets/icons/checked.png')}/>}
+                                unCheckedImage={<Image source={require('../assets/icons/unchecked.png')}/>}
+                                
+                            />
+                            <Text style={styles.contactLabel}> Telefone </Text>
+                        </View>
 
-                    {/*Add Button*/}
-                    <AddButton />
-                
-                </View>
-            </KeyboardAvoidingView>
+                        {/*Add Button*/}
+                        <AddButton />
+                    
+                    </View>
+                </KeyboardAwareScrollView>
+            </View>
         );
     }
 }
@@ -196,7 +192,7 @@ const styles = StyleSheet.create({
     },
 
     headerText: {
-        fontSize: 20,
+        fontSize: 22,
         color: UniColors.white,
         fontWeight: UniText.semibold,
     },
@@ -208,6 +204,7 @@ const styles = StyleSheet.create({
     },
 
     contactLabel: {
+        marginLeft: 10,
         fontSize: 15,
         color: UniColors.dark,
     },
@@ -216,26 +213,27 @@ const styles = StyleSheet.create({
         borderBottomWidth: 0.2, 
         borderBottomColor: UniColors.dark_grey,
         fontSize: UniText.big,
-        fontWeight: UniText.semibold,
+        fontWeight: UniText.regular,
         color: UniColors.dark,
     },
 
     descriptionInput: {
-        borderColor:    UniColors.dark_grey,
+        borderColor:    '#F4F5F6',
         borderRadius:   17,
         backgroundColor: '#F4F5F6',
     
         height:     147,
-        padding:    10,
+        borderWidth: 10,
+        paddingHorizontal: 10,
 
         alignSelf: 'stretch',
 
         fontSize:   UniText.normal,
         color:      UniColors.dark,
-        textAlign:  'left',
+        textAlign:  'justify',
     },
 
-    infoInput: {
+    priceInput: {
         borderColor:    UniColors.dark_grey,
         borderRadius:   20,
         backgroundColor: '#F4F5F6',
@@ -244,10 +242,11 @@ const styles = StyleSheet.create({
         height:     40,
 
         alignSelf: 'stretch',
+        flex: 1,
     
         fontSize:   UniText.normal,
         color:      UniColors.dark,
-        textAlign:  'left',
+        textAlign:  'center',
     },
 
     categoryBox: {
