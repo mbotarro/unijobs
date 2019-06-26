@@ -30,12 +30,13 @@ const DrawerStack = createDrawerNavigator(
         navigationOptions: { header: null },
     },
     AddOffer: { screen: AddOfferScreen },
-    AddRequest: { screen: AddRequestScreen }
+    AddRequest: { screen: AddRequestScreen },
 },
 {
     initialRouteName: 'TabStack',
     contentComponent: SideDrawer,
 })
+
 
 const LoginStack = createStackNavigator({
     Login: { screen: LoginScreen },
@@ -46,7 +47,7 @@ const LoginStack = createStackNavigator({
 //Navigator of all the Screens of the App
 const AppNavigator = createStackNavigator({
     loginStack: { screen: LoginStack },
-    drawerStack: { screen: DrawerStack }
+    drawerStack: { screen: DrawerStack },
 },{
     //initialRouteName:'drawerStack',
     //Default config for all screens

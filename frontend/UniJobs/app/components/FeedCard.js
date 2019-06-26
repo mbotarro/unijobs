@@ -33,8 +33,7 @@ export default class FeedCard extends React.Component {
     }
 
     doMatch(offer, updateFeed, loggedUserid) {
-        offer.matched = true
-        makeMatch(offer.id, loggedUserid)
+        makeMatch(offer.id, loggedUserid, () => {offer.matched = true})
         updateFeed()
     }
 
