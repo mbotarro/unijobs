@@ -354,3 +354,38 @@ func TestGetOffersByID(t *testing.T) {
 		assert.Equal(t, off1, offs[5])
 	})
 }
+
+func TestInsertOfferMatch(t *testing.T) {
+	db := tools.GetTestDB()
+	es := tools.GetTestES()
+	defer tools.CleanDB(db)
+	defer tools.CleanES(es)
+
+	offerDAL := getOfferDAL(db, es)
+
+	u := tools.CreateFakeUser(t, db, "user", "user@user.com", "1234", "9999-1111")
+	c1 := tools.CreateFakeCategory(t, db, "Aula Matemática", "Matemática")
+
+	off1 := tools.CreateFakeOffer(t, db, "Aula de Cálculo I", "Oferecço aula particular", u.Userid, c1.ID, time.Now().Add(-10*time.Hour))
+
+	t.Run("Get match ok", func(t *testing.T) {
+		err := offerDAL.InsertOfferMatch(u.Userid, off1.ID)
+		assert.Equal(t, nil, err)
+		status, err := offerDAL.GetOfferMatchStatus(u.Userid, off1.ID)
+		assert.Equal(t, true, status)
+	})
+
+	t.Run("Offer does not exist", func(t *testing.T) {
+		err := offerDAL.InsertOfferMatch(u.Userid, "a")
+		assert.Error(t, err, "sql: no rows in result set")
+		status, err := offerDAL.GetOfferMatchStatus(u.Userid, "a")
+		assert.Equal(t, false, status)
+	})
+
+	t.Run("User does not exist", func(t *testing.T) {
+		err := offerDAL.InsertOfferMatch(-1, off1.ID)
+		assert.Error(t, err, "sql: no rows in result set")
+		status, err := offerDAL.GetOfferMatchStatus(-1, off1.ID)
+		assert.Equal(t, false, status)
+	})
+}

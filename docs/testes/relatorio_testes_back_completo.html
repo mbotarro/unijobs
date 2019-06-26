@@ -58,7 +58,7 @@
 				
 				<option value="file1">github.com/mbotarro/unijobs/backend/dal/common.go (91.7%)</option>
 				
-				<option value="file2">github.com/mbotarro/unijobs/backend/dal/offerDAL.go (82.5%)</option>
+				<option value="file2">github.com/mbotarro/unijobs/backend/dal/offerDAL.go (77.5%)</option>
 				
 				<option value="file3">github.com/mbotarro/unijobs/backend/dal/requestDAL.go (82.5%)</option>
 				
@@ -66,7 +66,7 @@
 				
 				<option value="file5">github.com/mbotarro/unijobs/backend/handlers/categoryHandler.go (16.7%)</option>
 				
-				<option value="file6">github.com/mbotarro/unijobs/backend/handlers/offerHandler.go (73.8%)</option>
+				<option value="file6">github.com/mbotarro/unijobs/backend/handlers/offerHandler.go (69.6%)</option>
 				
 				<option value="file7">github.com/mbotarro/unijobs/backend/handlers/requestHandler.go (73.8%)</option>
 				
@@ -210,6 +210,7 @@ func (dal *OfferDAL) GetLastOffers(before time.Time, size int) ([]models.Offer, 
 }
 
 // InsertOfferInDB Receives an offer as a parameter and inserts into the database
+// It will return the ID of the inserted offer.
 func (dal *OfferDAL) InsertOfferInDB(offer *models.Offer) (string, error) <span class="cov8" title="1">{
         // Generates an uuid for the offer
         offer.ID = uuid.New().String()
@@ -301,6 +302,73 @@ func (dal *OfferDAL) SearchInES(query string, categoryIDs ...int) ([]string, err
 
         <span class="cov8" title="1">return ids, nil</span>
 }
+
+// InsertOfferMatch receives the id of the user and the offer and inserts the match into the match table
+func (dal *OfferDAL) InsertOfferMatch(userid int, offerid string) error <span class="cov8" title="1">{
+        // Checks if the offer is valid
+        off := models.Offer{}
+        err := dal.db.Get(&amp;off,
+                `SELECT * FROM offer WHERE ID = $1
+                        LIMIT 1`, offerid)
+        if err != nil </span><span class="cov8" title="1">{
+                return err
+        }</span>
+        <span class="cov8" title="1">if off.ID == "" </span><span class="cov0" title="0">{
+                return fmt.Errorf("%s:%s", errors.OfferNotFound, err.Error())
+        }</span>
+
+        // Checks if the user is valid
+        <span class="cov8" title="1">user := models.User{}
+        err = dal.db.Get(&amp;user,
+                `SELECT * FROM USERDATA WHERE USERID = $1
+                        LIMIT 1`, userid)
+        if err != nil </span><span class="cov8" title="1">{
+                return err
+        }</span>
+        <span class="cov8" title="1">if user.Userid == 0 </span><span class="cov0" title="0">{
+                return fmt.Errorf("%s:%s", errors.UserNotFound, err.Error())
+        }</span>
+
+        <span class="cov8" title="1">insertQuery := `INSERT INTO match(userid, offerid) 
+                                                VALUES ($1, $2)`
+
+        // Gets the controller of the database and executes the query
+        _, err = dal.db.Exec(insertQuery, userid, offerid)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+// GetOfferMatchStatus receives the id of the user and the offer and inserts the match into the match table
+func (dal *OfferDAL) GetOfferMatchStatus(userid int, offerid string) (bool, error) <span class="cov8" title="1">{
+        selectQuery := `SELECT count(*) from match
+                                                WHERE userid = $1 
+                                                AND offerid = $2`
+
+        var count int
+        err := dal.db.Get(&amp;count, selectQuery, userid, offerid)
+        fmt.Printf("%d\n", count)
+        if err != nil </span><span class="cov0" title="0">{
+                return false, err
+        }</span>
+        <span class="cov8" title="1">if count == 0 </span><span class="cov8" title="1">{
+                return false, nil
+        }</span>
+        <span class="cov8" title="1">return true, nil</span>
+}
+
+// GetMatchedUsers return the ids from users that have matched the offer which id is passed in parameter
+func (dal *OfferDAL) GetMatchedUsers(offerid string) ([]int, error)<span class="cov0" title="0">{
+        ids := []int{}
+        err := dal.db.Select(&amp;ids, 
+                `SELECT userid FROM match WHERE offerid = $1`, offerid)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">return ids, nil</span>
+}
 </pre>
 		
 		<pre class="file" id="file3" style="display: none">package dal
@@ -349,6 +417,7 @@ func (dal *RequestDAL) GetLastRequests(before time.Time, size int) ([]models.Req
 }
 
 // InsertRequestInDB Receives a request as a parameter and inserts into the database
+// It returns the ID of the inserted request
 func (dal *RequestDAL) InsertRequestInDB(request *models.Request) (string, error) <span class="cov8" title="1">{
         // Generate an uuid for the request
         request.ID = uuid.New().String()
@@ -575,6 +644,7 @@ import (
         "strings"
         "time"
 
+        "github.com/gorilla/mux"
         "github.com/mbotarro/unijobs/backend/errors"
         "github.com/mbotarro/unijobs/backend/models"
         "github.com/mbotarro/unijobs/backend/tools"
@@ -598,6 +668,19 @@ func NewOfferHandler(offerCtrl *usecases.OfferController) *OfferHandler <span cl
 type OfferResponse struct {
         Offers []models.Offer `json:"offers"`
 
+        // Last is the timestamp of the last offer sent to the front. It can be used to get the offers created before it
+        Last int64 `json:"last"`
+}
+
+// HistoryOfferResponse contains the response sent to the frontend with information of the users that matched the offer
+type HistoryOfferResponse struct {
+        HistoryOffers []models.HistoryOffer `json:"offers"`
+        // Last is the timestamp of the last offer sent to the front. It can be used to get the offers created before it
+        Last int64 `json:"last"`
+}
+// MatchedOfferResponse contains the response sent to the frontend
+type MatchedOfferResponse struct {
+        MatchedOffers []models.MatchedOffer `json:"offers"`
         // Last is the timestamp of the last offer sent to the front. It can be used to get the offers created before it
         Last int64 `json:"last"`
 }
@@ -725,6 +808,78 @@ func (handler *OfferHandler) SearchOffers(w http.ResponseWriter, r *http.Request
         }
 
         tools.WriteStructOnHTTPResponse(offRes, w)</span>
+}
+
+// InsertOfferMatch inserts the match of a given user with an offer, it receives a json with the offer id
+func (handler *OfferHandler) InsertOfferMatch(w http.ResponseWriter, r *http.Request) <span class="cov8" title="1">{
+        vars := mux.Vars(r)
+        // Gets offer id
+        offerid := vars["offerid"]
+        // Gets user id
+        idStr := vars["userid"]
+
+        uid64, err := strconv.ParseInt(idStr, 10, 32)
+        if err != nil </span><span class="cov0" title="0">{
+                http.Error(w, fmt.Errorf("%s:%s", errors.QueryParameterError, err.Error()).Error(), http.StatusBadRequest)
+                return
+        }</span>
+        <span class="cov8" title="1">userid := int(uid64)
+
+        err = handler.offerController.InsertOfferMatch(userid, offerid)
+        if err != nil </span><span class="cov0" title="0">{
+                http.Error(w, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error()).Error(), http.StatusInternalServerError)
+                return
+        }</span>
+
+        <span class="cov8" title="1">w.WriteHeader(http.StatusCreated)</span>
+}
+
+// GetMatchedFeed sends the last offers created in the unijobs service
+func (handler *OfferHandler) GetMatchedFeed(w http.ResponseWriter, r *http.Request) <span class="cov8" title="1">{
+        vars := mux.Vars(r)
+
+        // Gets userid
+        idStr := vars["userid"]
+        uid64, err := strconv.ParseInt(idStr, 10, 32)
+        if err != nil </span><span class="cov0" title="0">{
+                http.Error(w, fmt.Errorf("%s:%s", errors.QueryParameterError, err.Error()).Error(), http.StatusBadRequest)
+                return
+        }</span>
+        <span class="cov8" title="1">userid := int(uid64)
+
+        sizeStr := r.FormValue("size")
+        size, err := strconv.ParseInt(sizeStr, 10, 32)
+        if err != nil </span><span class="cov0" title="0">{
+                http.Error(w, fmt.Errorf("%s:%s", errors.QueryParameterError, err.Error()).Error(), http.StatusBadRequest)
+                return
+        }</span>
+
+        <span class="cov8" title="1">before := time.Now()
+        beforeStr := r.FormValue("before")
+        if beforeStr != "" </span><span class="cov0" title="0">{
+                beforeInt, err := strconv.ParseInt(beforeStr, 10, 64)
+                if err != nil </span><span class="cov0" title="0">{
+                        http.Error(w, fmt.Errorf("%s:%s", errors.QueryParameterError, err.Error()).Error(), http.StatusBadRequest)
+                        return
+                }</span>
+
+                <span class="cov0" title="0">before = time.Unix(beforeInt, 0)</span>
+        }
+
+        <span class="cov8" title="1">offers, err := handler.offerController.GetMatchOffers(before, int(size), userid)
+        if err != nil </span><span class="cov0" title="0">{
+                http.Error(w, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error()).Error(), http.StatusInternalServerError)
+                return
+        }</span>
+        <span class="cov8" title="1">reqRes := MatchedOfferResponse{
+                MatchedOffers: offers,
+        }
+
+        if l := len(offers); l &gt; 0 </span><span class="cov8" title="1">{
+                reqRes.Last = offers[l-1].Timestamp.Unix()
+        }</span>
+
+        <span class="cov8" title="1">tools.WriteStructOnHTTPResponse(reqRes, w)</span>
 }
 </pre>
 		
@@ -972,6 +1127,17 @@ func NewRouter(ctrl *usecases.Controller) *mux.Router <span class="cov8" title="
         // Categories API
         route.r.HandleFunc("/categories", categoryHandler.getAllCategories).Methods("GET")
 
+        // Matches API
+        route.r.Path("/offers/users/{userid:[0-9]+}").
+                Queries("size", "{size:[0-9]+}", "before", "{before:[0-9]+}").
+                HandlerFunc(offerHandler.GetMatchedFeed).
+                Methods("GET")
+
+        route.r.Path("/offers/users/{userid:[0-9]+}").
+                Queries("size", "{size:[0-9]+}").
+                HandlerFunc(offerHandler.GetMatchedFeed).
+                Methods("GET")
+
         // Offers APIs
         // Get last offers
         route.r.Path("/offers").
@@ -1000,6 +1166,11 @@ func NewRouter(ctrl *usecases.Controller) *mux.Router <span class="cov8" title="
         // Send new offer
         route.r.Path("/offers").
                 HandlerFunc(offerHandler.InsertOffer).
+                Methods("POST")
+
+        // Inserts a new match of the offer-id and user-id given
+        route.r.Path("/offers/{offerid:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}}/users/{userid:[0-9]+}").
+                HandlerFunc(offerHandler.InsertOfferMatch).
                 Methods("POST")
 
         return &amp;route.r
@@ -1194,8 +1365,8 @@ func (handler *UserHandler) GetUserOffers(w http.ResponseWriter, r *http.Request
                 return
         }</span>
 
-        <span class="cov8" title="1">offerRes := OfferResponse{
-                Offers: offers,
+        <span class="cov8" title="1">offerRes := HistoryOfferResponse{
+                HistoryOffers: offers,
         }
 
         if l := len(offers); l &gt; 0 </span><span class="cov8" title="1">{

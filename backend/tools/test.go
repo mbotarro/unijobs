@@ -54,6 +54,7 @@ func CleanES(es *elastic.Client) {
 
 // CleanDB delete all rows from all DB tables
 func CleanDB(db *sqlx.DB) {
+	db.MustExec("DELETE FROM match")
 	db.MustExec("DELETE FROM request")
 	db.MustExec("DELETE FROM offer")
 	db.MustExec("DELETE FROM category")
@@ -138,4 +139,14 @@ func CreateFakeOfferWithTelAndMail(t *testing.T, db *sqlx.DB, name, description 
 
 	return off
 
+}
+
+// CreateFakeMatch creates a fake match in the db
+func CreateFakeMatch(t *testing.T, db *sqlx.DB, user models.User, offer models.Offer) {
+	insertQuery := `INSERT INTO match(userid, offerid) 
+						VALUES ($1, $2)`
+
+	// Gets the controller of the database and executes the query
+	_, err := db.Exec(insertQuery, user.Userid, offer.ID)
+	assert.Equal(t, nil, err)
 }

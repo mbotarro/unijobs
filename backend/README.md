@@ -82,7 +82,7 @@ You only need the create the test databases and run the migration once.
 If you need to restart the dbs, you can drop the current ones using
 ```
 make drop_test_db
-make es_delete_indices
+make es_drop_indices
 ```
 
 Then, to run the unit tests, use
