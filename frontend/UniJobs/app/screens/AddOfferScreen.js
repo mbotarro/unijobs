@@ -11,29 +11,44 @@ import Button from '../components/Button'
 import UniColors from '../constants/UniColors'
 import UniText from '../constants/UniColors'
 
+import { tryAddOffer } from '../actions/AddOfferRequestActions'
 
 export default class AddSolicitationScreen extends React.Component {
     static navigationOptions = { header: null };
 
     state = {
-        checkedemail:false,
-        checkedtelefone:false,
         title: '',
         category: 'categoria',
         categoryIndex: 0,
         description: '',
-        price: '',
+        minPrice: '',
+        maxPrice: '',
+        checkedEmail:false,
+        checkedTelefone:false,
         date: '',
         info: '',
     }
 
-    onAdd(navigate){
-        navigate('AddSolicitation');
-    }
+    onAdd(){
 
-    onBack(navigate){
-        navigate('AddSolicitation');
-    }
+        var dateObj = new Date(this.state.date).toISOString();
+
+        tryAddOffer(this.state.title.toLowerCase(), 
+                    this.state.categoryIndex, 
+                    this.state.description.toLowerCase(), 
+                    Number(this.state.minPrice), 
+                    Number(this.state.maxPrice),
+                    this.state.checkedEmail,
+                    this.state.checkedTelefone,
+                    dateObj,
+                    this.state.info.toLowerCase(),
+                    );
+ 
+        this.setState({title: '', category: 'categoria', description: '', minPrice: '', maxPrice: '', 
+                       checkedEmail: false, checkedTelefone: false, date: '', info: ''});
+        
+        this.props.navigation.goBack();
+    };
 
     render() {
         const { navigate } = this.props.navigation;
@@ -63,8 +78,8 @@ export default class AddSolicitationScreen extends React.Component {
         const ContactOptionEmail = () => (
             <CheckBox
                 style={{marginLeft: 4}}
-                onClick={() => this.setState({checkedemail:!this.state.checkedemail})}
-                isChecked={this.state.checkedemail}
+                onClick={() => this.setState({checkedEmail:!this.state.checkedEmail})}
+                isChecked={this.state.checkedEmail}
                 checkedImage={<Image source={require('../assets/icons/checked.png')}/>}
                 unCheckedImage={<Image source={require('../assets/icons/unchecked.png')}/>}
                 
@@ -74,8 +89,8 @@ export default class AddSolicitationScreen extends React.Component {
         const ContactOptionTelefone = () => (
             <CheckBox
                 style={{marginLeft: 50}}
-                onClick={() => this.setState({checkedtelefone:!this.state.checkedtelefone})}
-                isChecked={this.state.checkedtelefone}
+                onClick={() => this.setState({checkedTelefone:!this.state.checkedTelefone})}
+                isChecked={this.state.checkedTelefone}
                 checkedImage={<Image source={require('../assets/icons/checked.png')}/>}
                 unCheckedImage={<Image source={require('../assets/icons/unchecked.png')}/>}
                 
@@ -86,7 +101,7 @@ export default class AddSolicitationScreen extends React.Component {
             <Button
                 text={'Adicionar'}
                 buttonStyle={[{ marginTop: 15, marginBottom: 10}, { paddingHorizontal: 18}]}
-                onPress={() => this.onAdd(navigate)}
+                onPress={() => this.onAdd()}
             />
         );
 
@@ -94,7 +109,7 @@ export default class AddSolicitationScreen extends React.Component {
             <KeyboardAvoidingView behavior='padding'>
                 <Header 
                     backgroundColor={UniColors.main}
-                    leftComponent={{ icon: 'navigate-before', color: '#FFFFFF', onPress: () => this.onBack(navigate) }}
+                    leftComponent={{ icon: 'navigate-before', color: '#FFFFFF', onPress: () => this.props.navigation.goBack() }}
                     centerComponent={{text: 'Adicionar Oferta', style: styles.headerText}}
                 />  
 
@@ -117,12 +132,21 @@ export default class AddSolicitationScreen extends React.Component {
                             autoCorrect = {true}
                             onChangeText={(description) => this.setState({description})}
                         /> 
-                        {/*Price Box*/}
+                    </View>
+
+                    {/*Price Boxes*/}
+                    <View style = {{flexDirection: 'row', justifyContent: 'space-evenly'}}>
                         <TextInput
-                            style = {[styles.infoInput, {marginTop: 10}]}
-                            placeholder = {'Valor'}
+                            style = {[styles.infoInput, {marginTop: 25}]}
+                            placeholder = {'Preço Mínimo'}
                             autoCorrect = {false}
-                            onChangeText = {(price) => this.state.price = price}
+                            onChangeText = {(minPrice) => this.state.minPrice = minPrice}
+                        />
+                        <TextInput
+                            style = {[styles.infoInput, {marginTop: 25}]}
+                            placeholder = {'Preço Máximo'}
+                            autoCorrect = {false}
+                            onChangeText = {(maxPrice) => this.state.maxPrice = maxPrice}
                         />
                     </View>
                     
@@ -153,9 +177,7 @@ export default class AddSolicitationScreen extends React.Component {
                     </View>
 
                     {/*Add Button*/}
-                    <View>
-                        <AddButton />
-                    </View>
+                    <AddButton />
                     
                 </View>
             </KeyboardAvoidingView>
