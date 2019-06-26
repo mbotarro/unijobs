@@ -1,21 +1,23 @@
 "use strict";
 
 import React from 'react';
-import { StyleSheet, Text, TextInput, View, Image, ScrollView, TouchableHighlight, ActivityIndicator } from 'react-native';
+import { Platform, StyleSheet, Text, TextInput, View, Image, ScrollView, TouchableHighlight, ActivityIndicator } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { Dimensions } from "react-native";
+import { Dimensions,AsyncStorage } from "react-native";
 
 import { populateRequestMiniCards } from '../components/FeedMiniCards';
-import { loadRequests, loadCategories } from '../actions/FeedActions'
-import FeedRequestCard from '../components/FeedRequestCard'
+import { loadOffers, loadMyOffers, loadCategories } from '../actions/FeedActions'
+import FeedCard from '../components/FeedCard'
+import FloatActionButton from '../components/FloatActionButton'
 
 import UniStyles from '../constants/UniStyles'
 import UniColors from '../constants/UniColors'
 import UniText from '../constants/UniText'
+import UniData from '../constants/UniData'
 
 
 
-export default class FeedRequestScreen extends React.Component {
+export default class FeedOfferScreen extends React.Component {
     static navigationOptions = { title: 'Ofertas' };
     
     state = {
@@ -24,12 +26,12 @@ export default class FeedRequestScreen extends React.Component {
 
         searchBarText: '',
         
-        allFeedRequests: {},
-        myFeedRequests: {},
+        allFeedOffers: {},
+        myFeedOffers: {},
         categories: {},
 
-        isRequestCardOpen: false,
-        openRequest: null,
+        isOfferCardOpen: false,
+        openOffer: null,
     }
 
     textStrings = {
@@ -38,61 +40,76 @@ export default class FeedRequestScreen extends React.Component {
         allFeedHeader: 'Últimas Ofertas'
     }
 
+    isOffer = true
 
     async componentDidMount() {
-        // use for fetching data to show
-        loadCategories((categories) => {
-            var hash = {}
-            for (var i = 0; i < categories.length; i++)
-                hash[categories[i].ID] = categories[i];
-            this.setState({categories: hash})
+        try {
+            const userid = parseInt(await AsyncStorage.getItem(UniData.userid));
+            // use for fetching data to show
+            loadCategories((categories) => {
+                var hash = {}
+                for (var i = 0; i < categories.length; i++)
+                    hash[categories[i].id] = categories[i];
+                this.setState({categories: hash})
 
-            loadRequests((requests) => {
-                this.setState({allFeedRequests: requests, myFeedRequests: myFeedTestRequests});
-                this.setState({isLoading: false});
-            })
-        });
+                loadOffers((offers) => {
+                    this.setState({allFeedOffers: offers});
+                })
+                loadMyOffers(userid, (myOffers) => {
+                    this.setState({myFeedOffers: myOffers});
+                    this.setState({isLoading: false});
+                })
+            });
+        } catch (error) {
+        }
     }
 
     onMenuButtonPress(navigation) {
         navigation.openDrawer();
     }
 
-    onSearchBarChangeText(navigation, text) {
+    onSearchBarChangeText(navigate, text) {
         this.setState({searchBarText: text})
     }
 
-    onSearch (navigation) {
+    onSearch (navigate) {
         alert('TODO: Search');
     }
 
-    onMyFeedPress(self, navigation) {
+    onMyFeedPress(self, navigate) {
         // !! self here is because something is overriding 'this', and
         // I don't know why! (maybe the arrow function... :/)
         self.setState({isMyFeedOpen: !self.state.isMyFeedOpen})
     }
 
-    onMyFeedFilterPress(self, navigation) {
+    onMyFeedFilterPress(self, navigate) {
         alert('TODO: Filters');
     }
 
-    onAllFeedPress(self, navigation) {
+    onAllFeedPress(self, navigate) {
     }
 
-    onAllFeedFilterPress(self, navigation) {
+    onAllFeedFilterPress(self, navigate) {
         alert('TODO: Filters');
     }
 
+    onAddOfferPress(self, navigate) {
+        navigate('AddOffer')
+    }
+
+    onAddRequestPress(self, navigate) {
+        navigate('AddRequest')
+    }
 
     render() {
-        const navigation = this.props.navigation;
+        const { navigate } = this.props.navigation;
 
 
         // header
         const menuButton = (
             <TouchableHighlight
                 underlayColor={UniColors.main}
-                onPress={() => this.onMenuButtonPress(navigation)}
+                onPress={() => this.onMenuButtonPress(this.props.navigation)}
             >
                 <Image source={require('../assets/icons/line-menu.png')}  style={styles.menuButton} />
             </TouchableHighlight>
@@ -103,12 +120,12 @@ export default class FeedRequestScreen extends React.Component {
                 <TextInput
                     style={styles.searchBarText}
                     placeholder={this.textStrings.searchBarPlaceHolder}
-                    onChangeText={(text) => { this.onSearchBarChangeText(navigation, text) }}
-                    onSubmitEditing={(event) => this.onSearch(navigation)}
+                    onChangeText={(text) => { this.onSearchBarChangeText(navigate, text) }}
+                    onSubmitEditing={(event) => this.onSearch(navigate)}
                 />
                 <TouchableHighlight
                     underlayColor= {UniColors.transparent}
-                    onPress = {(event) => this.onSearch(navigation)}
+                    onPress = {(event) => this.onSearch(navigate)}
                 >
                     <Image
                         source={require('../assets/icons/search.png')}
@@ -132,7 +149,7 @@ export default class FeedRequestScreen extends React.Component {
             <View style = {styles.feedBar}>
                 <TouchableHighlight 
                     underlayColor = {UniColors.transparent}
-                    onPress = {() => onPress(this, navigation)}
+                    onPress = {() => onPress(this, navigate)}
                     style={{flexGrow: 1, alignSelf: 'stretch'}}
                 >
                     <View style={{flexDirection: 'row'}}>
@@ -160,7 +177,7 @@ export default class FeedRequestScreen extends React.Component {
                     showFilter ?
                         <TouchableHighlight
                             underlayColor = {UniColors.transparent}
-                            onPress = {() => onFilter(navigation)}
+                            onPress = {() => onFilter(navigate)}
                             style = {styles.feedBarRightIcon}
                         >
                             <Image
@@ -195,24 +212,25 @@ export default class FeedRequestScreen extends React.Component {
             <ActivityIndicator style={{ marginTop: 10 }} />
             :
             populateRequestMiniCards(
-                this.state.isMyFeedOpen ? this.state.myFeedRequests : this.state.allFeedRequests,
+                this.state.isMyFeedOpen ? this.state.myFeedOffers : this.state.allFeedOffers,
                 this.state.categories,
-                (request) => this.setState({isRequestCardOpen: true, openRequest: request})
+                (offer) => this.setState({isOfferCardOpen: true, openOffer: offer})
             );
 
         const openCard = 
-            this.state.isRequestCardOpen ?
+            this.state.isOfferCardOpen ?
                 <View style = {styles.openCard}>
                 {
                     this.state.isLoading ?
                     <ActivityIndicator style={{ marginTop: 10 }} />
                     :
-                    <FeedRequestCard
-                        request = {this.state.openRequest}
+                    <FeedCard
+                        offer = {this.state.openOffer}
                         categories = {this.state.categories}
                         onCreateOfferPress = {() => {}}
-                        onShowRequester = {() => {}}
-                        onQuit = {() => this.setState({isRequestCardOpen: false})}
+                        onShowOfferer = {() => {}}
+                        onQuit = {() => this.setState({isOfferCardOpen: false})}
+                        isOffer = {this.isOffer}
                     />
                 }
                 </View>
@@ -243,6 +261,10 @@ export default class FeedRequestScreen extends React.Component {
                     </ScrollView>
                 </View>
                 {openCard}
+                <FloatActionButton
+                    onAddOfferPress={() => this.onAddOfferPress(this, navigate)}
+                    onAddRequestPress={() => this.onAddRequestPress(this, navigate)}
+                />
             </KeyboardAwareScrollView>
         );
     }
@@ -257,11 +279,14 @@ const styles = StyleSheet.create({
 
     headerContainer: {
         zIndex:         1,
-        backgroundColor: UniColors.dark_grey,
     },
 
     feedContainer: {
-        backgroundColor: UniColors.dark_grey,
+        ...Platform.select({
+            android: {   
+                backgroundColor: '#dfdfdf',
+            }
+        }),
         paddingTop:      2,
         paddingBottom:   5,
         alignSelf:      'stretch',
@@ -315,10 +340,17 @@ const styles = StyleSheet.create({
         backgroundColor:UniColors.white,
         alignSelf:      'stretch', 
         
-        shadowOffset:   { width: 0, height: 2 },
-        shadowRadius :  2,
-        shadowColor:    UniColors.black,
-        shadowOpacity:  0.16,
+        ...Platform.select({
+            ios: {
+                shadowOffset:   { width: 0, height: 2 },
+                shadowRadius :  2,
+                shadowColor:    UniColors.black,
+                shadowOpacity:  0.16,
+            },
+            android: {   
+                elevation: 2,
+            },
+          }),
     },
 
     feedBarLeftIcon: {
@@ -351,104 +383,124 @@ const styles = StyleSheet.create({
     }
 });
 
-
-
-
-
-
-
-
 // TEST !!! (TODO: REMOVE)
-const myFeedTestRequests = [
+const myFeedTestOffers = [
     {
-        ID : 0,
-        Name : 'Titulo Oferta',
-        Description : 'Descrição bem grande o suficiente para usar todo o espaço disponível em preview limitado em espaço máximo e restrito!!!!!!!!!!!!!!!!!!!!!!!!!!',
-        ExtraInfo : '',
-        MinPrice : 'XXXXX',
-        MaxPrice: 'XXXXX',
-        Userid : 0,
-        Categoryid : 5,
+        id : 0,
+        name : 'Titulo Solicitação',
+        description : 'Descrição bem grande o suficiente para usar todo o espaço disponível em preview limitado em espaço máximo e restrito!!!!!!!!!!!!!!!!!!!!!!!!!!',
+        extrainfo : 'some extrasasijhdjfashdfiusjhfdjkasdhfajklsdfhakjdfhaskjdfhaskdjfhaskjdfhasjkdfhasdjkfh',
+        minprice : 'XXXXX',
+        maxprice: 'XXXXX',
+        expiration: '2020-06-20T03:00:13.250602Z',  //just for offer
+        userid : 0,
+        categoryid : 5,
+        telephone: '0000-0000',                     //just for offer   
+        email: 'user@user.com'                      //just for offer
     },
     {
-        ID : 1,
-        Name : 'Aula de Cálculo Numérico',
-        Description : 'Correção de exercícios e revisão teórica. Aulas em grupos de 3 a 4 pessoas',
-        ExtraInfo : '',
-        MinPrice : '50',
-        MaxPrice: '50',
-        Userid : 0,
-        Categoryid : 1,
+        id : 1,
+        name : 'Aula de Cálculo Numérico',
+        description : 'Correção de exercícios e revisão teórica. Aulas em grupos de 3 a 4 pessoas',
+        extrainfo : '',
+        minprice : '50',
+        maxprice: '50',
+        userid : 0,
+        categoryid : 1,
+        expiration: '2020-06-20T03:00:13.250602Z',
+        telephone: '0000-0000',   
+        email: 'user@user.com'
     },
     {
-        ID : 2,
-        Name : 'Aula de Piano',
-        Description : 'Teoria da música, leitura de partituras e exercícios de dedo. Aprenda suas músicas favoritas!',
-        ExtraInfo : '',
-        MinPrice : '100',
-        MaxPrice: '100',
-        Userid : 0,
-        Categoryid : 2,
+        id : 2,
+        name : 'Aula de Piano',
+        description : 'Teoria da música, leitura de partituras e exercícios de dedo. Aprenda suas músicas favoritas!',
+        extrainfo : '',
+        minprice : '100',
+        maxprice: '100',
+        userid : 0,
+        categoryid : 2,
+        expiration: '2020-06-20T03:00:13.250602Z',
+        telephone: '0000-0000',                 
+        email: 'user@user.com'  
     },
     {
-        ID : 3,
-        Name : 'Tradução Chinês - Português',
-        Description : 'Tradução em chinês tradicional ou simplificado. Preço por página em português.',
-        ExtraInfo : '',
-        MinPrice : '30',
-        MaxPrice: '30',
-        Userid : 0,
-        Categoryid : 3,
+        id : 3,
+        name : 'Tradução Chinês - Português',
+        description : 'Tradução em chinês tradicional ou simplificado. Preço por página em português.',
+        extrainfo : '',
+        minprice : '30',
+        maxprice: '30',
+        userid : 0,
+        categoryid : 3,
+        expiration: '2020-06-20T03:00:13.250602Z',
+        telephone: '0000-0000',   
+        email: 'user@user.com' 
     },
     {
-        ID : 4,
-        Name : 'Aula de Mandarim',
-        Description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
-        ExtraInfo : '',
-        MinPrice : '80',
-        MaxPrice: '80',
-        Userid : 0,
-        Categoryid : 2,
+        id : 4,
+        name : 'Aula de Mandarim',
+        description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
+        extrainfo : '',
+        minprice : '80',
+        maxprice: '80',
+        userid : 0,
+        categoryid : 2,
+        expiration: '2020-06-20T03:00:13.250602Z',
+        telephone: '0000-0000',
+        email: 'user@user.com'
     },
     {
-        ID : 4,
-        Name : 'Aula de Mandarim',
-        Description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
-        ExtraInfo : '',
-        MinPrice : '80',
-        MaxPrice: '80',
-        Userid : 0,
-        Categoryid : 12,
+        id : 4,
+        name : 'Aula de Mandarim',
+        description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
+        extrainfo : '',
+        minprice : '80',
+        maxprice: '80',
+        userid : 0,
+        categoryid : 12,
+        expiration: '2020-06-20T03:00:13.250602Z',
+        telephone: '0000-0000',  
+        email: 'user@user.com'
     },
     {
-        ID : 4,
-        Name : 'Aula de Mandarim',
-        Description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
-        ExtraInfo : '',
-        MinPrice : '80',
-        MaxPrice: '80',
-        Userid : 0,
-        Categoryid : 8,
+        id : 4,
+        name : 'Aula de Mandarim',
+        description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
+        extrainfo : '',
+        minprice : '80',
+        maxprice: '80',
+        userid : 0,
+        categoryid : 8,
+        expiration: '2020-06-20T03:00:13.250602Z',
+        telephone: '0000-0000',
+        email: 'user@user.com',
     },
     {
-        ID : 4,
-        Name : 'Aula de Mandarim',
-        Description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
-        ExtraInfo : '',
-        MinPrice : '80',
-        MaxPrice: '80',
-        Userid : 0,
-        Categoryid : 9,
+        id : 4,
+        name : 'Aula de Mandarim',
+        description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
+        extrainfo : '',
+        minprice : '80',
+        maxprice: '80',
+        userid : 0,
+        categoryid : 9,
+        expiration: '2020-06-20T03:00:13.250602Z',
+        telephone: '0000-0000',
+        email: 'user@user.com',
     },
     {
-        ID : 4,
-        Name : 'Aula de Mandarim',
-        Description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
-        ExtraInfo : '',
-        MinPrice : '80',
-        MaxPrice: '80',
-        Userid : 0,
-        Categoryid : 7,
+        id : 4,
+        name : 'Aula de Mandarim',
+        description : 'Aula em grupos de 3. Aulas em mandarim (professor não fala português)',
+        extrainfo : '',
+        minprice : '80',
+        maxprice: '80',
+        userid : 0,
+        categoryid : 7,
+        expiration: '2020-06-20T03:00:13.250602Z',
+        telephone: '0000-0000',
+        email: 'user@user.com',
     },
 ]
 

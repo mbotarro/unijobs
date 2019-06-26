@@ -1,6 +1,3 @@
-setup:
-	go get -u github.com/golang/dep/cmd/dep
-
 start:
 	docker-compose --project-name unijobs up -d
 
@@ -36,3 +33,15 @@ test: migration_test
 
 test_html:
 	go test ./... -p 1 -coverprofile=cover.out && go tool cover -html=cover.out -o ../docs/testes/relatorio_testes_back_completo.html
+
+es_create_indices:
+	curl -X PUT localhost:9200/request -H "Content-Type:application/json" -d @elasticsearch/request.json
+	curl -X PUT localhost:9200/offer -H "Content-Type:application/json" -d @elasticsearch/offer.json
+
+es_insert_examples:
+	curl -s -H "Content-Type: application/x-ndjson" -XPOST localhost:9200/_bulk --data-binary "@elasticsearch/requests_examples.json";
+	curl -s -H "Content-Type: application/x-ndjson" -XPOST localhost:9200/_bulk --data-binary "@elasticsearch/offers_examples.json";
+
+es_drop_indices:
+	curl -X DELETE localhost:9200/request
+	curl -X DELETE localhost:9200/offer

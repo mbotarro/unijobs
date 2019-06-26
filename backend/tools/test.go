@@ -1,13 +1,18 @@
 package tools
 
 import (
+	"context"
 	"log"
 	"testing"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
+
+	// Pq is the postgres interface library
 	_ "github.com/lib/pq"
 	"github.com/mbotarro/unijobs/backend/models"
+	"github.com/olivere/elastic/v7"
 	"gotest.tools/assert"
 )
 
@@ -24,8 +29,32 @@ func GetTestDB() *sqlx.DB {
 	return db
 }
 
+// GetTestES returns a connection to a ES used for test
+func GetTestES() *elastic.Client {
+	es, err := elastic.NewClient(
+		elastic.SetURL("http://localhost:9200"),
+		elastic.SetSniff(false))
+	if err != nil {
+		log.Panicf("Can't connect to ES %s", err.Error())
+	}
+
+	return es
+}
+
+// CleanES deletes all documents stored in ES
+func CleanES(es *elastic.Client) {
+	// Delete in all documents in elasticSearch
+	query := elastic.NewMatchAllQuery()
+	es.DeleteByQuery().
+		Index("request,offer").
+		Query(query).
+		Refresh("true").
+		Do(context.Background())
+}
+
 // CleanDB delete all rows from all DB tables
 func CleanDB(db *sqlx.DB) {
+	db.MustExec("DELETE FROM match")
 	db.MustExec("DELETE FROM request")
 	db.MustExec("DELETE FROM offer")
 	db.MustExec("DELETE FROM category")
@@ -39,9 +68,14 @@ const (
 	getUser        = `SELECT * FROM userdata WHERE email = $1`
 	insertCategory = `INSERT INTO category (name, description) VALUES ($1, $2)`
 	getCategory    = `SELECT * FROM category WHERE name = $1`
-	insertRequest  = `INSERT INTO request (name, description, extrainfo, minprice, maxprice, userid, categoryid, timestamp) 
-						VALUES ($1, $2, '', $3, $4, $5, $6, $7)`
-	getRequest = `SELECT * FROM request WHERE (name, description, userid, categoryid) = ($1, $2, $3, $4)`
+	insertRequest  = `INSERT INTO request (id, name, description, extrainfo, minprice, maxprice, userid, categoryid, timestamp) 
+						VALUES ($1, $2, $3, '', $4, $5, $6, $7, $8)`
+
+	getRequest = `SELECT * FROM request WHERE id = $1`
+
+	insertOffer = `INSERT INTO offer (id, name, description, extrainfo, minprice, maxprice, expiration, userid, categoryid, timestamp, telephone, email) 
+						VALUES ($1, $2, $3, '', $4, $5, $6, $7, $8, $9, $10, $11)`
+	getOffer = `SELECT * FROM offer WHERE id = $1`
 )
 
 // CreateFakeUser inserts a fake user in the db
@@ -77,12 +111,42 @@ func CreateFakeCategory(t *testing.T, db *sqlx.DB, name, description string) mod
 
 // CreateFakeRequest creates a fake request in the db
 func CreateFakeRequest(t *testing.T, db *sqlx.DB, name, description string, user, category int, timestamp time.Time) models.Request {
-	db.MustExec(insertRequest, name, description, 20, 30, user, category, timestamp.UTC())
+	id := uuid.New().String()
+	db.MustExec(insertRequest, id, name, description, 20, 30, user, category, timestamp.UTC())
 
 	r := models.Request{}
-	err := db.Get(&r, getRequest, name, description, user, category)
+	err := db.Get(&r, getRequest, id)
 	assert.Equal(t, nil, err)
 
 	return r
+}
 
+// CreateFakeOffer creates a fake request in the db
+func CreateFakeOffer(t *testing.T, db *sqlx.DB, name, description string, user, category int, timestamp time.Time) models.Offer {
+	return CreateFakeOfferWithTelAndMail(t, db, name, description, user, category, timestamp, "(34)9999-9999", "user@teste.com")
+}
+
+// CreateFakeOfferWithTelAndMail creates a fake offer with a specified email and telephone
+func CreateFakeOfferWithTelAndMail(t *testing.T, db *sqlx.DB, name, description string, user,
+	category int, timestamp time.Time, tel, email string) models.Offer {
+	id := uuid.New().String()
+
+	db.MustExec(insertOffer, id, name, description, 20, 30, time.Now().Add(8760*time.Hour).UTC(), user, category, timestamp.UTC(), tel, email)
+
+	off := models.Offer{}
+	err := db.Get(&off, getOffer, id)
+	assert.Equal(t, nil, err)
+
+	return off
+
+}
+
+// CreateFakeMatch creates a fake match in the db
+func CreateFakeMatch(t *testing.T, db *sqlx.DB, user models.User, offer models.Offer) {
+	insertQuery := `INSERT INTO match(userid, offerid) 
+						VALUES ($1, $2)`
+
+	// Gets the controller of the database and executes the query
+	_, err := db.Exec(insertQuery, user.Userid, offer.ID)
+	assert.Equal(t, nil, err)
 }

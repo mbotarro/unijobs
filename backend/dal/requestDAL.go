@@ -1,21 +1,30 @@
 package dal
 
 import (
+	"context"
+	"fmt"
 	"time"
 
+	"github.com/mbotarro/unijobs/backend/tools"
+
+	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
+	"github.com/mbotarro/unijobs/backend/errors"
 	"github.com/mbotarro/unijobs/backend/models"
+	"github.com/olivere/elastic/v7"
 )
 
 // RequestDAL interacts with the DB to perform User related queries
 type RequestDAL struct {
 	db *sqlx.DB
+	es *elastic.Client
 }
 
 // NewRequestDAL returns a new RequestDAL
-func NewRequestDAL(db *sqlx.DB) *RequestDAL {
+func NewRequestDAL(db *sqlx.DB, es *elastic.Client) *RequestDAL {
 	return &RequestDAL{
 		db: db,
+		es: es,
 	}
 }
 
@@ -34,18 +43,96 @@ func (dal *RequestDAL) GetLastRequests(before time.Time, size int) ([]models.Req
 	return reqs, nil
 }
 
-// InsertRequest Receives a request as a parameter and inserts into the database
-func (dal *RequestDAL) InsertRequest(request models.Request) error {
-	insertQuery := `INSERT INTO request (name, description, extrainfo, minprice, maxprice, userid, categoryid, timestamp) 
-						VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`
+// InsertRequestInDB Receives a request as a parameter and inserts into the database
+// It returns the ID of the inserted request
+func (dal *RequestDAL) InsertRequestInDB(request *models.Request) (string, error) {
+	// Generate an uuid for the request
+	request.ID = uuid.New().String()
+
+	insertQuery := `INSERT INTO request (id, name, description, extrainfo, minprice, maxprice, userid, categoryid, timestamp) 
+						VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`
 
 	// Gets the controller of the database and executes the query
-	_, err := dal.db.Exec(insertQuery, request.Name, request.Description, request.ExtraInfo, request.MinPrice, request.MaxPrice, request.Userid, request.Categoryid, request.Timestamp)
+	_, err := dal.db.Exec(insertQuery, request.ID, request.Name, request.Description, request.ExtraInfo,
+		request.MinPrice, request.MaxPrice, request.Userid, request.Categoryid, request.Timestamp)
 
 	// Checks if any error happened during the query execution
 	if err != nil {
-		return err
+		return "", err
+	}
+
+	return request.ID, nil
+}
+
+// GetRequestsByID fetch from postgreSQL the requests whose ids are passed in parameter
+func (dal *RequestDAL) GetRequestsByID(ids []string) ([]models.Request, error) {
+	reqs := []models.Request{}
+	query, args, err := sqlx.In(`SELECT * FROM request WHERE id IN (?) ORDER BY timestamp DESC`, ids)
+	if err != nil {
+		return nil, err
+	}
+
+	// Transform (?, ?, ...) in postgres specific ($1, $2, $3)
+	query = dal.db.Rebind(query)
+
+	rows, err := dal.db.Queryx(query, args...)
+	if err != nil {
+		return nil, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error())
+	}
+
+	// Transform the fecthed rows into request struct
+	for rows.Next() {
+		var r models.Request
+		err = rows.StructScan(&r)
+		reqs = append(reqs, r)
+	}
+
+	return reqs, nil
+}
+
+// InsertRequestInES inserts a Request in ES
+func (dal *RequestDAL) InsertRequestInES(request models.Request) error {
+	rES := models.RequestES{
+		ID:          request.ID,
+		Name:        request.Name,
+		Description: request.Description,
+		Category:    request.Categoryid,
+		Timestamp:   request.Timestamp.Unix(),
+	}
+
+	_, err := dal.es.Index().
+		Index("request").
+		Id(rES.ID).
+		BodyJson(rES).
+		Refresh("true").
+		Do(context.Background())
+	if err != nil {
+		return fmt.Errorf("%s:%s", errors.ESInsertError, err.Error())
 	}
 
 	return nil
+}
+
+// SearchInES searches for Requests in ES given a query.
+// If one or more category ID is informed, the results are filtered to only contain requests beloging to them.
+// A slice with the IDs of the matched requests are returned
+func (dal *RequestDAL) SearchInES(query string, categoryIDs ...int) ([]string, error) {
+	searchResult, err := searchDocumentInES(dal.es, "request", query, categoryIDs...)
+	if err != nil {
+		return nil, err
+	}
+
+	// Get the matched Requests
+	reqs, err := tools.GetRequestsFromSearchResult(searchResult)
+	if err != nil {
+		return nil, err
+	}
+
+	// Get the UUIDs of the matched requests
+	ids := make([]string, 0, len(reqs))
+	for _, req := range reqs {
+		ids = append(ids, req.ID)
+	}
+
+	return ids, nil
 }

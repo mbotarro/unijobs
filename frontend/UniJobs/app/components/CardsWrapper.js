@@ -1,23 +1,21 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from 'react-native';
 
-import UniStyles from '../constants/UniStyles'
-import UniData from '../constants/UniData'
 import UniText from '../constants/UniText'
-import Button from '../components/Button'
 
 
 export default class CardsWrapper extends React.Component {
 
     render() {
-        const { request, categories, ButtonWrapper, Cards, onQuit } = this.props
+        //request is used for request and offers
+        const { request, categories, ButtonWrapper, Cards, onQuit, isOffer } = this.props
+        
+        var price = 'R$' + request.minprice;
+        if (request.maxprice > request.minprice)
+            price += ' - ' + request.maxprice;
 
-        var price = 'R$' + request.MinPrice;
-        if (request.MaxPrice > request.MinPrice)
-            price += ' - ' + request.MaxPrice;
-
-        const category = categories[request.Categoryid];
-        const categoryName = category ? category.Name.replace('.', ' de ') : 'UNDEFINED';
+        const category = categories[request.categoryid];
+        const categoryName = category ? category.name.replace('.', ' de ') : 'UNDEFINED';
 
         const Images = (name) => {
             switch (name) {
@@ -41,7 +39,7 @@ export default class CardsWrapper extends React.Component {
                     <View style={{alignSelf: 'center', justifyContent: 'flex-start'}}>
                         <QuitButton/>
                     </View>
-                    <Text style={textStyles.textTitle}>{request.Name}</Text>
+                    <Text style={textStyles.textTitle}>{request.name}</Text>
                     <View style={{justifyContent: 'flex-end', width: iconStyles.exitIcon.width, height: iconStyles.exitIcon.height,
                         marginRight: iconStyles.exitIcon.marginLeft, alignSelf: 'center'}}
                     />
@@ -49,22 +47,53 @@ export default class CardsWrapper extends React.Component {
             )
         }
 
-        const RequestDescription = () => {
-            return(
-                <View style={{flexDirection: 'row', width: window.width, justifyContent: 'space-between', marginTop: -25}}>
-                    <View style={[containerStyles.photoPriceContainer]}>
-                        <Image
-                            source={Images('profile')}
-                            style={[iconStyles.profileImage]}
-                        />
-                        <View style={{flex: 1, justifyContent: 'center', flexDirection: 'column'}}>
-                            <Text style={[textStyles.categoryText, {marginVertical: 5}]}>{categoryName}</Text>
-                            <Text style={[textStyles.categoryText]}>{price}</Text>
+        OfferInfo = () => {return(null)}
+        if(isOffer) {
+            //experition format :   2020-06-20T03:00:13.250602Z , output format : DD / MM / AAAA às 19hrs
+            var date = request.expiration.substring(8,10) + ' / ' + request.expiration.substring(5,7) + ' / ' + request.expiration.substring(0,4)+ '  às   '+ request.expiration.substring(11,13)+ ' h.';
+            OfferInfo = () => {
+                return (
+                    <View style={{flexDirection: 'column', marginLeft: 15, marginRight: 10, marginBottom: 15}}>
+                        <View style={{flexDirection: 'row', marginBottom: 5}}>
+                            <Text style={[textStyles.requestInfoText, {color: '#00A5F2'}]}>
+                                Disponível até:
+                            </Text>
+                            <Text style={{marginLeft: 25, fontSize: UniText.small}}>
+                                {date}
+                            </Text>
+                        </View>
+                        <View style={{flexDirection: 'column'}}>
+                            <Text  style={[textStyles.requestInfoText, {color: '#00A5F2'}]}>
+                                Informações Adicionais
+                            </Text>
+                            <Text numberOfLines={1} style={{fontSize: UniText.small}}>
+                                {request.extrainfo}
+                            </Text>
                         </View>
                     </View>
-                    <Text style={[textStyles.mainDescText]}>
-                        {(request.Description.length > 290) ? (((request.Description).substring(0,290-3)) + '...') : request.Description}
-                    </Text>
+                )
+            }
+        }
+
+        const CardDescription = () => {
+            return(
+                <View style={{flexDirection: 'column'}}>
+                    <View style={{flexDirection: 'row', width: window.width, justifyContent: 'space-between', marginTop: -25}}>
+                        <View style={[containerStyles.photoPriceContainer]}>
+                            <Image
+                                source={Images('profile')}
+                                style={[iconStyles.profileImage]}
+                            />
+                            <View style={{flex: 1, justifyContent: 'center', flexDirection: 'column'}}>
+                                <Text style={[textStyles.categoryText, {marginVertical: 5}]}>{categoryName}</Text>
+                                <Text style={[textStyles.categoryText]}>{price}</Text>
+                            </View>
+                        </View>
+                        <Text style={[textStyles.mainDescText]}>
+                            {(request.description.length > 290) ? (((request.description).substring(0,290-3)) + '...') : request.description}
+                        </Text>
+                    </View>
+                    <OfferInfo/>
                 </View>
             )
         }
@@ -75,7 +104,7 @@ export default class CardsWrapper extends React.Component {
                 <ScrollView scrollEnabled={true} showsVerticalScrollIndicator={false}>
                     <View style={[containerStyles.whiteContainer]}>
                         <PageHeader/>
-                        <RequestDescription/>
+                        <CardDescription/>
                         <Cards/>
                         <ButtonWrapper/>
                     </View>
@@ -84,6 +113,8 @@ export default class CardsWrapper extends React.Component {
         )
     }
 }
+
+
 
 
 const containerStyles = StyleSheet.create({
@@ -153,5 +184,8 @@ const textStyles = StyleSheet.create({
         color: '#00A5F2',
         textAlign: 'center',
         marginBottom: 15,
+    },
+    requestInfoText: {
+        fontSize: UniText.small,
     }
 })

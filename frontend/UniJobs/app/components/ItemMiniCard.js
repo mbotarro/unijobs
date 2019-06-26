@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     },
 
     imageContainer: {
-        marginLeft:     15,
+        marginLeft:     22,
         alignSelf:      'center',
     },
 
@@ -83,17 +83,17 @@ const styles = StyleSheet.create({
     },
 
     titleText: {
-        height:     17,
+        height:     20,
         
-        fontSize:   UniText.small,
+        fontSize:   UniText.big,
         color:      UniColors.main,
         textAlign:  'left',
-        fontWeight: UniText.semibold,
+        fontWeight: UniText.regular,
     },
 
     contentText: {
-        marginTop:  5,
-        height:     51,
+        marginTop:  8,
+        height:     38,
 
         fontSize:   UniText.small,
         color:      UniColors.dark_grey,
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     },
 
     bottomTextContainer: {
-        marginTop:      3,
+        marginTop:      4,
 
         flexDirection:  'row',
         alignSelf:      'stretch',

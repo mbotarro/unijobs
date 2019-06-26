@@ -5,15 +5,15 @@ import UniData from '../constants/UniData'
 // last: hash for next page of requests
 
 // * request:
-// ID
-// Name
-// Description
-// ExtraInfo
-// MaxPrice
-// MinPrice
-// Userid
-// Categoryid
-// Timestamp
+// id
+// name
+// description
+// extrainfo
+// maxprice
+// minprice
+// userid
+// categoryid
+// timestamp
 async function loadRequests (onResponse) {
     fetch(UniData.allRequestsApi(10), { method: 'GET' })
     .then((response) => response.json())
@@ -29,7 +29,27 @@ async function loadMyRequests (id, onResponse) {
     .then((response) => response.json())
     .then((response) => onResponse(response.requests))
     .catch((error) => {
-        console.log("Load All Requests Error!");
+        console.log("Load User Requests Error!");
+        alert(error.message);
+    });
+};
+
+async function loadOffers (onResponse) {
+    fetch(UniData.allOffersApi(10), { method: 'GET' })
+    .then((response) => response.json())
+    .then((response) => onResponse(response.offers))
+    .catch((error) => {
+        console.log("Load All Offers Error!");
+        alert(error.message);
+    });
+};
+
+async function loadMyOffers (id, onResponse) {
+    fetch(UniData.userOffersApi(id, 10), { method: 'GET' })
+    .then((response) => response.json())
+    .then((response) => onResponse(response.offers))
+    .catch((error) => {
+        console.log("Load User Offers Error!");
         alert(error.message);
     });
 };
@@ -39,13 +59,23 @@ async function loadCategories (onResponse) {
     .then((response) => response.json())
     .then((response) => {
         for (var i = 0; i < response.length; i++)
-            response[i].image = getCategoryImage(response[i].ID)
+            response[i].image = getCategoryImage(response[i].id)
         onResponse(response)
     })
     .catch((error) => {
         console.log(error.message);
         alert(error.message);
     });
+}
+
+async function loadUserInfo(id, onResponse) {
+    fetch(UniData.userDataApi(id), {method: 'GET'})
+    .then((response) => response.json())
+    .then((response) => onResponse(response))
+    .catch((error) => {
+        console.log("Error while getting user info");
+        alert(error.message)
+    })
 }
 
 
@@ -61,4 +91,4 @@ function getCategoryImage(id) {
 };
 
 
-module.exports = { loadRequests, loadCategories, loadMyRequests };
+module.exports = { loadRequests,loadOffers, loadCategories, loadMyRequests, loadMyOffers, loadUserInfo };

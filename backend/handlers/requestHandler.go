@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/mbotarro/unijobs/backend/models"
@@ -39,9 +40,9 @@ type RequestResponse struct {
 type RequestInsertion struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
-	ExtraInfo   string `json:"extraInfo"`
-	MaxPrice    int    `json:"maxPrice"`
-	MinPrice    int    `json:"minPrice"`
+	ExtraInfo   string `json:"extrainfo"`
+	MaxPrice    int    `json:"maxprice"`
+	MinPrice    int    `json:"minprice"`
 	Userid      int    `json:"userid"`
 	Categoryid  int    `json:"categoryid"`
 }
@@ -112,10 +113,47 @@ func (handler *RequestHandler) InsertRequest(w http.ResponseWriter, r *http.Requ
 	req.Categoryid = reqInserted.Categoryid
 	req.Timestamp = time.Now()
 
-	err = handler.requestController.InsertRequest(req)
+	_, err = handler.requestController.InsertRequest(req)
 	if err != nil {
 		http.Error(w, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error()).Error(), http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusCreated)
+}
+
+// SearchRequests searches for Requests based on a query sent by the user
+// The results can be filtered by one or more by categories ids
+func (handler *RequestHandler) SearchRequests(w http.ResponseWriter, r *http.Request) {
+	// Query
+	query := r.FormValue("q")
+
+	// Categories ID. The frontend sends them separed by , . We should split them
+	catStr := r.FormValue("cat")
+
+	// We should convert categories ID to int
+	categoryIDs := make([]int, 0, len(catStr))
+
+	if catStr != "" { // If the user wants to filter the results by category
+		for _, cat := range strings.Split(catStr, ",") {
+			id, err := strconv.ParseInt(cat, 10, 32)
+			if err != nil {
+				http.Error(w, fmt.Errorf("%s:%s", errors.QueryParameterError, err.Error()).Error(), http.StatusBadRequest)
+				return
+			}
+
+			categoryIDs = append(categoryIDs, int(id))
+		}
+	}
+
+	reqs, err := handler.requestController.SearchRequests(query, categoryIDs...)
+	if err != nil {
+		http.Error(w, fmt.Errorf("%s:%s", errors.DBQueryError, err.Error()).Error(), http.StatusInternalServerError)
+		return
+	}
+
+	reqRes := RequestResponse{
+		Requests: reqs,
+	}
+
+	tools.WriteStructOnHTTPResponse(reqRes, w)
 }
