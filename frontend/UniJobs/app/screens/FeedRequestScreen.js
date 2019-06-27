@@ -48,6 +48,9 @@ export default class FeedRequestScreen extends React.Component {
 
     isOffer = false
 
+    // =================================================================
+    // data handling
+    // =================================================================
     async componentDidMount() {
         try {
             const userid = parseInt(await AsyncStorage.getItem(UniData.userid));
@@ -60,12 +63,26 @@ export default class FeedRequestScreen extends React.Component {
 
                 loadRequests((requests) => {
                     this.setState({allFeedRequests: requests, isLoading: false});
+                    
+                    this.props.navigation.addListener('willFocus', (payload) => this.refresh());
                 })
             });
         } catch (error) {
         }
     }
+    
+    refresh() {
+        this.setState({isLoading: true})
 
+        loadRequests((requests) => {
+            this.setState({allFeedRequests: requests, isLoading: false});
+        })
+    }
+
+    
+    // =================================================================
+    // buttons actions
+    // =================================================================
     onMenuButtonPress(navigation) {
         navigation.openDrawer();
     }

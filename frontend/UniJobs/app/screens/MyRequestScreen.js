@@ -27,6 +27,8 @@ export default class MinhasSolicitacoesScreen extends React.Component {
         
         isRequestCardOpen: false,
         openRequest: null,
+
+        userid: '',
     }
 
     textStrings = {
@@ -37,6 +39,7 @@ export default class MinhasSolicitacoesScreen extends React.Component {
     async componentDidMount() {
         try {
             const userid = parseInt(await AsyncStorage.getItem(UniData.userid));
+            this.setState({userid: userid})
 
             // use for fetching data to show
             loadCategories((categories) => {
@@ -46,14 +49,20 @@ export default class MinhasSolicitacoesScreen extends React.Component {
                 this.setState({categories: hash})
 
                 loadMyRequests(userid, (requests) => {
-                    this.setState({myRequests: requests});
-                    this.setState({isLoading: false});
+                    this.setState({myRequests: requests, isLoading: false})
+                    this.props.navigation.addListener('willFocus', (payload) => this.refresh())
                 })
             });
         } catch (error) {
         }
     }
 
+    refresh() {
+        this.setState({isLoading: true})
+        
+        loadMyRequests(this.state.userid,
+            (requests) => this.setState({myRequests: requests, isLoading: false}))
+    }
     
     onBackButtonPress(navigation) {
         navigation.goBack();

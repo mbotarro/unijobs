@@ -29,6 +29,8 @@ export default class MinhasOfertasScreen extends React.Component {
         
         isOfferCardOpen: false,
         openOffer: null,
+
+        userid: '',
     }
 
     textStrings = {
@@ -39,6 +41,7 @@ export default class MinhasOfertasScreen extends React.Component {
     async componentDidMount() {
         try {
             const userid = parseInt(await AsyncStorage.getItem(UniData.userid));
+            this.setState({userid: userid})
 
             // use for fetching data to show
             loadCategories((categories) => {
@@ -48,14 +51,21 @@ export default class MinhasOfertasScreen extends React.Component {
                 this.setState({categories: hash})
 
                 loadMyOffers(userid, (offers) => {
-                    this.setState({myOffers: offers});
-                    this.setState({isLoading: false});
+                    this.setState({myOffers: offers, isLoading: false});
+                    
+                    this.props.navigation.addListener('willFocus', (payload) => this.refresh())
                 })
             });
         } catch (error) {
         }
     }
 
+    refresh() {
+        this.setState({isLoading: true})
+        
+        loadMyOffers(this.state.userid,
+            (offers) => this.setState({myOffers: offers, isLoading: false}))
+    }
     
     onBackButtonPress(navigation) {
         navigation.goBack();

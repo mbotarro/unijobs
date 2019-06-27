@@ -49,6 +49,9 @@ export default class FeedOfferScreen extends React.Component {
 
     isOffer = true
 
+    // =================================================================
+    // data handling
+    // =================================================================
     async componentDidMount() {
         try {
             const userid = parseInt(await AsyncStorage.getItem(UniData.userid));
@@ -62,12 +65,27 @@ export default class FeedOfferScreen extends React.Component {
 
                 loadOffers(userid, (offers) => {
                     this.setState({allFeedOffers: offers, isLoading: false});
+                    
+                    // refreshes always when comming back from another screen
+                    this.props.navigation.addListener('willFocus', (payload) => this.refresh());
                 }, userid)
             });
         } catch (error) {
         }
     }
+    
+    refresh() {
+        this.setState({isLoading: true})
+        
+        loadOffers(this.state.userid, (offers) => {
+            this.setState({allFeedOffers: offers, isLoading: false});
+        }, this.state.userid)
+    }
 
+    
+    // =================================================================
+    // buttons actions
+    // =================================================================
     onMenuButtonPress(navigation) {
         navigation.openDrawer();
     }
@@ -85,12 +103,6 @@ export default class FeedOfferScreen extends React.Component {
 
     onAddRequestPress(self, navigate) {
         navigate('AddRequest')
-    }
-
-    updateFeed() {
-        loadOffers(this.state.userid, (offers) => {
-            this.setState({allFeedOffers: offers});
-        }, this.state.userid)
     }
 
     // =================================================================
@@ -257,7 +269,7 @@ export default class FeedOfferScreen extends React.Component {
                         onShowOfferer = {() => {}}
                         onQuit = {() => this.setState({isOfferCardOpen: false})}
                         isOffer = {this.isOffer}
-                        updateFeed={() => this.updateFeed()}
+                        updateFeed={() => this.refresh()}
                         loggedUserid={this.state.userid}
                         myFeedOpen ={this.state.isMyFeedOpen}
                     />
