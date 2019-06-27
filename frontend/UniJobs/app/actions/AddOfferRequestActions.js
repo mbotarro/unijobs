@@ -1,6 +1,6 @@
 import UniData from '../constants/UniData';
 
-async function tryAddRequest (userid, title, categoryIndex, description, minPrice, maxPrice, onResponse) {
+async function tryAddRequest (userid, title, categoryIndex, description, minPrice, maxPrice, useEmail, usePhone, onResponse) {
 
     const body = JSON.stringify({
         name: title,
@@ -10,6 +10,8 @@ async function tryAddRequest (userid, title, categoryIndex, description, minPric
         minprice: minPrice,
         userid: userid,
         categoryid: categoryIndex,
+        email: useEmail,
+        phone: usePhone,
     });
     
     fetch(UniData.requestsApi,{
