@@ -55,6 +55,10 @@ export default class SideDrawer extends React.Component {
         navigate('Settings')
     }
 
+    onAboutUs(navigate) {
+        navigate('AboutUs')
+    }
+
     onSair(navigate) {
         alert("TODO : Logout do Usuario");
         navigate('Login')
@@ -131,8 +135,19 @@ export default class SideDrawer extends React.Component {
                 />
             </View>
         )
+        const AboutUs = () => (
+            <View style={styles.DrawerItem}>
+                <Image style={UniStyles.icons} source={require('../assets/icons/information.png')}/>
+                <Button
+                    text='Sobre aplicativo'
+                    textStyle = {{alignSelf:  'center'}}
+                    buttonStyle={[{backgroundColor:'transparent'}]}
+                    onPress={() => this.onAboutUs(navigate)}
+                />
+            </View>
+        )
         const Sair = () => (
-            <View style={[styles.DrawerItem,{marginTop:260}]}>
+            <View style={[styles.DrawerItem,{marginTop:195}]}>
                 <Image style={UniStyles.icons} source={require('../assets/icons/return.png')}/>
                 <Button
                     text='Sair'
@@ -148,6 +163,7 @@ export default class SideDrawer extends React.Component {
                 <MinhasSolicitacoes/>
                 <HistoricoInteresses/>
                 <Configuracoes/>
+                <AboutUs/>
                 <Sair/>
             </View>
         )
