@@ -74,7 +74,6 @@ export default class AddSolicitationScreen extends React.Component {
     leaveScreen(navigation) {
         this.setState({title: '', selectedCategoryId: this.state.categories[0].id,
             description: '', minPrice: '', maxPrice: '', checkedEmail: false, checkedTelefone: false})
-        console.log(this.state)
         navigation.goBack()
     }
 
