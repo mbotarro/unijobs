@@ -320,6 +320,7 @@ const styles = StyleSheet.create({
     },
 
     searchHeader : {
+        paddingTop:      19,
         flexDirection:   'row',
         alignSelf:       'stretch',
         backgroundColor: UniColors.main,

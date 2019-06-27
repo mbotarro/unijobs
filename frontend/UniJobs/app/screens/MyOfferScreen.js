@@ -154,7 +154,9 @@ const styles = StyleSheet.create({
     },
 
     headerContainer: {
+        paddingTop:     19,
         zIndex:         1,
+        paddingBottom:  5,
         justifyContent: 'space-between',
         flexDirection:  'row',
         alignSelf:      'stretch',

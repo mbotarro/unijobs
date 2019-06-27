@@ -126,11 +126,12 @@ export default class CardsWrapper extends React.Component {
 const containerStyles = StyleSheet.create({
     container: {
         flex: 1,
+        marginTop: 13,
     },
     whiteContainer: {
         backgroundColor: '#FFFFFF',
         marginHorizontal: 5,
-        marginTop: 5,
+        marginTop: 6,
         marginBottom: 20,
         borderRadius: 20,
         flexDirection: 'column',
