@@ -212,6 +212,8 @@ const styles = StyleSheet.create({
     },
     
     headerContainer: {
+        paddingTop:     19,
+        paddingBottom:  5,
         zIndex:         1,
         justifyContent: 'space-between',
         flexDirection:  'row',
