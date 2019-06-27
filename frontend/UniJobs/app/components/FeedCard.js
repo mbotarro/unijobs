@@ -55,8 +55,8 @@ export default class FeedCard extends React.Component {
                 return(
                     <View style={{flexDirection: 'column', flex: 1}}>
                         <Text numberOfLines={1} style={[textStyles.userName]}>{this.state.userdata.username}</Text>
-                        <Text numberOfLines={1} style={{fontSize: UniText.small, color: UniColors.dark_grey, marginTop: 2}}>{this.state.userdata.telephone}</Text>
-                        <Text numberOfLines={1} style={{fontSize: UniText.small, color: UniColors.dark_grey, marginTop: 2}}>{this.state.userdata.email}</Text>
+                        <Text numberOfLines={1} style={{fontSize: UniText.small, color: UniColors.dark_grey, marginTop: 2}}>{offer.telephone}</Text>
+                        <Text numberOfLines={1} style={{fontSize: UniText.small, color: UniColors.dark_grey, marginTop: 2}}>{offer.email}</Text>
                     </View>
                 )
             }
