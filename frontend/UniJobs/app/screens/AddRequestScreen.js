@@ -1,7 +1,7 @@
 "use strict";
 
 import React from 'react';
-import { StyleSheet, Text, TextInput, View, Image, Picker } from 'react-native';
+import { StyleSheet, Text, TextInput, View, Image, Picker, TouchableHighlight } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import CheckBox from 'react-native-check-box';
 import { Header } from 'react-native-elements';
@@ -78,6 +78,20 @@ export default class AddSolicitationScreen extends React.Component {
     }
 
     render() {
+        const header = (
+            <View style={styles.headerContainer} >
+                <TouchableHighlight
+                    underlayColor={UniColors.main}
+                    onPress={() => this.leaveScreen(this.props.navigation)}
+                >
+                    <Image
+                        source={require('../assets/icons/arrow-left.png')}
+                        style={styles.backButton}
+                    />
+                </TouchableHighlight>
+                <Text style={styles.headerText}>{'Adicionar Solicitação'}</Text>
+            </View>
+        );
         
         const AddButton = () => (
             <Button
@@ -89,11 +103,7 @@ export default class AddSolicitationScreen extends React.Component {
 
         return (
             <View style= {{flex: 1}}>
-                <Header 
-                    backgroundColor={UniColors.main}
-                    leftComponent={{ icon: 'navigate-before', color: '#FFFFFF', onPress: () => this.leaveScreen(this.props.navigation) }}
-                    centerComponent={{text: 'Adicionar Solicitação', style: styles.headerText}}
-                />
+                {header}
                 <KeyboardAwareScrollView 
                     contentContainerStyle={{ flex: 1 }}
                     resetScrollToCoords={{ x: 0, y: 0 }}
@@ -198,11 +208,30 @@ const styles = StyleSheet.create({
         marginLeft: 28,
         marginRight: 28,
     },
+    
+    headerContainer: {
+        zIndex:         1,
+        justifyContent: 'space-between',
+        flexDirection:  'row',
+        alignSelf:      'stretch',
+        backgroundColor:UniColors.main,
+    },
+
+    backButton: {
+        marginTop:      38,
+        marginLeft:     20,
+        marginBottom:   14,
+    },
 
     headerText: {
-        fontSize: 22,
-        color: UniColors.white,
-        fontWeight: UniText.semibold,
+        marginTop:      35,
+        flexGrow:       1,
+        width:          0,
+
+        fontSize:       25,
+        color:          UniColors.white,
+        fontWeight:     UniText.semibold,
+        textAlign:      'center',
     },
 
     title:  {
