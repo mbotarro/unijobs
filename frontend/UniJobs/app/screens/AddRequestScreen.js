@@ -65,6 +65,8 @@ export default class AddSolicitationScreen extends React.Component {
                       this.state.description, 
                       parseInt(this.state.minPrice), 
                       parseInt(this.state.maxPrice),
+                      this.state.checkedEmail,
+                      this.state.checkedTelefone,
                       () => {
                           this.leaveScreen(this.props.navigation)
                       }
