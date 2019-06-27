@@ -11,10 +11,8 @@ import MyInterestScreen from "../screens/MyInterestScreen"
 import SettingScreen from "../screens/SettingScreen"
 import AddOfferScreen from "../screens/AddOfferScreen"
 import AddRequestScreen from "../screens/AddRequestScreen"
-
+import AboutUsScreen from "../screens/AboutUsScreen"
 import FeedNavigator from  "./FeedNavigator"
-import TestScreen from "../screens/TestScreen";
-
 
 
 const DrawerStack = createDrawerNavigator(
@@ -23,7 +21,8 @@ const DrawerStack = createDrawerNavigator(
     MyOffers: { screen: MyOfferScreen },
     MyRequests: { screen: MyRequestScreen },
     MyInterests: { screen: MyInterestScreen },
-    Settings: { screen:SettingScreen },
+    AboutUs: {screen: AboutUsScreen},
+    Settings: { screen: SettingScreen },
     UserOptions: { screen:UserOptionScreen },
     TabStack: {
         screen: FeedNavigator,
