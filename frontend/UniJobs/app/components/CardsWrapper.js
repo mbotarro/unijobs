@@ -83,6 +83,9 @@ export default class CardsWrapper extends React.Component {
 
         const CardDescription = () => {
             return(
+
+
+
                 <View style={{flexDirection: 'column'}}>
                     <Text style={[textStyles.mainDescText]}>
                         {(request.description.length > 290) ? (((request.description).substring(0,290-3)) + '...') : request.description}
@@ -115,6 +118,7 @@ export default class CardsWrapper extends React.Component {
         )
     }
 }
+
 
 
 

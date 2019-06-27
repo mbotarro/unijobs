@@ -65,6 +65,7 @@ const styles = StyleSheet.create({
         shadowRadius :      3,
         shadowColor:        UniColors.black,
         shadowOpacity:      0.16,
+        elevation: 2,
     },
 
     imageContainer: {

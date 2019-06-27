@@ -11,6 +11,7 @@ import ButtonWithIcon from './ButtonWithIcon'
 
 import CardsWrapper from './CardsWrapper'
 import {makeMatch} from '../actions/FeedActions'
+import { isNullOrUndefined } from 'util';
 
 export default class FeedCard extends React.Component {
     state = {
@@ -39,7 +40,7 @@ export default class FeedCard extends React.Component {
     }
 
     render() {
-        const { offer, request, categories, onCreateOfferPress, onShowRequester, onQuit, isOffer, updateFeed, loggedUserid } = this.props; 
+        const { offer, request, categories, onCreateOfferPress, onShowRequester, onQuit, isOffer, updateFeed, loggedUserid ,myFeedOpen} = this.props; 
 
         const ActionButton = (text, onPress, color) => (
             <Button
@@ -88,6 +89,15 @@ export default class FeedCard extends React.Component {
                     </View>
                 )
             }
+            else if(isOffer && myFeedOpen && this.state.isLoading === false){
+                return(
+                    <View>
+                        {getInterested(offer)}
+                    </View>
+                    
+
+                )
+            }
 
             return(null)
         }
@@ -117,7 +127,7 @@ export default class FeedCard extends React.Component {
 
         const ButtonWrapper = () => {
             if (isOffer) {
-                if (offer.matched){
+                if (myFeedOpen||offer.matched){
                     return (
                         null
                     )
@@ -155,11 +165,61 @@ export default class FeedCard extends React.Component {
     }
 }
 
+function getInterested(offer) {
+    if(typeof offer.interestedusers === 'undefined'||offer.interestedusers.length === 0){
+        return(
+            <View>
+                <Text style={{color: '#00A5F2',marginHorizontal: 15,marginBottom:20,marginLeft:25}}>
+                    Nenhum interessado até o momento.
+                </Text>
+            </View>
+        );
+    }
+
+    return (
+        <View style={{marginBottom:20}}>
+            <Text style={{color: '#00A5F2',marginTop: 15,marginLeft:25}}>
+                Tiveram interesse na sua oferta!
+            </Text>
+            {offer.interestedusers.map((person, index) => (             
+                <View key = {index} style = {{marginTop: 3}} >
+                    {interestedPerson(person)}
+                </View>
+            ))}
+        </View>
+            
+    );
+}
+function interestedPerson(person){
+    return(
+        <View style={[containerStyles.cardsContainer]}>
+            <TouchableOpacity >
+                <View style={{
+                    flexDirection: 'row', width: window.width, alignItems: 'center',
+                    marginHorizontal: 20,
+                }}>
+                    <View style={{ justifyContent: 'center' }}>
+                        <Image
+                            source={require('../assets/_users/student.png')}
+                            style={[{ marginHorizontal: 15, width: 50, height: 50, alignSelf: 'center', borderRadius: 25 }]}
+                        />
+                    </View>
+                    <View style={{flexDirection: 'column', flex: 1}}>
+                        <Text numberOfLines={1} style={[textStyles.userOfferName]}>{person.username}</Text>
+                        <Text numberOfLines={1} style={{fontSize: UniText.small}}>{person.telephone}</Text>
+                        <Text numberOfLines={1} style={{fontSize: UniText.small}}>{person.email}</Text>
+                    </View>
+
+                </View>
+            </TouchableOpacity>
+        </View>
+    )
+}
 
 const containerStyles = StyleSheet.create({
     cardsContainer: {
         marginTop: 10,
-        marginBottom: 30,
+        marginBottom: 10,
         flexDirection: 'column',
         flex: 1,
     },

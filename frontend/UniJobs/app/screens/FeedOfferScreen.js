@@ -259,6 +259,7 @@ export default class FeedOfferScreen extends React.Component {
                         isOffer = {this.isOffer}
                         updateFeed={() => this.updateFeed()}
                         loggedUserid={this.state.userid}
+                        myFeedOpen ={this.state.isMyFeedOpen}
                     />
                 }
                 </View>
