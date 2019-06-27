@@ -117,13 +117,12 @@ export default class AddSolicitationScreen extends React.Component {
                                 style = {[styles.categoryBox, {marginTop: 30, overflow: 'hidden', height: 38, justifyContent: 'center', paddingVertical: 10}]}
                                 itemStyle={{fontSize: UniText.big, fontWeight: UniText.semibold, color: UniColors.dark}}
                             >      
-                                {   
-                                    this.state.isLoading ?
-                                    null
-                                    :
-                                    this.state.categories.map((cat, index) => (
-                                        <Picker.Item key = {index} label={cat.name.replace('.', ' ')} value={cat.id} />
-                                    ))
+                                {
+                                    this.state.isLoading ? null :
+                                        this.state.categories.map((cat, index) => (
+                                            <Picker.Item key = {index} label={cat.name.replace('.', ' ')} value={cat.id} />
+                                        )
+                                    )
                                 }
                             </Picker>
                             {/*Description Box*/}

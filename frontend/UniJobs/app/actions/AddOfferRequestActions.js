@@ -16,37 +16,49 @@ async function tryAddRequest (userid, title, categoryIndex, description, minPric
         method: 'POST',
         body: body,
     })
-    .then((json) => {onResponse(); console.log(json)})
+    .then((response) => {
+        if (response.status == '201') 
+            onResponse()
+        else
+            alert("Requests API error");
+    })
     .catch((error) => {
         console.log(error.message);
-        alert("Request API error!");
+        alert("Requests API error!");
     });
 };
 
 
 
-async function tryAddOffer (title, categoryIndex, description,  minPrice, maxPrice, checkedEmail, checkedTelefone, date, info) {
-    
-    fetch(UniData.allRequestsApi(1),{
-    method: 'POST',
-        body: JSON.stringify({
-            name: title,
-            description: description,
-            extrainfo: info,
-            maxprice: maxPrice,
-            minprice: minPrice,
-            expiration: date,
-            userid: UniData.userid,
-            categoryid: categoryIndex,
-            email: checkedEmail,
-            telephone: checkedTelefone, 
-        }),
+async function tryAddOffer (userid, title, categoryIndex, description, 
+    minPrice, maxPrice, checkedEmail, checkedTelefone, date, info, onResponse) {
+
+    const body = JSON.stringify({
+        name: title,
+        description: description,
+        extrainfo: info,
+        maxprice: maxPrice,
+        minprice: minPrice,
+        expiration: date,
+        userid: userid,
+        categoryid: categoryIndex,
+        email: checkedEmail,
+        telephone: checkedTelefone, 
     })
-    .then((response) => response.json())
-    //.then((json) => {onResponse(json.teste);})
+    
+    fetch(UniData.offersApi,{
+        method: 'POST',
+        body: body,
+    })
+    .then((response) => {
+        if (response.status == '201') 
+            onResponse()
+        else
+            alert("Offers API error")
+    })
     .catch((error) => {
         console.log(error.message);
-        alert("Request API error!");
+        alert("Offers API error!");
     });
 };
 
