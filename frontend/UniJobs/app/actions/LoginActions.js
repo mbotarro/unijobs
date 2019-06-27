@@ -35,7 +35,4 @@ async function getUserPicture (id, onResponse) {
     onResponse(require('../assets/_users/student.png'));
 }
 
-
-
-
 module.exports = { tryLogin, getUserData, getUserPicture };
