@@ -207,6 +207,7 @@ export default class AddSolicitationScreen extends React.Component {
                             value = {this.state.date}
                             placeholder={'Data Limite (DD/MM/AA)'}
                             autoCorrect={false}
+                            keyboardType={'numbers-and-punctuation'}
                             onChangeText={(date) => this.setState({ date: date })}
                         />
                         {/*Aditional Information Box*/}
@@ -214,7 +215,7 @@ export default class AddSolicitationScreen extends React.Component {
                             style={[styles.infoInput, { marginTop: 10 }]}
                             value = {this.state.info}
                             placeholder={'Informações Adicionais'}
-                            autoCorrect={false}
+                            autoCorrect={true}
                             onChangeText={(info) => this.setState({ info: info })}
                         />
                         {/*Add Button*/}
